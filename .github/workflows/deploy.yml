@@ -1,8 +1,15 @@
 name: deploy
 
 on:
+  workflow_run:
+    workflows: ["Benchmark"]
+    types: [completed]
+
   push:
     branches: ["main"]
+    paths:
+      - ".github/workflows/deploy.yml"
+      - "scoreboard/**"
 
   workflow_dispatch:
 
@@ -18,7 +25,10 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
+    outputs:
+      has-results: ${{ steps.result.outputs.has-results }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,34 +41,48 @@ jobs:
           cache: pnpm
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --filter css-compiler-benchmark-scoreboard
-      - name: Take the last successful benchmark result
+      - name: Take the benchmark result
+        id: result
         env:
           GH_TOKEN: ${{ github.token }}
+          TRIGGERING_RUN: ${{ github.event.workflow_run.id }}
         run: |
-          run_id=$(gh run list --workflow benchmark.yml --status success --limit 1 \
-            --json databaseId --jq '.[0].databaseId // empty')
+          run_id="$TRIGGERING_RUN"
           if [ -z "$run_id" ]; then
-            echo "::warning::No successful benchmark run yet; the site will render its empty state."
+            run_id=$(gh run list --workflow benchmark.yml --status success --limit 1 \
+              --json databaseId --jq '.[0].databaseId // empty')
+          fi
+          if [ -z "$run_id" ]; then
+            echo "::warning::No benchmark run has produced a result yet; nothing to deploy."
+            echo "has-results=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! gh run download "$run_id" --name benchmark-results --dir scoreboard/public; then
+            echo "::warning::Run ${run_id} published no result artifact; nothing to deploy."
+            echo "has-results=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "Publishing the result measured by run ${run_id}."
-          gh run download "$run_id" --name benchmark-results --dir scoreboard/public
+          node -e "const r=require('./scoreboard/public/latest.json');console.log('generatedAt:',r.generatedAt,'| build:',r.build?.status??'missing','| scale:',r.scale?.status??'missing','| structure:',r.structure?.status??'missing')"
+          echo "has-results=true" >> "$GITHUB_OUTPUT"
       - name: Build with Vite
+        if: steps.result.outputs.has-results == 'true'
         run: pnpm build
       - name: Upload artifact
+        if: steps.result.outputs.has-results == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./scoreboard/dist
 
   deploy:
+    needs: build
+    if: needs.build.outputs.has-results == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
