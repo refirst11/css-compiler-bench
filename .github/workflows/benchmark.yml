@@ -40,9 +40,6 @@ on:
 
 permissions:
   contents: read
-  actions: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: benchmark-${{ github.ref }}
@@ -59,8 +56,6 @@ jobs:
     name: Ubuntu benchmark
     runs-on: ubuntu-24.04
     timeout-minutes: 120
-    outputs:
-      has-results: ${{ steps.results.outputs.has-results }}
 
     steps:
       - name: Check out repository
@@ -177,18 +172,3 @@ jobs:
             echo "::error::At least one measurement failed; see the job summary for the failing lanes."
             exit 1
           fi
-
-  publish:
-    name: Publish scoreboard
-    needs: measure
-    # A partial result is still worth publishing: the scoreboard renders the
-    # lanes that succeeded and names the ones that did not.
-    if: always() && needs.measure.outputs.has-results == 'true'
-    uses: ./.github/workflows/publish-scoreboard.yml
-    with:
-      results-artifact: benchmark-results
-    permissions:
-      contents: read
-      actions: read
-      pages: write
-      id-token: write
