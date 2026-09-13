@@ -1,9 +1,21 @@
 {
-  "name": "plumeria-stylex-benchmark",
+  "name": "css-compiler-benchmark",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.3.0",
   "scripts": {
-    "bench": "node scripts/benchmark.mjs",
-    "structure": "node scripts/structure.mjs"
+    "dev": "pnpm --dir scoreboard dev",
+    "build": "pnpm --dir scoreboard build",
+    "preview": "pnpm --dir scoreboard preview",
+    "bench": "node scripts/benchmark.ts",
+    "bench:scale": "node scripts/scale.ts",
+    "structure": "node scripts/structure.ts",
+    "measure": "npm run bench && npm run bench:scale && npm run structure -- --client",
+    "typecheck": "tsc --noEmit -p tsconfig.benchmark.json && pnpm --dir scoreboard run typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^24.8.1",
+    "typescript": "^5"
   }
 }
