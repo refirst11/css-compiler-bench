@@ -1,7 +1,11 @@
 {
-  "name": "plumeria-next",
+  "name": "plumeria",
   "version": "0.1.0",
   "private": true,
+  "bench": {
+    "label": "Plumeria",
+    "scaleKind": "plumeria"
+  },
   "scripts": {
     "predev": "rimraf .next",
     "prebuild": "rimraf .next",
@@ -15,9 +19,9 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@plumeria/core": "^18.2.25",
-    "@plumeria/eslint-plugin": "^18.2.25",
-    "@plumeria/next-plugin": "^18.2.25",
+    "@plumeria/core": "^19.1.4",
+    "@plumeria/eslint-plugin": "^19.1.4",
+    "@plumeria/next-plugin": "^19.1.4",
     "@types/node": "^24.8.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",

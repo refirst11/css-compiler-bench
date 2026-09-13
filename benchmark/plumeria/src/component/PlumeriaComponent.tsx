@@ -35,7 +35,7 @@ const PlumeriaComponent = ({ isRed }: PlumeriaComponentProps) => {
   return (
     <>
       <div classStyle={[styles.base, isRed && styles.red]}>
-        Hello from Plumeria!
+        Hello from Benchmark!
       </div>
       <div>
         <div classStyle={styles2.container}>First</div>

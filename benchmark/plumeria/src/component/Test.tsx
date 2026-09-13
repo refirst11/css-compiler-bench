@@ -73,7 +73,7 @@ const Test = ({
         backgroundStyles[background],
       ]}
     >
-      Plumeria Test Component with Bracket Notation Variants
+      Benchmark Test Component with Bracket Notation Variants
     </div>
   );
 };
