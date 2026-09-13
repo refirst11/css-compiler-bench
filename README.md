@@ -4,9 +4,13 @@
 
 [![Benchmark](https://github.com/refirst11/css-compiler-bench/actions/workflows/benchmark.yml/badge.svg)](https://github.com/refirst11/css-compiler-bench/actions/workflows/benchmark.yml)
 
-Compares compile-time CSS strategies for React on an identical Next.js app. Every strategy
-("lane") builds the same components under the same conditions, so the numbers are actually
-comparable
+Build-time cost of compile-time CSS for React, on one identical Next.js app — with CSS
+Modules and Tailwind as no-compiler controls. Every setup ("lane") builds the same
+components under the same conditions, so the numbers are actually comparable
+
+A lane is one configuration, not one library: StyleX appears twice, compiled through Babel
+and through SWC, and Tailwind appears with and without `cn`. Five libraries currently
+occupy eight lanes
 
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
@@ -21,7 +25,11 @@ Two rules shape everything here:
   queries, `:last-child` and conditional styles. A lane may not change the fixture. Every
   lane is measured against the same control — `benchmark/baseline/` styles that DOM with
   plain CSS Modules and no library at all, so "library cost" is literally this lane's build
-  minus the control's
+  minus the control's. Two lanes are there to be controls rather than contestants: CSS
+  Modules compiles no styles at all, it only rewrites local class names to globally unique
+  ones, and Tailwind generates its stylesheet by scanning for class names the author already
+  wrote by hand. Neither reads a style declaration and decides what class it becomes, which
+  is exactly what makes them the baselines the four compilers are measured against
 - **Isolation.** Each lane is its own package under `benchmark/<lane>/` with its own
   `package.json`, its own dependencies and its own build config. The StyleX lane physically
   cannot import Plumeria, or a stray React copy; it only sees what it declares
