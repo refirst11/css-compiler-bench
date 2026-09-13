@@ -1,7 +1,12 @@
 {
-  "name": "baseline-next",
+  "name": "baseline",
   "version": "0.1.0",
   "private": true,
+  "bench": {
+    "label": "CSS Modules",
+    "scaleKind": "css-modules",
+    "baseline": true
+  },
   "scripts": {
     "predev": "rimraf .next",
     "prebuild": "rimraf .next",

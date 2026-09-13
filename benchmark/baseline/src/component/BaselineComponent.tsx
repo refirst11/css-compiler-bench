@@ -8,7 +8,7 @@ const BaselineComponent = ({ isRed }: BaselineComponentProps) => {
   return (
     <>
       <div className={[styles.base, isRed && styles.red].filter(Boolean).join(" ")}>
-        Hello from Baseline!
+        Hello from Benchmark!
       </div>
       <div>
         <div className={styles.container}>First</div>

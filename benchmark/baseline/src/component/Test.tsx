@@ -65,7 +65,7 @@ const Test = ({
         backgroundStyles[background],
       ].join(" ")}
     >
-      Baseline Test Component with Bracket Notation Variants
+      Benchmark Test Component with Bracket Notation Variants
     </div>
   );
 };
