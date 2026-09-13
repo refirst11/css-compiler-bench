@@ -73,7 +73,7 @@ const Test = ({
         backgroundStyles[background],
       )}
     >
-      StyleX Test Component with Bracket Notation Variants
+      Benchmark Test Component with Bracket Notation Variants
     </div>
   );
 };
