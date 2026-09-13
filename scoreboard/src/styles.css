@@ -54,12 +54,14 @@ h1 {
   max-width: 760px;
   margin-bottom: 16px;
   font-size: clamp(42px, 7vw, 78px);
+  font-weight: 560;
   line-height: 0.96;
   letter-spacing: -0.065em;
 }
 h2 {
   margin-bottom: 0;
   font-size: 26px;
+  font-weight: 560;
   letter-spacing: -0.035em;
 }
 .lede {
