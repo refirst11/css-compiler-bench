@@ -102,12 +102,14 @@ cut a run down (the control is always included)
 ## How the report is published
 
 `benchmark.yml` measures every lane on one runner in one job — build times are only
-comparable when they were taken next to each other — and hands its JSON straight to the
-deploy, which builds the scoreboard around it and publishes to GitHub Pages. `scoreboard.yml`
-redeploys a UI-only change in about a minute from the last successful run's artifact,
-without re-measuring. The page then reads the public Actions API live, so it can say
-whether CI is green right now and whether it is showing a measurement older than the newest
-successful run
+comparable when they were taken next to each other — and uploads the result as an artifact.
+`deploy.yml` waits for that run to finish, builds the scoreboard around its JSON and
+publishes to GitHub Pages; it also runs on a scoreboard-only push, where it redeploys in
+about a minute from the last successful run's artifact without re-measuring. Until a
+benchmark run has produced a result there is nothing to deploy, and the deploy skips rather
+than publishing an empty page. The page itself then reads the public Actions API live, so it
+can say whether CI is green right now and whether it is showing a measurement older than the
+newest successful run
 
 ## Contributing
 
