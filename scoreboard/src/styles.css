@@ -72,3 +72,16 @@ code { color: #8694b3; font: inherit; }
   footer { display: block; }
   footer span { display: block; margin-top: 7px; }
 }
+.status-dot.running { background: #7dd3fc; box-shadow: 0 0 16px #7dd3fc; }
+.status-dot.failed { background: #fb7185; box-shadow: 0 0 16px #fb7185; }
+.status-card a { color: inherit; }
+.status-card small.stale { color: #ffbd69; white-space: normal; }
+.metadata a { color: #8ea0c6; padding: 5px 8px; border: 1px solid #202a42; border-radius: 5px; text-decoration: none; }
+.metadata a:hover { border-color: #3a4568; }
+.speed-label em { color: #6f7c9a; font-style: normal; font-weight: 500; }
+.speed-line.control { background: linear-gradient(90deg, #4b5675, #7f8ba9); box-shadow: none; }
+.failures { margin-top: 22px; padding: 14px 16px; border: 1px solid #4a2a3a; border-radius: 10px; background: #1a1020; }
+.failures strong { display: block; color: #fb7185; font-size: 12px; }
+.failures ul { margin: 8px 0 0; padding-left: 18px; color: #98a5c0; font-size: 11px; line-height: 1.7; }
+.failures code { color: #edf2ff; }
+footer a { color: #8ea0c6; }

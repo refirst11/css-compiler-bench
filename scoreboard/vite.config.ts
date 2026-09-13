@@ -1,12 +1,9 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-const scoreboardDir = path.dirname(fileURLToPath(import.meta.url));
-const repositoryRoot = path.resolve(scoreboardDir, "..");
-
 export default defineConfig({
   plugins: [react()],
-  publicDir: path.join(repositoryRoot, "results"),
+  // Relative asset URLs, so the same build works at a user page, at a project
+  // page under /<repo>/, and from a local file.
+  base: "./",
 });
