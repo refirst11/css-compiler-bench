@@ -428,3 +428,147 @@ code {
 footer a {
   color: #8ea0c6;
 }
+
+.notes {
+  margin-top: 20px;
+}
+.machine-note {
+  margin-bottom: 24px;
+  padding: 18px 20px;
+  border: 1px solid #202a42;
+  border-radius: 12px;
+  background: #0c111fcc;
+}
+.machine-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.machine-tag {
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.machine-tag.virtual {
+  color: #0b1020;
+  background: #7dd3fc;
+}
+.machine-tag.local {
+  color: #0b1020;
+  background: #86efac;
+}
+.machine-row code {
+  color: #8ea0c6;
+  font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.machine-note p,
+.note-body p {
+  margin-bottom: 12px;
+  color: #98a5c0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.machine-note p:last-child,
+.note-body p:last-child {
+  margin-bottom: 0;
+}
+.callout {
+  margin-bottom: 8px;
+  padding: 16px 20px;
+  border-left: 2px solid #ffbd69;
+  border-radius: 0 8px 8px 0;
+  background: #14192b;
+  color: #aeb8d2;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.callout strong {
+  color: #ffbd69;
+}
+.note {
+  border-bottom: 1px solid #1c263d;
+}
+.note summary {
+  padding: 16px 2px;
+  color: #edf2ff;
+  font-size: 14px;
+  cursor: pointer;
+  list-style: none;
+}
+.note summary::-webkit-details-marker {
+  display: none;
+}
+.note summary::before {
+  display: inline-block;
+  width: 18px;
+  color: #687694;
+  content: "+";
+}
+.note[open] summary::before {
+  content: "−";
+}
+.note summary:hover {
+  color: #ffbd69;
+}
+.note-body {
+  padding: 0 2px 22px 20px;
+  max-width: 760px;
+}
+.model-list {
+  margin: 0 0 12px;
+}
+.model-list dt {
+  margin-top: 14px;
+  color: #ffbd69;
+  font-size: 12px;
+  font-weight: 650;
+}
+.model-list dd {
+  margin: 6px 0 0;
+  color: #98a5c0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.method {
+  margin: 0;
+  padding-left: 18px;
+  color: #98a5c0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.method li {
+  margin-bottom: 10px;
+}
+.method strong,
+.note-body em {
+  color: #d6def3;
+  font-style: normal;
+}
+.env-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px 24px;
+  margin: 0;
+}
+.env-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #1c263d;
+}
+.env-list dt {
+  color: #687694;
+  font-size: 11px;
+}
+.env-list dd {
+  margin: 0;
+  color: #d6def3;
+  font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: right;
+}

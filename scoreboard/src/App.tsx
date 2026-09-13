@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { MachineNote, Notes } from "./Notes";
 import { repositoryUrl, useBenchmark } from "./data";
 import type {
   BenchmarkData,
@@ -356,6 +357,8 @@ function App() {
         )}
         <Failures failures={data?.structure?.failures} />
       </section>
+
+      <Notes data={data} />
 
       <footer>
         <span>
