@@ -1,12 +1,3 @@
-/* app/globals.css */
-@layer resets {
-  * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-  }
-}
-
 @stylex;
 
 :root {
