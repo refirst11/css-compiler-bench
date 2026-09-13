@@ -3,7 +3,10 @@ import os from "os";
 import path from "path";
 import { repositoryRoot } from "./lanes.ts";
 
-const resultsDir = path.join(repositoryRoot, "results");
+// The measurement JSON is a build input, not repository content: the harness
+// writes it where Vite serves static files from, CI carries it between jobs as
+// an artifact, and the deployed site is the copy everyone reads.
+const resultsDir = path.join(repositoryRoot, "scoreboard", "public");
 export const resultsPath = path.join(resultsDir, "latest.json");
 
 // Everything the scoreboard needs to say where a number came from. A benchmark
