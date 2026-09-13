@@ -108,3 +108,27 @@ redeploys a UI-only change in about a minute from the last successful run's arti
 without re-measuring. The page then reads the public Actions API live, so it can say
 whether CI is green right now and whether it is showing a measurement older than the newest
 successful run
+
+## Contributing
+
+**Library authors are welcome to open a PR.** If your library is measured here and you can
+make its lane faster or smaller, that PR is the point of the isolation rule: every lane is
+its own package, so tuning yours touches only `benchmark/<your-lane>/` and cannot affect
+anyone else's numbers. Check it with `pnpm bench -- --lanes=<your-lane>` — the control lane
+is always included, so you can see your own library cost move
+
+To add a library that is not here yet, create `benchmark/<name>/`:
+
+1. `package.json` with a `bench` block — `{ "label": "Your Library", "scaleKind": "your-library" }`.
+   `label` is what the charts show; `scaleKind` picks which fixture generator the scale
+   sweep writes, so add a branch to `scripts/scale.ts` for a new one
+2. `prebuild` and `build` scripts, where `prebuild` deletes `.next` — every measured build
+   is a cold build
+3. The fixture: copy the closest existing lane and swap only the styling layer
+
+No registry edits anywhere; `pnpm install` picks the folder up and the next run measures it
+
+What a PR may not change is the fixture itself: the DOM, the instance count and the variant
+axes are the same for every lane, which is the only reason the numbers mean anything. If
+your library needs a workload this benchmark cannot express, open an issue — that is a case
+for a new fixture applied to everyone, not for one lane rendering something different
