@@ -3,4 +3,4 @@
 node_modules
 *.tsbuildinfo
 dist
-results/latest.json.tmp
+scoreboard/public/
