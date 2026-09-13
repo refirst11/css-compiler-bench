@@ -1,6 +1,8 @@
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import { updateResults } from "./results.ts";
+import { selectedLanes } from "./lanes.ts";
 
 // Decomposes the class-name machinery each styling layer emits, so the README's
 // "class-name structure" and "runtime" columns are reproducible rather than
@@ -16,15 +18,9 @@ import path from "path";
 //      rejects them without a hand-maintained denylist.
 //
 //   2. `page.module.css` is excluded everywhere. It is identical CSS Modules
-//      output in all three projects and belongs to none of the strategies
-//      being compared.
-const projects = {
-  "baseline-next": "CSS Modules",
-  "plumeria-next": "Plumeria",
-  "stylex-next": "StyleX",
-  "tailwind-next": "Tailwind",
-};
-const rootDir = process.cwd();
+//      output in every lane and belongs to none of the strategies being
+//      compared.
+const laneList = selectedLanes();
 
 // Present in all three projects' Test component, and stable across rebuilds --
 // unlike the content-hashed chunk filenames, which cannot be hardcoded.
@@ -73,6 +69,10 @@ function readFiles(dir, filter) {
 // a bare `.p`, and a one-character name would match the string `"p"` in every
 // React element type in the framework chunks.
 const GENERATED = /-module__|^x[a-z0-9]{5,}$/;
+const BROAD_CSS_AUTHORITY = new Set([
+  "devup-ui",
+  "next-yak",
+]);
 
 // Tailwind's utility names -- `p-2`, `border`, `min-[800px]:mb-3` -- match
 // neither pattern in GENERATED, and loosening that regex enough to admit
@@ -109,14 +109,16 @@ function utilityLayerNames(source, names) {
 
 // Every class name the build actually emitted a rule for. This is the authority
 // on what counts as a class name in the JS.
-function cssClassNames(projectPath) {
+function cssClassNames(projectPath, project) {
   const names = new Set();
   for (const { source } of readFiles(
     path.join(projectPath, ".next/static/chunks"),
     (name) => name.endsWith(".css"),
   )) {
     for (const [, name] of source.matchAll(/\.([A-Za-z_][\w-]*)/g)) {
-      if (GENERATED.test(name)) names.add(name);
+      if (BROAD_CSS_AUTHORITY.has(project) || GENERATED.test(name)) {
+        names.add(name);
+      }
     }
     utilityLayerNames(source, names);
   }
@@ -407,55 +409,84 @@ function run() {
   const measureClient = process.argv.includes("--client");
   const showContents = process.argv.includes("--dump");
   const summary = {};
+  const rows = [];
 
-  for (const [project, label] of Object.entries(projects)) {
-    const projectPath = path.join(rootDir, project);
-    if (!fs.existsSync(path.join(projectPath, ".next"))) {
-      console.log(`\n🔨 ${project} has no build; building...`);
-      execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
+  // A lane whose chunk cannot be analysed is reported and skipped, so one
+  // broken lane never costs the run every other lane's numbers.
+  const failures = new Map<string, string>();
+
+  for (const lane of laneList) {
+    try {
+      const project = lane.name;
+      const label = lane.label;
+      const projectPath = lane.dir;
+      if (!fs.existsSync(path.join(projectPath, ".next"))) {
+        console.log(`\n🔨 ${project} has no build; building...`);
+        execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
+      }
+
+      const classNames = cssClassNames(projectPath, project);
+      const chunk = ssrChunk(projectPath);
+      const ssr = analyseChunk(chunk.source, classNames);
+
+      console.log(`\n=== ${label}  (${project})`);
+      report("SSR chunk", ssr, chunk.name);
+      if (showContents) dump("SSR chunk contents", ssr.rows);
+
+      const row = {
+        "SSR chunk (B)": ssr.total,
+        "Structure (B)": ssr.structure,
+        "Runtime (B)": ssr.runtime || "—",
+        "Structure + runtime (B)": ssr.structure + ssr.runtime,
+      };
+
+      if (measureClient) {
+        const client = withClientComponent(projectPath, () => {
+          const chunks = clientChunks(projectPath, classNames);
+          return chunks.map((c) => ({
+            name: c.name,
+            ...analyseChunk(c.source, classNames),
+          }));
+        });
+        const clientBytes = client.reduce((n, c) => n + c.total, 0);
+        const clientRows = client.flatMap((c) => c.rows);
+        for (const c of client) report('Client chunk ("use client")', c, c.name);
+        if (showContents) dump("Client chunk contents", clientRows);
+        compare(ssr.rows, clientRows);
+        row["Client chunk (B)"] = clientBytes;
+      }
+
+      summary[label] = row;
+      rows.push({ project, label, ...row });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message.split("\n")[0] : String(error);
+      failures.set(lane.name, reason);
+      console.log(`\n=== ${lane.label}  (${lane.name}): failed — ${reason}`);
     }
-
-    const classNames = cssClassNames(projectPath);
-    const chunk = ssrChunk(projectPath);
-    const ssr = analyseChunk(chunk.source, classNames);
-
-    console.log(`\n=== ${label}  (${project})`);
-    report("SSR chunk", ssr, chunk.name);
-    if (showContents) dump("SSR chunk contents", ssr.rows);
-
-    const row = {
-      "SSR chunk (B)": ssr.total,
-      "Structure (B)": ssr.structure,
-      "Runtime (B)": ssr.runtime || "—",
-      "Structure + runtime (B)": ssr.structure + ssr.runtime,
-    };
-
-    if (measureClient) {
-      const client = withClientComponent(projectPath, () => {
-        const chunks = clientChunks(projectPath, classNames);
-        return chunks.map((c) => ({
-          name: c.name,
-          ...analyseChunk(c.source, classNames),
-        }));
-      });
-      const clientBytes = client.reduce((n, c) => n + c.total, 0);
-      const clientRows = client.flatMap((c) => c.rows);
-      for (const c of client) report('Client chunk ("use client")', c, c.name);
-      if (showContents) dump("Client chunk contents", clientRows);
-      compare(ssr.rows, clientRows);
-      row["Client chunk (B)"] = clientBytes;
-    }
-
-    summary[label] = row;
   }
 
   console.log("\n📊 Class-name structure\n");
   console.table(summary);
   console.log(
-    "Structure excludes page.module.css, which is identical CSS Modules output in all three projects.",
+    "Structure excludes the shared page.module.css control; class-name payload is cross-checked against each lane's generated CSS.",
   );
   if (!measureClient) {
     console.log("Pass --client to also measure the `\"use client\"` build (rebuilds each project twice).");
+  }
+  updateResults({
+    structure: {
+      status: failures.size ? "partial" : "complete",
+      client: measureClient,
+      measurements: rows,
+      failures: [...failures].map(([project, error]) => ({ project, error })),
+    },
+  });
+  console.log("\n💾 Wrote results/latest.json");
+
+  if (failures.size) {
+    console.error(`\n❌ ${failures.size} lane(s) could not be analysed:`);
+    for (const [project, error] of failures) console.error(`   ${project}: ${error}`);
+    process.exitCode = 1;
   }
 }
 
