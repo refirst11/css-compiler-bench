@@ -31,7 +31,7 @@ jobs:
           cache: pnpm
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --filter css-compiler-benchmark-scoreboard
       - name: Take the last successful benchmark result
@@ -45,7 +45,7 @@ jobs:
             exit 0
           fi
           echo "Publishing the result measured by run ${run_id}."
-          gh run download "$run_id" --name benchmark-ublic
+          gh run download "$run_id" --name benchmark-results --dir scoreboard/public
       - name: Build with Vite
         run: pnpm build
       - name: Upload artifact
