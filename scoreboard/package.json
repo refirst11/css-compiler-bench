@@ -4,19 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/og.ts && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:og": "node scripts/og.ts"
   },
   "dependencies": {
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.0.4",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.4",
+    "satori": "^0.33.4",
     "typescript": "^5",
     "vite": "^7.1.9"
-  }
+  },
+  "type": "module"
 }
