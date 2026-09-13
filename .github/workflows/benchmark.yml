@@ -1,30 +1,66 @@
 name: Benchmark
 
+# One machine, one run, every lane: build times are only comparable when they
+# were taken next to each other, so the whole suite stays in a single job on a
+# single runner.
 on:
   workflow_dispatch:
+    inputs:
+      iterations:
+        description: Cold builds per lane (the first is a discarded warm-up).
+        type: string
+        required: false
+        default: "10"
+      scale_counts:
+        description: Distinct styled definitions to sweep, comma separated.
+        type: string
+        required: false
+        default: "10,100,1000"
+      lanes:
+        description: Restrict to these lanes (comma separated); the control lane is always included.
+        type: string
+        required: false
+        default: ""
+  schedule:
+    # Weekly, so a dependency bump that changes a number is caught without
+    # anyone pushing.
+    - cron: "17 3 * * 1"
   push:
     branches:
       - main
     paths:
       - ".github/workflows/benchmark.yml"
+      - ".nvmrc"
+      - "benchmark/**"
       - "scripts/**"
-      - "*-next/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
+      - "tsconfig.benchmark.json"
 
 permissions:
-  contents: read
+  contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: benchmark-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  BENCHMARK_ITERATIONS: ${{ github.event.inputs.iterations || '10' }}
+  BENCHMARK_SCALE_COUNTS: ${{ github.event.inputs.scale_counts || '10,100,1000' }}
+  BENCHMARK_LANES: ${{ github.event.inputs.lanes || '' }}
+  NEXT_TELEMETRY_DISABLED: "1"
+
 jobs:
-  benchmark:
+  measure:
     name: Ubuntu benchmark
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 120
+    outputs:
+      has-results: ${{ steps.results.outputs.has-results }}
+      artifact: benchmark-results-${{ github.run_id }}
 
     steps:
       - name: Check out repository
@@ -32,25 +68,51 @@ jobs:
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 11.3.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 25.8.2
+          node-version-file: .nvmrc
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run cold-build benchmark
-        shell: bash
-        run: npm run bench | tee benchmark.log
+      # A cheap gate: a type error should cost seconds, not an hour of builds.
+      - name: Type-check the harness and the scoreboard
+        run: npm run typecheck
 
-      - name: Measure server and client structure
+      # Each measurement continues past a broken lane and records it, so one
+      # failing library still leaves every other lane measured and publishable.
+      # The gate step below turns any of these failures into a red run.
+      - name: Cold-build benchmark
+        id: bench
+        continue-on-error: true
         shell: bash
-        run: npm run structure -- --client | tee structure.log
+        run: set -o pipefail && npm run bench 2>&1 | tee benchmark.log
+
+      - name: Distinct-definition scale sweep
+        id: scale
+        continue-on-error: true
+        shell: bash
+        run: set -o pipefail && npm run bench:scale 2>&1 | tee scale.log
+
+      - name: Server and client structure
+        id: structure
+        continue-on-error: true
+        shell: bash
+        run: set -o pipefail && npm run structure -- --client 2>&1 | tee structure.log
+
+      - name: Check for a publishable result
+        id: results
+        if: always()
+        shell: bash
+        run: |
+          if [ -s results/latest.json ]; then
+            echo "has-results=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-results=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish job summary
         if: always()
@@ -59,30 +121,94 @@ jobs:
           {
             echo "## Benchmark environment"
             echo
-            echo "- Runner: ubuntu-24.04"
-            echo "- Node: $(node --version)"
-            echo "- pnpm: $(pnpm --version)"
+            echo "- Runner: ubuntu-24.04 ($(nproc) cores)"
+            echo "- Node: $(node --version) · pnpm: $(pnpm --version)"
+            echo "- Iterations: ${BENCHMARK_ITERATIONS} · scale counts: ${BENCHMARK_SCALE_COUNTS} · lanes: ${BENCHMARK_LANES:-all}"
             echo
-            echo "## Cold-build benchmark"
+            echo "| Measurement | Result |"
+            echo "| :--- | :--- |"
+            echo "| Cold build | ${{ steps.bench.outcome }} |"
+            echo "| Scale sweep | ${{ steps.scale.outcome }} |"
+            echo "| Structure | ${{ steps.structure.outcome }} |"
             echo
-            echo '```text'
-            cat benchmark.log 2>/dev/null || echo "Benchmark did not produce a log."
-            echo '```'
+            echo "> Shared CI runners are noisy. Treat these numbers as a check that the"
+            echo "> relative trend reproduces on another OS and CPU, not as absolute timings."
             echo
-            echo "## Bundle structure"
-            echo
-            echo '```text'
-            cat structure.log 2>/dev/null || echo "Structure measurement did not produce a log."
-            echo '```'
+            for log in benchmark scale structure; do
+              echo "## ${log}"
+              echo
+              echo '```text'
+              tail -c 40000 "${log}.log" 2>/dev/null || echo "No log was produced."
+              echo '```'
+              echo
+            done
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload raw benchmark logs
+      - name: Upload results
+        if: always() && steps.results.outputs.has-results == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ github.run_id }}
+          path: results/latest.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload raw logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-logs-${{ github.run_id }}
           path: |
             benchmark.log
+            scale.log
             structure.log
           if-no-files-found: warn
           retention-days: 90
+
+      # The measurements are the data, so their history is git. The deploy does
+      # not depend on this step -- it reads the artifact from this same run.
+      - name: Commit results
+        if: always() && github.ref == 'refs/heads/main' && steps.results.outputs.has-results == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/latest.json
+          if git diff --cached --quiet; then
+            echo "Results are unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore(results): benchmark run ${{ github.run_id }}"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            echo "Push rejected (attempt ${attempt}); rebasing onto main and retrying."
+            git pull --rebase --autostash origin main
+          done
+          echo "::warning::Could not push results/latest.json; the run is still published from its artifact."
+
+      - name: Fail if any measurement failed
+        if: always()
+        shell: bash
+        run: |
+          failed=0
+          for outcome in "${{ steps.bench.outcome }}" "${{ steps.scale.outcome }}" "${{ steps.structure.outcome }}"; do
+            [ "$outcome" = "success" ] || failed=1
+          done
+          if [ "$failed" = "1" ]; then
+            echo "::error::At least one measurement failed; see the job summary for the failing lanes."
+            exit 1
+          fi
+
+  publish:
+    name: Publish scoreboard
+    needs: measure
+    # A partial result is still worth publishing: the scoreboard renders the
+    # lanes that succeeded and names the ones that did not.
+    if: always() && needs.measure.outputs.has-results == 'true'
+    uses: ./.github/workflows/publish-scoreboard.yml
+    with:
+      results-artifact: ${{ needs.measure.outputs.artifact }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
