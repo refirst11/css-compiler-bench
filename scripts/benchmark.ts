@@ -199,7 +199,7 @@ function runBenchmark() {
       failures: [...failures].map(([project, error]) => ({ project, error })),
     },
   });
-  console.log("\n💾 Wrote results/latest.json");
+  console.log("\n💾 Wrote scoreboard/public/latest.json");
 
   if (failures.size) {
     console.error(`\n❌ ${failures.size} lane(s) failed to build:`);
