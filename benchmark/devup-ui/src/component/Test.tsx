@@ -1,58 +1,61 @@
 import { Box } from "@devup-ui/react";
 
-const base = {
-  display: "inline-block",
-  fontWeight: "500",
-  transition: "all 0.2s ease",
-} as const;
+type Color = "red" | "blue" | "green" | "yellow" | "purple";
+type Size = "small" | "medium" | "large" | "xlarge";
+type Padding = "none" | "small" | "medium" | "large" | "xlarge";
+type BorderRadius = "none" | "small" | "medium" | "large" | "full";
+type Background = "transparent" | "white" | "gray" | "lightBlue" | "lightGreen";
 
-const colorStyles = {
-  red: { color: "red" },
-  blue: { color: "blue" },
-  green: { color: "green" },
-  yellow: { color: "yellow" },
-  purple: { color: "purple" },
-} as const;
+const colors: Record<Color, string> = {
+  red: "red",
+  blue: "blue",
+  green: "green",
+  yellow: "yellow",
+  purple: "purple",
+};
 
-const sizeStyles = {
-  small: { fontSize: "12px" },
-  medium: { fontSize: "16px" },
-  large: { fontSize: "20px" },
-  xlarge: { fontSize: "24px" },
-} as const;
+const sizes: Record<Size, string> = {
+  small: "12px",
+  medium: "16px",
+  large: "20px",
+  xlarge: "24px",
+};
 
-const paddingStyles = {
-  none: { padding: "0" },
-  small: { padding: "4px" },
-  medium: { padding: "8px" },
-  large: { padding: "16px" },
-  xlarge: { padding: "24px" },
-} as const;
+const paddings: Record<Padding, string> = {
+  none: "0",
+  small: "4px",
+  medium: "8px",
+  large: "16px",
+  xlarge: "24px",
+};
 
-const borderRadiusStyles = {
-  none: { borderRadius: "0" },
-  small: { borderRadius: "2px" },
-  medium: { borderRadius: "4px" },
-  large: { borderRadius: "8px" },
-  full: { borderRadius: "9999px" },
-} as const;
+const radii: Record<BorderRadius, string> = {
+  none: "0",
+  small: "2px",
+  medium: "4px",
+  large: "8px",
+  full: "9999px",
+};
 
-const backgroundStyles = {
-  transparent: { backgroundColor: "transparent" },
-  white: { backgroundColor: "white" },
-  gray: { backgroundColor: "#f0f0f0" },
-  lightBlue: { backgroundColor: "#e3f2fd" },
-  lightGreen: { backgroundColor: "#e8f5e9" },
-} as const;
+const backgrounds: Record<Background, string> = {
+  transparent: "transparent",
+  white: "white",
+  gray: "#f0f0f0",
+  lightBlue: "#e3f2fd",
+  lightGreen: "#e8f5e9",
+};
 
 interface TestProps {
-  color: "red" | "blue" | "green" | "yellow" | "purple";
-  size: "small" | "medium" | "large" | "xlarge";
-  padding: "none" | "small" | "medium" | "large" | "xlarge";
-  borderRadius: "none" | "small" | "medium" | "large" | "full";
-  background: "transparent" | "white" | "gray" | "lightBlue" | "lightGreen";
+  color: Color;
+  size: Size;
+  padding: Padding;
+  borderRadius: BorderRadius;
+  background: Background;
 }
 
+// Devup UI reads the style props off the JSX element itself, so the variant
+// lookup has to happen in the prop value. Spreading a style object into Box
+// hides the prop names from the compiler and silently emits no CSS at all.
 const Test = ({
   color,
   size,
@@ -61,12 +64,14 @@ const Test = ({
   background,
 }: TestProps) => (
   <Box
-    {...base}
-    {...colorStyles[color]}
-    {...sizeStyles[size]}
-    {...paddingStyles[padding]}
-    {...borderRadiusStyles[borderRadius]}
-    {...backgroundStyles[background]}
+    display="inline-block"
+    fontWeight="500"
+    transition="all 0.2s ease"
+    color={colors[color]}
+    fontSize={sizes[size]}
+    padding={paddings[padding]}
+    borderRadius={radii[borderRadius]}
+    backgroundColor={backgrounds[background]}
   >
     Benchmark Test Component with Bracket Notation Variants
   </Box>
