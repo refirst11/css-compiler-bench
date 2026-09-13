@@ -1,11 +1,13 @@
+# A lane exists because its folder exists. Adding benchmark/<name>/ with a
+# package.json is enough for `pnpm install` at the root to install it -- there
+# is no list to keep in sync here or anywhere else.
 packages:
-  - baseline-next/
-  - plumeria-next/
-  - stylex-next/
-  - tailwind-next/
+  - scoreboard/
+  - benchmark/*/
 
 allowBuilds:
   "@swc/core": true
+  esbuild: true
   sharp: true
 
 minimumReleaseAge: 0
