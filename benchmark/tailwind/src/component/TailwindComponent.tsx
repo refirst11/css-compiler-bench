@@ -13,7 +13,7 @@ const TailwindComponent = ({ isRed }: TailwindComponentProps) => {
           .filter(Boolean)
           .join(" ")}
       >
-        Hello from Tailwind!
+        Hello from Benchmark!
       </div>
       <div>
         <div className="mb-2 last:mb-0 min-[800px]:mb-3">First</div>

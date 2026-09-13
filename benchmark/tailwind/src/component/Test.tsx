@@ -63,7 +63,7 @@ const Test = ({
         backgroundStyles[background],
       ].join(" ")}
     >
-      Tailwind Test Component with Bracket Notation Variants
+      Benchmark Test Component with Bracket Notation Variants
     </div>
   );
 };
