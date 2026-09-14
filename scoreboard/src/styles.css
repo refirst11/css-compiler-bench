@@ -464,7 +464,11 @@ footer a {
 }
 .machine-row code {
   color: #8ea0c6;
-  font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  font:
+    11px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 }
 .machine-note p,
 .note-body p {
@@ -569,6 +573,10 @@ footer a {
 .env-list dd {
   margin: 0;
   color: #d6def3;
-  font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  font:
+    11px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
   text-align: right;
 }

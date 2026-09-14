@@ -69,10 +69,7 @@ function readFiles(dir, filter) {
 // a bare `.p`, and a one-character name would match the string `"p"` in every
 // React element type in the framework chunks.
 const GENERATED = /-module__|^x[a-z0-9]{5,}$/;
-const BROAD_CSS_AUTHORITY = new Set([
-  "devup-ui",
-  "next-yak",
-]);
+const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "next-yak"]);
 
 // Tailwind's utility names -- `p-2`, `border`, `min-[800px]:mb-3` -- match
 // neither pattern in GENERATED, and loosening that regex enough to admit
@@ -111,9 +108,8 @@ function utilityLayerNames(source, names) {
 // on what counts as a class name in the JS.
 function cssClassNames(projectPath, project) {
   const names = new Set();
-  for (const { source } of readFiles(
-    path.join(projectPath, ".next/static/chunks"),
-    (name) => name.endsWith(".css"),
+  for (const { source } of readFiles(path.join(projectPath, ".next/static/chunks"), (name) =>
+    name.endsWith(".css"),
   )) {
     for (const [, name] of source.matchAll(/\.([A-Za-z_][\w-]*)/g)) {
       if (BROAD_CSS_AUTHORITY.has(project) || GENERATED.test(name)) {
@@ -144,9 +140,9 @@ const isClassPayload = (value, classNames) => {
 // minifier picked -- `a` in the SSR chunks, `e` in the client ones -- so it
 // cannot be hardcoded.
 function splitModules(chunk) {
-  const marks = [
-    ...chunk.matchAll(/(\d{3,6}),(?=(?:[A-Za-z_$][\w$]*|\([^)]*\))=>\{)/g),
-  ].map((m) => ({ id: m[1], index: m.index }));
+  const marks = [...chunk.matchAll(/(\d{3,6}),(?=(?:[A-Za-z_$][\w$]*|\([^)]*\))=>\{)/g)].map(
+    (m) => ({ id: m[1], index: m.index }),
+  );
 
   return marks.map((mark, i) => {
     const end = i + 1 < marks.length ? marks[i + 1].index : chunk.length;
@@ -292,9 +288,8 @@ function analyseChunk(chunk, classNames) {
 }
 
 function ssrChunk(projectPath) {
-  const found = readFiles(
-    path.join(projectPath, ".next/server/chunks/ssr"),
-    (name) => name.endsWith(".js"),
+  const found = readFiles(path.join(projectPath, ".next/server/chunks/ssr"), (name) =>
+    name.endsWith(".js"),
   ).find(({ source }) => source.includes(APP_MARKER));
 
   if (!found) throw new Error(`no app SSR chunk in ${projectPath} -- build it first`);
@@ -325,9 +320,8 @@ function withClientComponent(projectPath, fn) {
 // in the framework chunks too. Requiring the component under test to be in the
 // chunk keeps that collision out without a hand-maintained denylist.
 function clientChunks(projectPath, classNames) {
-  return readFiles(
-    path.join(projectPath, ".next/static/chunks"),
-    (name) => name.endsWith(".js"),
+  return readFiles(path.join(projectPath, ".next/static/chunks"), (name) =>
+    name.endsWith(".js"),
   ).filter(
     ({ source }) =>
       source.includes(APP_MARKER) &&
@@ -374,9 +368,7 @@ function compare(ssrRows, clientRows) {
   const client = foldRows(clientRows);
   const labels = [...new Set([...ssr.keys(), ...client.keys()])];
 
-  console.log(
-    `\n    ${"".padEnd(30)}${"SSR".padStart(8)}${"Client".padStart(9)}   `,
-  );
+  console.log(`\n    ${"".padEnd(30)}${"SSR".padStart(8)}${"Client".padStart(9)}   `);
   let bothStructure = 0;
   let bothRuntime = 0;
 
@@ -384,7 +376,7 @@ function compare(ssrRows, clientRows) {
     const a = ssr.get(label);
     const b = client.get(label);
     const both = a && b && a.bytes === b.bytes;
-    if (both) (a.runtime ? (bothRuntime += a.bytes) : (bothStructure += a.bytes));
+    if (both) a.runtime ? (bothRuntime += a.bytes) : (bothStructure += a.bytes);
 
     console.log(
       `    ${label.padEnd(30)}${(a ? a.bytes + "B" : "—").padStart(8)}${(b ? b.bytes + "B" : "—").padStart(9)}` +
@@ -471,7 +463,9 @@ function run() {
     "Structure excludes the shared page.module.css control; class-name payload is cross-checked against each lane's generated CSS.",
   );
   if (!measureClient) {
-    console.log("Pass --client to also measure the `\"use client\"` build (rebuilds each project twice).");
+    console.log(
+      'Pass --client to also measure the `"use client"` build (rebuilds each project twice).',
+    );
   }
   updateResults({
     structure: {

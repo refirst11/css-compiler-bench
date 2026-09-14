@@ -47,13 +47,7 @@ interface TestProps {
   background: "transparent" | "white" | "gray" | "lightBlue" | "lightGreen";
 }
 
-const Test = ({
-  color,
-  size,
-  padding,
-  borderRadius,
-  background,
-}: TestProps) => {
+const Test = ({ color, size, padding, borderRadius, background }: TestProps) => {
   return (
     <div
       className={[

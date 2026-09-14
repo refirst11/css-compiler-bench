@@ -62,7 +62,7 @@ scoreboard/              the Vite + React report
   library entails, not just time inside its compiler — a lane that moves the app off
   Next.js's SWC pipeline onto Babel pays for that here, because a user would too
 - **Scale** (build time vs distinct definitions): the same lane rebuilt with 10 / 100 /
-  1,000 *distinct* styled definitions, holding the rendered instance count fixed. This
+  1,000 _distinct_ styled definitions, holding the rendered instance count fixed. This
   separates "how big is the codebase" from "how many elements are on screen"
 - **`.next` and CSS** (bytes): real file sizes summed recursively, not `du`, which rounds
   every file up to a disk block and overstates a tree of many small files

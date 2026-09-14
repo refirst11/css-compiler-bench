@@ -53,9 +53,7 @@ const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
 function stdDev(xs) {
   if (xs.length < 2) return 0;
   const m = mean(xs);
-  return Math.sqrt(
-    xs.reduce((total, x) => total + (x - m) ** 2, 0) / (xs.length - 1),
-  );
+  return Math.sqrt(xs.reduce((total, x) => total + (x - m) ** 2, 0) / (xs.length - 1));
 }
 
 // Sums real file sizes rather than shelling out to `du`, which rounds every

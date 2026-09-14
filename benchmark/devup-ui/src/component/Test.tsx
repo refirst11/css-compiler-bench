@@ -56,13 +56,7 @@ interface TestProps {
 // Devup UI reads the style props off the JSX element itself, so the variant
 // lookup has to happen in the prop value. Spreading a style object into Box
 // hides the prop names from the compiler and silently emits no CSS at all.
-const Test = ({
-  color,
-  size,
-  padding,
-  borderRadius,
-  background,
-}: TestProps) => (
+const Test = ({ color, size, padding, borderRadius, background }: TestProps) => (
   <Box
     display="inline-block"
     fontWeight="500"

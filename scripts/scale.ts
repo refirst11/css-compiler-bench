@@ -42,9 +42,7 @@ function scaleSource(kind, count) {
         `const Scale${i} = () => <Box display="inline-block" padding="1px">Scale fixture</Box>;`,
       );
     } else if (kind === "next-yak") {
-      definitions.push(
-        `const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`,
-      );
+      definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "cn") {
       definitions.push(
         `const Scale${i} = () => <div className={cn("inline-block p-px")}>Scale fixture</div>;`,

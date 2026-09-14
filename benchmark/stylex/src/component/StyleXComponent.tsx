@@ -33,9 +33,7 @@ type StylexComponentProps = {
 const StylexComponent = ({ isRed }: StylexComponentProps) => {
   return (
     <>
-      <div {...stylex.props(styles.base, isRed && styles.red)}>
-        Hello from Benchmark!
-      </div>
+      <div {...stylex.props(styles.base, isRed && styles.red)}>Hello from Benchmark!</div>
       <div>
         <div {...stylex.props(styles2.container)}>First</div>
         <div {...stylex.props(styles2.container)}>Second</div>

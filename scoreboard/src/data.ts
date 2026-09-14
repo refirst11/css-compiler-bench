@@ -59,7 +59,10 @@ export function useBenchmark() {
   // one since, this page is out of date and says so rather than pretending.
   const measuredBy = data?.environment?.runId ? Number(data.environment.runId) : null;
   const staleSince =
-    latestRun && latestRun.conclusion === "success" && measuredBy !== null && latestRun.id > measuredBy
+    latestRun &&
+    latestRun.conclusion === "success" &&
+    measuredBy !== null &&
+    latestRun.id > measuredBy
       ? latestRun
       : null;
 

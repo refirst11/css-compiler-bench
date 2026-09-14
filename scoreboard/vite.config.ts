@@ -22,8 +22,7 @@ function readResult(): BenchmarkData | null {
 // The unfurled card describes the run it was built from, so a shared link
 // carries the current numbers instead of a sentence written once and forgotten.
 function describe(data: BenchmarkData | null) {
-  const fallback =
-    "Build-time cost of compile-time CSS for React, on one identical Next.js app.";
+  const fallback = "Build-time cost of compile-time CSS for React, on one identical Next.js app.";
   const build = data?.build;
   if (!build?.measurements?.length) return fallback;
 
@@ -61,7 +60,10 @@ function shareCard(): Plugin {
         { tag: "meta", attrs: { property: "og:title", content: title } },
         { tag: "meta", attrs: { property: "og:description", content: description } },
         { tag: "meta", attrs: { property: "og:url", content: SITE_URL } },
-        { tag: "meta", attrs: { name: "twitter:card", content: hasCard ? "summary_large_image" : "summary" } },
+        {
+          tag: "meta",
+          attrs: { name: "twitter:card", content: hasCard ? "summary_large_image" : "summary" },
+        },
         { tag: "meta", attrs: { name: "twitter:title", content: title } },
         { tag: "meta", attrs: { name: "twitter:description", content: description } },
       ];
@@ -76,7 +78,8 @@ function shareCard(): Plugin {
             tag: "meta",
             attrs: {
               property: "og:image:alt",
-              content: "Average cold build time per styling setup, drawn as bars against the CSS Modules control.",
+              content:
+                "Average cold build time per styling setup, drawn as bars against the CSS Modules control.",
             },
           },
           { tag: "meta", attrs: { name: "twitter:image", content: image } },

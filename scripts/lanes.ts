@@ -67,10 +67,17 @@ export function selectedLanes(): Lane[] {
   const all = lanes();
   if (!raw) return all;
 
-  const wanted = new Set(raw.split(",").map((name) => name.trim()).filter(Boolean));
+  const wanted = new Set(
+    raw
+      .split(",")
+      .map((name) => name.trim())
+      .filter(Boolean),
+  );
   const unknown = [...wanted].filter((name) => !all.some((lane) => lane.name === name));
   if (unknown.length) {
-    throw new Error(`Unknown lane(s): ${unknown.join(", ")}. Available: ${all.map((l) => l.name).join(", ")}.`);
+    throw new Error(
+      `Unknown lane(s): ${unknown.join(", ")}. Available: ${all.map((l) => l.name).join(", ")}.`,
+    );
   }
   return all.filter((lane) => lane.baseline || wanted.has(lane.name));
 }

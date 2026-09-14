@@ -10,9 +10,7 @@ const benchmarkItems = Array.from({ length: 1000 }).map((_, i) => ({
   size: (["small", "medium", "large", "xlarge"] as const)[i % 4],
   padding: (["none", "small", "medium", "large", "xlarge"] as const)[i % 5],
   borderRadius: (["none", "small", "medium", "large", "full"] as const)[i % 5],
-  background: (
-    ["transparent", "white", "gray", "lightBlue", "lightGreen"] as const
-  )[i % 5],
+  background: (["transparent", "white", "gray", "lightBlue", "lightGreen"] as const)[i % 5],
 }));
 
 export default function Home() {

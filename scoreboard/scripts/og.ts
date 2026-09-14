@@ -42,15 +42,11 @@ function card(data: BenchmarkData) {
   const measurements: BuildMeasurement[] = [...(data.build?.measurements ?? [])].sort(
     (a, b) => a.averageBuildSeconds - b.averageBuildSeconds,
   );
-  const slowest = Math.max(
-    ...measurements.map((item) => item.averageBuildSeconds),
-  );
+  const slowest = Math.max(...measurements.map((item) => item.averageBuildSeconds));
   const environment = data.environment ?? {};
   const iterations = data.build?.iterations ?? measurements.length;
   const measured = new Date(data.generatedAt).toISOString().slice(0, 10);
-  const runner = environment.ci
-    ? (environment.runner ?? "CI").toLowerCase()
-    : "a local machine";
+  const runner = environment.ci ? (environment.runner ?? "CI").toLowerCase() : "a local machine";
 
   const rows = measurements.map((item) => ({
     type: "div",
@@ -74,9 +70,7 @@ function card(data: BenchmarkData) {
                 props: {
                   style: {
                     display: "flex",
-                    width: Math.round(
-                      (item.averageBuildSeconds / slowest) * 560,
-                    ),
+                    width: Math.round((item.averageBuildSeconds / slowest) * 560),
                     height: 14,
                     borderRadius: 7,
                     background: item.baseline
@@ -95,9 +89,7 @@ function card(data: BenchmarkData) {
           fontSize: 25,
         }),
         text(
-          item.libraryCostMs === null
-            ? "control"
-            : `+${(item.libraryCostMs / 1000).toFixed(2)}s`,
+          item.libraryCostMs === null ? "control" : `+${(item.libraryCostMs / 1000).toFixed(2)}s`,
           {
             width: 120,
             justifyContent: "flex-end",
@@ -119,8 +111,7 @@ function card(data: BenchmarkData) {
         height: HEIGHT,
         padding: "56px 60px",
         background: "#080b16",
-        backgroundImage:
-          "radial-gradient(circle at 88% -20%, #2b2456 0%, #080b16 55%)",
+        backgroundImage: "radial-gradient(circle at 88% -20%, #2b2456 0%, #080b16 55%)",
         fontFamily: "Inter",
       },
       children: [
@@ -151,10 +142,10 @@ function card(data: BenchmarkData) {
           props: {
             style: { display: "flex", marginTop: "auto", paddingTop: 26 },
             children: [
-              text(
-                `${iterations} cold builds per lane · ${runner} · ${measured}`,
-                { color: "#5f6b87", fontSize: 20 },
-              ),
+              text(`${iterations} cold builds per lane · ${runner} · ${measured}`, {
+                color: "#5f6b87",
+                fontSize: 20,
+              }),
             ],
           },
         },
@@ -171,9 +162,7 @@ async function run() {
 
   const data: BenchmarkData = JSON.parse(fs.readFileSync(resultPath, "utf8"));
   if (!data.build?.measurements?.length) {
-    console.log(
-      "og: the result carries no build measurements, skipping the share card.",
-    );
+    console.log("og: the result carries no build measurements, skipping the share card.");
     return;
   }
 
@@ -190,9 +179,7 @@ async function run() {
     ],
   });
 
-  const png = new Resvg(svg, { fitTo: { mode: "width", value: WIDTH } })
-    .render()
-    .asPng();
+  const png = new Resvg(svg, { fitTo: { mode: "width", value: WIDTH } }).render().asPng();
   fs.writeFileSync(outputPath, png);
   console.log(`og: wrote public/og.png (${(png.length / 1024).toFixed(1)}KB)`);
 }

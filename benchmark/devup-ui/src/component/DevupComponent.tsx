@@ -19,13 +19,25 @@ const DevupComponent = ({ isRed }: DevupComponentProps) => {
         Hello from Benchmark!
       </Box>
       <Box>
-        <Box mb="0.5rem" _lastChild={{ mb: 0 }} _media={{ "screen and (min-width: 800px)": { mb: "0.75rem" } }}>
+        <Box
+          mb="0.5rem"
+          _lastChild={{ mb: 0 }}
+          _media={{ "screen and (min-width: 800px)": { mb: "0.75rem" } }}
+        >
           First
         </Box>
-        <Box mb="0.5rem" _lastChild={{ mb: 0 }} _media={{ "screen and (min-width: 800px)": { mb: "0.75rem" } }}>
+        <Box
+          mb="0.5rem"
+          _lastChild={{ mb: 0 }}
+          _media={{ "screen and (min-width: 800px)": { mb: "0.75rem" } }}
+        >
           Second
         </Box>
-        <Box mb="0.5rem" _lastChild={{ mb: 0 }} _media={{ "screen and (min-width: 800px)": { mb: "0.75rem" } }}>
+        <Box
+          mb="0.5rem"
+          _lastChild={{ mb: 0 }}
+          _media={{ "screen and (min-width: 800px)": { mb: "0.75rem" } }}
+        >
           Last
         </Box>
       </Box>

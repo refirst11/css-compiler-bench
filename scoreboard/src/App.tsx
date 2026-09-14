@@ -42,7 +42,15 @@ function EmptyState({ children }: { children: string }) {
   return <div className="empty-state">{children}</div>;
 }
 
-function SectionHeading({ eyebrow, title, detail }: { eyebrow: string; title: string; detail: string }) {
+function SectionHeading({
+  eyebrow,
+  title,
+  detail,
+}: {
+  eyebrow: string;
+  title: string;
+  detail: string;
+}) {
   return (
     <div className="section-heading">
       <div>
@@ -73,7 +81,15 @@ function Failures({ failures }: { failures?: LaneFailure[] }) {
   );
 }
 
-function RunStatus({ run, data, stale }: { run: WorkflowRun | null; data: BenchmarkData | null; stale: WorkflowRun | null }) {
+function RunStatus({
+  run,
+  data,
+  stale,
+}: {
+  run: WorkflowRun | null;
+  data: BenchmarkData | null;
+  stale: WorkflowRun | null;
+}) {
   const state = !run
     ? data
       ? "ready"
@@ -110,7 +126,11 @@ function RunStatus({ run, data, stale }: { run: WorkflowRun | null; data: Benchm
         </small>
         {stale && (
           <small className="stale">
-            Showing an older measurement; <a href={stale.url} target="_blank" rel="noreferrer">run #{stale.id}</a> is newer.
+            Showing an older measurement;{" "}
+            <a href={stale.url} target="_blank" rel="noreferrer">
+              run #{stale.id}
+            </a>{" "}
+            is newer.
           </small>
         )}
       </div>
@@ -138,15 +158,24 @@ function SpeedBars({ measurements }: { measurements: BuildMeasurement[] }) {
               </span>
               <small>{item.project}</small>
             </div>
-            <div className="speed-track" aria-label={`${item.label}: ${formatSeconds(item.averageBuildSeconds)}`}>
-              <span className={`speed-line ${item.baseline ? "control" : ""}`} style={{ width: `${length}%` }} />
+            <div
+              className="speed-track"
+              aria-label={`${item.label}: ${formatSeconds(item.averageBuildSeconds)}`}
+            >
+              <span
+                className={`speed-line ${item.baseline ? "control" : ""}`}
+                style={{ width: `${length}%` }}
+              />
               <span className="speed-dot" style={{ left: `${length}%` }} />
             </div>
             <strong>{formatSeconds(item.averageBuildSeconds)}</strong>
           </div>
         );
       })}
-      <div className="speed-axis"><span>fastest</span><span>slowest</span></div>
+      <div className="speed-axis">
+        <span>fastest</span>
+        <span>slowest</span>
+      </div>
     </div>
   );
 }
@@ -168,9 +197,14 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
         <tbody>
           {measurements.map((item) => (
             <tr key={item.project}>
-              <td><span className="table-label">{item.label}</span><small>{item.project}</small></td>
+              <td>
+                <span className="table-label">{item.label}</span>
+                <small>{item.project}</small>
+              </td>
               <td className="number">{formatSeconds(item.averageBuildSeconds)}</td>
-              <td className="number">{item.libraryCostMs === null ? "control" : `${item.libraryCostMs.toFixed(1)} ms`}</td>
+              <td className="number">
+                {item.libraryCostMs === null ? "control" : `${item.libraryCostMs.toFixed(1)} ms`}
+              </td>
               <td className="number">{item.standardDeviationMs.toFixed(1)} ms</td>
               <td className="number">{formatBytes(item.nextBytes, "MB")}</td>
               <td className="number">{formatBytes(item.cssBytes, "KB")}</td>
@@ -182,10 +216,23 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
   );
 }
 
-const LANE_COLORS = ["#ffbd69", "#7dd3fc", "#c4b5fd", "#86efac", "#fb7185", "#f0abfc", "#facc15", "#67e8f9"];
+const LANE_COLORS = [
+  "#ffbd69",
+  "#7dd3fc",
+  "#c4b5fd",
+  "#86efac",
+  "#fb7185",
+  "#f0abfc",
+  "#facc15",
+  "#67e8f9",
+];
 
 function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
-  const lanes = [...new Map(data.measurements.map((item) => [item.project, item.label ?? item.project])).entries()];
+  const lanes = [
+    ...new Map(
+      data.measurements.map((item) => [item.project, item.label ?? item.project]),
+    ).entries(),
+  ];
   const max = Math.max(...data.measurements.map((item) => item.buildSeconds));
   const min = Math.min(...data.measurements.map((item) => item.buildSeconds));
   const width = 760;
@@ -194,17 +241,34 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
     const minCount = Math.min(...data.counts);
     const maxCount = Math.max(...data.counts);
     if (minCount === maxCount) return width / 2;
-    return 32 + ((Math.log10(count) - Math.log10(minCount)) / (Math.log10(maxCount) - Math.log10(minCount))) * (width - 64);
+    return (
+      32 +
+      ((Math.log10(count) - Math.log10(minCount)) / (Math.log10(maxCount) - Math.log10(minCount))) *
+        (width - 64)
+    );
   };
-  const y = (seconds: number) => height - 30 - ((seconds - min) / Math.max(max - min, 0.001)) * (height - 58);
+  const y = (seconds: number) =>
+    height - 30 - ((seconds - min) / Math.max(max - min, 0.001)) * (height - 58);
 
   return (
     <div className="chart-layout">
-      <svg className="scale-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Build time by number of distinct styled definitions">
+      <svg
+        className="scale-chart"
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-label="Build time by number of distinct styled definitions"
+      >
         {[0, 1, 2, 3].map((step) => {
           const value = min + ((max - min) * step) / 3;
           const yPosition = y(value);
-          return <g key={step}><line x1="32" x2={width - 32} y1={yPosition} y2={yPosition} className="grid-line" /><text x="0" y={yPosition + 4} className="axis-label">{value.toFixed(1)}s</text></g>;
+          return (
+            <g key={step}>
+              <line x1="32" x2={width - 32} y1={yPosition} y2={yPosition} className="grid-line" />
+              <text x="0" y={yPosition + 4} className="axis-label">
+                {value.toFixed(1)}s
+              </text>
+            </g>
+          );
         })}
         {lanes.map(([project], index) => {
           const points = data.measurements
@@ -212,20 +276,43 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
             .sort((a, b) => a.count - b.count)
             .map((item) => `${x(item.count)},${y(item.buildSeconds)}`)
             .join(" ");
-          return <polyline key={project} points={points} fill="none" stroke={LANE_COLORS[index % LANE_COLORS.length]} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />;
+          return (
+            <polyline
+              key={project}
+              points={points}
+              fill="none"
+              stroke={LANE_COLORS[index % LANE_COLORS.length]}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          );
         })}
-        {data.counts.map((count) => <text key={count} x={x(count)} y={height - 5} textAnchor="middle" className="axis-label">{count}</text>)}
+        {data.counts.map((count) => (
+          <text key={count} x={x(count)} y={height - 5} textAnchor="middle" className="axis-label">
+            {count}
+          </text>
+        ))}
       </svg>
       <div className="legend">
         {lanes.map(([project, label], index) => (
-          <span key={project}><i style={{ background: LANE_COLORS[index % LANE_COLORS.length] }} />{label}</span>
+          <span key={project}>
+            <i style={{ background: LANE_COLORS[index % LANE_COLORS.length] }} />
+            {label}
+          </span>
         ))}
       </div>
     </div>
   );
 }
 
-function StructureTable({ measurements, client }: { measurements: StructureMeasurement[]; client: boolean }) {
+function StructureTable({
+  measurements,
+  client,
+}: {
+  measurements: StructureMeasurement[];
+  client: boolean;
+}) {
   return (
     <div className="table-wrap">
       <table>
@@ -241,10 +328,15 @@ function StructureTable({ measurements, client }: { measurements: StructureMeasu
         <tbody>
           {measurements.map((row) => (
             <tr key={row.project}>
-              <td><span className="table-label">{row.label}</span><small>{row.project}</small></td>
+              <td>
+                <span className="table-label">{row.label}</span>
+                <small>{row.project}</small>
+              </td>
               <td className="number">{row["SSR chunk (B)"]} B</td>
               <td className="number">{row["Structure (B)"]} B</td>
-              <td className="number">{row["Runtime (B)"] === "—" ? "—" : `${row["Runtime (B)"]} B`}</td>
+              <td className="number">
+                {row["Runtime (B)"] === "—" ? "—" : `${row["Runtime (B)"]} B`}
+              </td>
               {client && <td className="number">{row["Client chunk (B)"] ?? "—"} B</td>}
             </tr>
           ))}
@@ -259,7 +351,10 @@ function App() {
 
   const measurements = data?.build?.measurements ?? [];
   const fastest = useMemo(
-    () => (measurements.length ? Math.min(...measurements.map((item) => item.averageBuildSeconds)) : null),
+    () =>
+      measurements.length
+        ? Math.min(...measurements.map((item) => item.averageBuildSeconds))
+        : null,
     [measurements],
   );
   const environment = data?.environment;
@@ -271,8 +366,8 @@ function App() {
           <p className="eyebrow">CI measurement dashboard</p>
           <h1>CSS compiler benchmark</h1>
           <p className="lede">
-            Measurements, not verdicts. Every lane builds the same app on the same runner in the same
-            job; the exact seconds stay beside the visual comparison.
+            Measurements, not verdicts. Every lane builds the same app on the same runner in the
+            same job; the exact seconds stay beside the visual comparison.
           </p>
         </div>
         <RunStatus run={latestRun} data={data} stale={staleSince} />
@@ -280,13 +375,25 @@ function App() {
 
       {environment && (
         <div className="metadata">
-          <span>{environment.ci ? environment.runner ?? "CI" : "local"}</span>
+          <span>{environment.ci ? (environment.runner ?? "CI") : "local"}</span>
           <span>{environment.node}</span>
-          <span>{environment.platform}/{environment.arch}</span>
-          {environment.cpu && <span>{environment.cpu}{environment.cpuCount ? ` ×${environment.cpuCount}` : ""}</span>}
+          <span>
+            {environment.platform}/{environment.arch}
+          </span>
+          {environment.cpu && (
+            <span>
+              {environment.cpu}
+              {environment.cpuCount ? ` ×${environment.cpuCount}` : ""}
+            </span>
+          )}
           {environment.memoryGb && <span>{environment.memoryGb} GB</span>}
           {environment.commit && (
-            <a className="metadata-link" href={`${repositoryUrl}/commit/${environment.commit}`} target="_blank" rel="noreferrer">
+            <a
+              className="metadata-link"
+              href={`${repositoryUrl}/commit/${environment.commit}`}
+              target="_blank"
+              rel="noreferrer"
+            >
               {environment.commit.slice(0, 7)}
             </a>
           )}
@@ -315,13 +422,15 @@ function App() {
             <BuildTable measurements={measurements} />
             {fastest !== null && (
               <p className="annotation">
-                Fastest observed average: <strong>{formatSeconds(fastest)}</strong>. Line length is relative
-                within this run; it is not a universal performance score.
+                Fastest observed average: <strong>{formatSeconds(fastest)}</strong>. Line length is
+                relative within this run; it is not a universal performance score.
               </p>
             )}
           </>
         ) : (
-          <EmptyState>{error ?? "Run the benchmark to populate the build-time visualization."}</EmptyState>
+          <EmptyState>
+            {error ?? "Run the benchmark to populate the build-time visualization."}
+          </EmptyState>
         )}
         <Failures failures={data?.build?.failures} />
       </section>
@@ -336,7 +445,11 @@ function App() {
               : "How the build changes as the number of styled definitions grows."
           }
         />
-        {data?.scale?.measurements?.length ? <ScaleChart data={data.scale} /> : <EmptyState>Scale data appears after the sweep completes.</EmptyState>}
+        {data?.scale?.measurements?.length ? (
+          <ScaleChart data={data.scale} />
+        ) : (
+          <EmptyState>Scale data appears after the sweep completes.</EmptyState>
+        )}
         <Failures failures={data?.scale?.failures} />
       </section>
 
@@ -346,12 +459,15 @@ function App() {
           title="What survives the build"
           detail={
             data?.structure?.client
-              ? "Class-name machinery in the SSR chunk, and in the client chunk of a \"use client\" rebuild."
+              ? 'Class-name machinery in the SSR chunk, and in the client chunk of a "use client" rebuild.'
               : "Class-name machinery in the SSR chunk. Run the structure measurement with --client for both sides."
           }
         />
         {data?.structure?.measurements?.length ? (
-          <StructureTable measurements={data.structure.measurements} client={data.structure.client} />
+          <StructureTable
+            measurements={data.structure.measurements}
+            client={data.structure.client}
+          />
         ) : (
           <EmptyState>Structure data appears after the structure measurement completes.</EmptyState>
         )}
@@ -362,11 +478,20 @@ function App() {
 
       <footer>
         <span>
-          Measured by <a href={`${repositoryUrl}/actions/workflows/benchmark.yml`} target="_blank" rel="noreferrer">GitHub Actions</a>,
-          published from the run's own JSON
+          Measured by{" "}
+          <a
+            href={`${repositoryUrl}/actions/workflows/benchmark.yml`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub Actions
+          </a>
+          , published from the run's own JSON
         </span>
         <span>
-          <a href={repositoryUrl} target="_blank" rel="noreferrer">{repositoryUrl.replace("https://github.com/", "")}</a>
+          <a href={repositoryUrl} target="_blank" rel="noreferrer">
+            {repositoryUrl.replace("https://github.com/", "")}
+          </a>
         </span>
       </footer>
     </main>
