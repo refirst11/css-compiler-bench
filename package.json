@@ -12,10 +12,13 @@
     "bench:scale": "node scripts/scale.ts",
     "structure": "node scripts/structure.ts",
     "measure": "pnpm bench && pnpm bench:scale && pnpm structure --client",
-    "typecheck": "tsc --noEmit -p tsconfig.benchmark.json && pnpm --dir scoreboard run typecheck"
+    "typecheck": "tsc --noEmit -p tsconfig.benchmark.json && pnpm --dir scoreboard run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@types/node": "^24.8.1",
+    "prettier": "^3.9.6",
     "typescript": "^5"
   }
 }
