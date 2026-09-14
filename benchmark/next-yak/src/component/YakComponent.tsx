@@ -1,10 +1,18 @@
-import { styled } from "next-yak";
+import { css, styled } from "next-yak";
 
 const StyledBox = styled.div<{ $isRed?: boolean }>`
   padding: 8px;
   font-size: 16px;
-  color: ${({ $isRed }) => ($isRed ? "red" : "blue")};
-  border-color: ${({ $isRed }) => ($isRed ? "red" : "blue")};
+  ${({ $isRed }) =>
+    $isRed
+      ? css`
+          color: red;
+          border-color: red;
+        `
+      : css`
+          color: blue;
+          border-color: blue;
+        `};
   border-style: solid;
   border-width: 1px;
   border-radius: 4px;

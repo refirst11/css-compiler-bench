@@ -72,10 +72,10 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
       <MachineNote environment={environment} />
 
       <div className="callout">
-        <strong>These are measurements, not verdicts.</strong> One fixture, one set of versions. Your
-        hardware, your bundler and the shape of your codebase can move these numbers — in places by
-        enough to reorder the table. The harness is public so the result can be re-run rather than
-        trusted.
+        <strong>These are measurements, not verdicts.</strong> One fixture, one set of versions.
+        Your hardware, your bundler and the shape of your codebase can move these numbers — in
+        places by enough to reorder the table. The harness is public so the result can be re-run
+        rather than trusted.
       </div>
 
       <Detail title="Where a lane resolves a variant">
@@ -97,19 +97,19 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           </dd>
           <dt>Deferred to a CSS variable</dt>
           <dd>
-            Devup UI and next-yak keep the values out of the stylesheet entirely and put them on the
-            element, as custom properties one rule reads back.
+            Devup UI keeps the values out of the stylesheet entirely and puts them on the element,
+            as custom properties one rule reads back.
           </dd>
           <dt>Not resolved</dt>
           <dd>
-            CSS Modules and Tailwind emit every candidate class and let the cascade decide; neither
-            can detect that two of them set the same property. The <code>tailwind-cn</code> lane
-            buys that resolution back with a client-side library.
+            CSS Modules, next-yak and Tailwind emit every candidate class and let the cascade
+            decide; none of them can detect that two of them set the same property. The{" "}
+            <code>tailwind-cn</code> lane buys that resolution back with a client-side library.
           </dd>
         </dl>
         <p>
-          This is why a small CSS column is not automatically a win. The variable lanes ship the
-          smallest stylesheets because the combinations are not in the stylesheet — they are in the
+          This is why a small CSS column is not automatically a win. The variable lane ships the
+          smallest stylesheet because the combinations are not in the stylesheet — they are in the
           markup, once per element, where no column above can see them.
         </p>
       </Detail>
@@ -152,8 +152,8 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
             systematically first on a cold machine.
           </li>
           <li>
-            <strong>Library cost.</strong> That average minus the control's — everything adopting the
-            library entails, not just time inside its compiler.
+            <strong>Library cost.</strong> That average minus the control's — everything adopting
+            the library entails, not just time inside its compiler.
           </li>
           <li>
             <strong>Scale.</strong> The same lane rebuilt with 10 / 100 / 1,000 distinct styled
