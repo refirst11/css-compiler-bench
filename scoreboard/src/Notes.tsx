@@ -86,19 +86,14 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
         <dl className="model-list">
           <dt>At build, merge included</dt>
           <dd>
-            Plumeria inlines one lookup table per axis, already reduced to the winning classes.
-            Rendering is a property read; nothing ships to resolve anything.
+            Plumeria and Devup UI inline one lookup table per axis, already reduced to the winning
+            classes. Rendering is a property read; nothing ships to resolve anything.
           </dd>
           <dt>At build, merged at render</dt>
           <dd>
             StyleX keeps maps keyed by a hash of the CSS property and merges them with{" "}
             <code>styleq</code> at render — the same merge, kept alive at the cost of a resolver in
             the bundle. It is the only lane with a Runtime column that is not a dash.
-          </dd>
-          <dt>Deferred to a CSS variable</dt>
-          <dd>
-            Devup UI keeps the values out of the stylesheet entirely and puts them on the element,
-            as custom properties one rule reads back.
           </dd>
           <dt>Not resolved</dt>
           <dd>
@@ -108,9 +103,10 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           </dd>
         </dl>
         <p>
-          This is why a small CSS column is not automatically a win. The variable lane ships the
-          smallest stylesheet because the combinations are not in the stylesheet — they are in the
-          markup, once per element, where no column above can see them.
+          No lane defers a value to the markup any more, so every combination a lane can produce is
+          in its stylesheet and the CSS column compares like with like. What the column cannot show
+          is the conflict case: the merging lanes leave one class per property on the element, the
+          unresolved ones leave both and let source order settle it.
         </p>
       </Detail>
 
