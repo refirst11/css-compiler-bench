@@ -374,8 +374,10 @@ function ssrChunk(projectPath) {
 }
 
 // The client-side numbers need a second build: with everything a Server
-// Component, no styling code reaches `static/chunks` at all. Sources are
-// restored in `finally` so an interrupted run cannot leave them patched.
+// Component, no styling code reaches `static/chunks` at all. The source is
+// restored in `finally`, so a normal exit or a caught build failure both leave
+// the tree clean; a forcibly killed process (SIGKILL, a crash, the machine
+// going down) still leaves the file patched, and `git checkout` undoes it.
 function withClientComponent(projectPath, fn) {
   const testFile = path.join(projectPath, "src/component/Test.tsx");
   const original = fs.readFileSync(testFile, "utf8");
@@ -390,12 +392,20 @@ function withClientComponent(projectPath, fn) {
   }
 }
 
-// Anchored on the same marker the SSR side uses. For the `x`-prefixed atoms a
-// payload match is proof enough of authorship, but Tailwind's authority set
-// contains whole English words -- oxide generates `.flex` after finding the
-// string `"flex"` in `page.tsx`'s inline styles -- and a bare `"flex"` occurs
-// in the framework chunks too. Requiring the component under test to be in the
-// chunk keeps that collision out without a hand-maintained denylist.
+// Anchored on the same marker the SSR side uses, which is also the limit of what
+// this measures: the chunks the component under test was placed in. Turbopack
+// currently inlines each lane's styling code there, so that is the whole of it --
+// but a future split that hoisted a library's runtime into a shared vendor chunk
+// would leave it out of these numbers, and the column would still read as if the
+// lane shipped nothing. It is "what the component's own chunks carry", not "the
+// total runtime the client build gained".
+//
+// Within those chunks, a payload match is proof enough of authorship for the
+// `x`-prefixed atoms, but Tailwind's authority set contains whole English words
+// -- oxide generates `.flex` after finding the string `"flex"` in `page.tsx`'s
+// inline styles -- and a bare `"flex"` occurs in the framework chunks too.
+// Requiring the component under test to be in the chunk keeps that collision out
+// without a hand-maintained denylist.
 function clientChunks(projectPath, classNames) {
   return readFiles(path.join(projectPath, ".next/static/chunks"), (name) =>
     name.endsWith(".js"),
