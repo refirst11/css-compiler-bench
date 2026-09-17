@@ -41,6 +41,10 @@ function scaleSource(kind, count) {
       definitions.push(
         `const Scale${i} = () => <Box display="inline-block" padding="1px">Scale fixture</Box>;`,
       );
+    } else if (kind === "vanilla-extract") {
+      definitions.push(
+        `const Scale${i} = () => <div className={styles.item${i}}>Scale fixture</div>;`,
+      );
     } else if (kind === "next-yak") {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "cn") {
@@ -56,6 +60,7 @@ function scaleSource(kind, count) {
 
   const imports = {
     "css-modules": 'import styles from "./Scale.module.css";',
+    "vanilla-extract": 'import * as styles from "./Scale.css";',
     plumeria: 'import * as css from "@plumeria/core";',
     stylex: 'import * as stylex from "@stylexjs/stylex";',
     devup: 'import { Box } from "@devup-ui/react";',
@@ -81,6 +86,17 @@ function scaleCss(count) {
   ).join("\n");
 }
 
+// vanilla-extract evaluates its styles in a separate `.css.ts` module, so the
+// sweep has to write two files for this lane the way it already does for CSS
+// Modules -- the definitions cannot live in the component file.
+function scaleVanillaExtract(count) {
+  const definitions = Array.from(
+    { length: count },
+    (_, i) => `export const item${i} = style({ display: "inline-block", padding: "1px" });`,
+  ).join("\n");
+  return `import { style } from "@vanilla-extract/css";\n\n${definitions}\n`;
+}
+
 function fixtureFiles(lane: Lane) {
   const files = [
     {
@@ -92,6 +108,12 @@ function fixtureFiles(lane: Lane) {
     files.push({
       path: path.join(lane.dir, "src/component/Scale.module.css"),
       generate: scaleCss,
+    });
+  }
+  if (lane.scaleKind === "vanilla-extract") {
+    files.push({
+      path: path.join(lane.dir, "src/component/Scale.css.ts"),
+      generate: scaleVanillaExtract,
     });
   }
   return files;
