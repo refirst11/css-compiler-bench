@@ -432,25 +432,73 @@ function report(title, { rows, structure, runtime, total }, chunkName) {
   );
 }
 
+// What a row ships, with the minifier's private choices taken out: Turbopack
+// names the module parameter `a` in the SSR chunk and `e` in the client one, so
+// the same CSS Modules table reads `{a.v({base:"..."})}` on one side and
+// `{e.v({base:"..."})}` on the other while shipping identical class names. Every
+// string literal survives verbatim, and so does every property key -- an
+// identifier followed by `:` is the table's own shape, not a generated name --
+// and what is left over becomes `#`.
+function contentSignature(text) {
+  let signature = "";
+  let last = 0;
+
+  for (const literal of stringLiterals(text)) {
+    signature +=
+      blankNames(text.slice(last, literal.start)) + text.slice(literal.start, literal.end);
+    last = literal.end;
+  }
+  return signature + blankNames(text.slice(last));
+}
+
+const blankNames = (code) => code.replace(/[A-Za-z_$][\w$]*\b(?!\s*:)/g, "#");
+
 // Same label appearing in more than one module is summed, so that e.g. all five
 // `$$css` variant maps collapse into one comparable line.
 function foldRows(rows) {
   const folded = new Map();
   for (const row of rows) {
     if (!row.counted) continue;
-    const prev = folded.get(row.label) ?? { bytes: 0, count: 0, runtime: row.runtime };
+    const prev = folded.get(row.label) ?? {
+      bytes: 0,
+      count: 0,
+      runtime: row.runtime,
+      signature: "",
+    };
     folded.set(row.label, {
       bytes: prev.bytes + row.bytes,
       count: prev.count + 1,
       runtime: row.runtime,
+      // Runtime spans carry no text -- `pandaRuntime` subtracts the abbreviation
+      // table back out of its resolver span, so there is no single slice to
+      // keep -- and fold to `null` to say the content cannot be compared.
+      signature:
+        prev.signature === null || row.text === undefined
+          ? null
+          : prev.signature + contentSignature(row.text),
     });
   }
   return folded;
 }
 
 // The point of the comparison: which parts of the class-name machinery exist on
-// both sides of the boundary. Anything present in both columns is bundled twice
-// -- once into the server build, once into the browser build.
+// both sides of the boundary -- bundled once into the server build and once into
+// the browser build.
+//
+// Same label and same byte count is not by itself the same content, so where a
+// signature exists -- every structure row has one -- it decides, and equal sizes
+// over differing class names get no claim made about them. A runtime span is
+// reported by size alone and has no text to sign, so there the line says only
+// that the two are the same size.
+// What the two sides genuinely share, or null when there is nothing to claim:
+// a label only one side has, two different sizes, or the same size over
+// different class names.
+function duplication(a, b) {
+  if (!a || !b || a.bytes !== b.bytes) return null;
+  if (a.signature === null || b.signature === null) return "same size";
+  return a.signature === b.signature ? "identical" : null;
+}
+
 function compare(ssrRows, clientRows) {
   const ssr = foldRows(ssrRows);
   const client = foldRows(clientRows);
@@ -463,12 +511,15 @@ function compare(ssrRows, clientRows) {
   for (const label of labels) {
     const a = ssr.get(label);
     const b = client.get(label);
-    const both = a && b && a.bytes === b.bytes;
-    if (both) a.runtime ? (bothRuntime += a.bytes) : (bothStructure += a.bytes);
+    const shared = duplication(a, b);
+    if (a && shared) {
+      if (a.runtime) bothRuntime += a.bytes;
+      else bothStructure += a.bytes;
+    }
 
     console.log(
       `    ${label.padEnd(30)}${(a ? a.bytes + "B" : "—").padStart(8)}${(b ? b.bytes + "B" : "—").padStart(9)}` +
-        (both ? "   ← identical, shipped twice" : ""),
+        (shared ? `   ← ${shared}, shipped twice` : ""),
     );
   }
   console.log(
