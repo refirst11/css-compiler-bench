@@ -5,6 +5,13 @@ packages:
   - scoreboard/
   - benchmark/*/
 
+# One version of the types every lane compiles against. A lane that pinned its
+# own would be typechecking against a different standard library than the
+# control it is measured against, which is a difference in the harness rather
+# than in the library under test.
+catalog:
+  "@types/node": ^24.8.1
+
 allowBuilds:
   "@swc/core": true
   esbuild: true
