@@ -49,6 +49,8 @@ function scaleSource(kind, count) {
       definitions.push(
         `const style${i} = css({ display: "inline-block", padding: "1px" });\nconst Scale${i} = () => <div className={style${i}}>Scale fixture</div>;`,
       );
+    } else if (kind === "styled-components") {
+      definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "next-yak") {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "cn") {
@@ -70,6 +72,7 @@ function scaleSource(kind, count) {
     stylex: 'import * as stylex from "@stylexjs/stylex";',
     devup: 'import { Box } from "@devup-ui/react";',
     "next-yak": 'import { styled } from "next-yak";',
+    "styled-components": 'import styled from "styled-components";',
     cn: 'import { cn } from "cn";',
     tailwind: "",
   };
