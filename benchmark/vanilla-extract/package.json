@@ -1,0 +1,30 @@
+{
+  "name": "vanilla-extract",
+  "version": "0.1.0",
+  "private": true,
+  "bench": {
+    "label": "vanilla-extract",
+    "scaleKind": "vanilla-extract"
+  },
+  "scripts": {
+    "predev": "rimraf .next",
+    "prebuild": "rimraf .next",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "^1.21.2",
+    "next": "16.3.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@vanilla-extract/next-plugin": "^2.5.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "rimraf": "^6.1.3",
+    "typescript": "^5"
+  }
+}
