@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@pandacss/dev": "^1.12.1",
-    "@types/node": "^20",
+    "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "rimraf": "^6.1.3",
