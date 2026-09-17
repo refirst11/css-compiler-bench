@@ -22,6 +22,42 @@ import { selectedLanes } from "./lanes.ts";
 //      compared.
 const laneList = selectedLanes();
 
+// The class names a lane's own build emitted a rule for -- the authority every
+// payload match is checked against.
+type ClassNames = Set<string>;
+
+// A file read out of a build, kept with its name so the report can cite the
+// chunk a number came from.
+type BuildFile = { name: string; path: string; source: string };
+
+// A double-quoted string in minified source, with the span it occupies so a
+// literal inside an already-counted object can be excluded by position.
+type Literal = { start: number; end: number; value: string };
+
+// An object literal whose every string is class-name payload.
+type PayloadObject = { start: number; end: number; body: string; entries: number };
+
+// A span of library code shipped in place of class names, carved out by anchor.
+type RuntimePart = { label: string; bytes: number };
+
+// One reported line. `counted` is false for the shared control, which is shown
+// but never summed; `text` is what the row ships, absent on runtime rows, which
+// are a byte count with no single slice behind them.
+type Row = {
+  label: string;
+  bytes: number;
+  entries?: number;
+  runtime?: boolean;
+  counted: boolean;
+  text?: string;
+};
+
+type ChunkAnalysis = { rows: Row[]; structure: number; runtime: number; total: number };
+
+// Rows of one label summed across the modules they appeared in. `signature` is
+// null when the label's rows carry no text to compare.
+type FoldedRow = { bytes: number; count: number; runtime?: boolean; signature: string | null };
+
 // Present in all three projects' Test component, and stable across rebuilds --
 // unlike the content-hashed chunk filenames, which cannot be hardcoded.
 const APP_MARKER = "Test Component with Bracket Notation Variants";
@@ -29,7 +65,7 @@ const SHARED_STYLESHEET = "page-module__";
 
 // Walks a balanced `{...}` starting at `openIndex`, skipping over string
 // literals so that a brace inside a string cannot unbalance the scan.
-function scanBlock(src, openIndex) {
+function scanBlock(src: string, openIndex: number): number {
   let depth = 0;
   let quote = null;
 
@@ -51,7 +87,7 @@ function scanBlock(src, openIndex) {
   throw new Error("unbalanced block");
 }
 
-function readFiles(dir, filter) {
+function readFiles(dir: string, filter: (name: string) => boolean): BuildFile[] {
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)
@@ -84,7 +120,7 @@ const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "next-yak", "vanilla-extract"])
 // Tailwind gets its authority from a narrower place instead: the `@layer
 // utilities` block, which by construction contains exactly the utilities the
 // scanner generated for this project's source and nothing hand-written.
-function utilityLayerNames(source, names) {
+function utilityLayerNames(source: string, names: ClassNames): void {
   const open = source.indexOf("@layer utilities");
   if (open === -1) return;
   const start = source.indexOf("{", open);
@@ -113,8 +149,8 @@ function utilityLayerNames(source, names) {
 
 // Every class name the build actually emitted a rule for. This is the authority
 // on what counts as a class name in the JS.
-function cssClassNames(projectPath, project) {
-  const names = new Set();
+function cssClassNames(projectPath: string, project: string): ClassNames {
+  const names: ClassNames = new Set();
   for (const { source } of readFiles(path.join(projectPath, ".next/static/chunks"), (name) =>
     name.endsWith(".css"),
   )) {
@@ -128,7 +164,7 @@ function cssClassNames(projectPath, project) {
   return names;
 }
 
-function stringLiterals(src) {
+function stringLiterals(src: string): Literal[] {
   const out = [];
   for (const m of src.matchAll(/"((?:[^"\\]|\\.)*)"/g)) {
     out.push({ start: m.index, end: m.index + m[0].length, value: m[1] });
@@ -136,7 +172,7 @@ function stringLiterals(src) {
   return out;
 }
 
-const isClassPayload = (value, classNames) => {
+const isClassPayload = (value: string, classNames: ClassNames): boolean => {
   const tokens = value.trim().split(/\s+/).filter(Boolean);
   return tokens.length > 0 && tokens.every((t) => classNames.has(t));
 };
@@ -146,7 +182,7 @@ const isClassPayload = (value, classNames) => {
 // matching inside the module bodies. The parameter name is whatever the
 // minifier picked -- `a` in the SSR chunks, `e` in the client ones -- so it
 // cannot be hardcoded.
-function splitModules(chunk) {
+function splitModules(chunk: string): { id: string; body: string }[] {
   const marks = [...chunk.matchAll(/(\d{3,6}),(?=(?:[A-Za-z_$][\w$]*|\([^)]*\))=>\{)/g)].map(
     (m) => ({ id: m[1], index: m.index }),
   );
@@ -161,8 +197,8 @@ function splitModules(chunk) {
 // variant objects, Plumeria's lookup tables, a CSS Modules `a.v({...})` map.
 // Maximal rather than innermost, because StyleX nests one object per variant
 // value inside the axis object and the shipped structure is the whole thing.
-function payloadObjects(src, classNames) {
-  const found = [];
+function payloadObjects(src: string, classNames: ClassNames): PayloadObject[] {
+  const found: PayloadObject[] = [];
 
   for (let i = 0; i < src.length; i++) {
     if (src[i] !== "{") continue;
@@ -188,14 +224,14 @@ function payloadObjects(src, classNames) {
   return found;
 }
 
-const countEntries = (body) =>
+const countEntries = (body: string): number =>
   [...body.matchAll(/[{,]\s*(?:[A-Za-z_$][\w$]*|\d+|"[^"]*")\s*:/g)].length;
 
 // Numerically keyed tables are the per-branch results of a conflict the
 // compiler resolved at build time; both libraries emit them for the
 // `isRed && styles.red` case, and they are keyed by branch rather than by
 // variant, so they read differently in the report.
-const describeMap = (body) =>
+const describeMap = (body: string): string =>
   body.includes("$$css")
     ? "$$css variant map"
     : /^\{\s*\d+\s*:/.test(body)
@@ -205,7 +241,7 @@ const describeMap = (body) =>
 // Class-name strings that are not part of a lookup table -- the prefixes
 // Plumeria concatenates, and the fully baked `className` strings StyleX's
 // Babel plugin produces for its own conflict cases.
-function bakedStrings(src, classNames, objects) {
+function bakedStrings(src: string, classNames: ClassNames, objects: PayloadObject[]): Literal[] {
   return stringLiterals(src).filter(
     (l) =>
       isClassPayload(l.value, classNames) &&
@@ -215,7 +251,7 @@ function bakedStrings(src, classNames, objects) {
 
 // styleq ships as an inlined IIFE rather than its own module, so it has to be
 // carved out by anchor. `f.styleq=void 0` is emitted by its CommonJS preamble.
-function styleqRuntime(src) {
+function styleqRuntime(src: string): RuntimePart[] | null {
   const marker = src.indexOf(".styleq=void 0");
   if (marker === -1) return null;
 
@@ -247,7 +283,7 @@ function styleqRuntime(src) {
 // `mergeCss`/`assignCss` factory, which is the last thing that module exports
 // before the fixture's own code starts. Both anchors are object property names,
 // so they survive minification where the variable names around them do not.
-function pandaRuntime(src) {
+function pandaRuntime(src: string): RuntimePart[] | null {
   const tableEnd = src.indexOf('.split(",").forEach');
   const factory = src.indexOf("mergeCss:");
   if (tableEnd === -1 || factory === -1) return null;
@@ -286,7 +322,7 @@ function pandaRuntime(src) {
 // `data-styled` is the attribute it stamps on those nodes; `withConfig` is
 // emitted by Next's transform. Both are string literals, so both outlive
 // minification.
-function styledComponentsRuntime(src) {
+function styledComponentsRuntime(src: string): RuntimePart[] | null {
   if (!src.includes("data-styled")) return null;
   const userCode = src.indexOf(".withConfig(");
   if (userCode === -1) return null;
@@ -299,15 +335,15 @@ function styledComponentsRuntime(src) {
   return [{ label: "styled-components (stylis, sheet, factory)", bytes: userCode - start }];
 }
 
-const runtimeParts = (body) => [
+const runtimeParts = (body: string): RuntimePart[] => [
   ...(styleqRuntime(body) ?? []),
   ...(pandaRuntime(body) ?? []),
   ...(styledComponentsRuntime(body) ?? []),
 ];
 
-function analyseChunk(chunk, classNames) {
+function analyseChunk(chunk: string, classNames: ClassNames): ChunkAnalysis {
   const modules = splitModules(chunk);
-  const rows = [];
+  const rows: Row[] = [];
   let structure = 0;
   let runtime = 0;
 
@@ -364,7 +400,7 @@ function analyseChunk(chunk, classNames) {
   return { rows, structure, runtime, total: chunk.length };
 }
 
-function ssrChunk(projectPath) {
+function ssrChunk(projectPath: string): BuildFile {
   const found = readFiles(path.join(projectPath, ".next/server/chunks/ssr"), (name) =>
     name.endsWith(".js"),
   ).find(({ source }) => source.includes(APP_MARKER));
@@ -378,7 +414,7 @@ function ssrChunk(projectPath) {
 // restored in `finally`, so a normal exit or a caught build failure both leave
 // the tree clean; a forcibly killed process (SIGKILL, a crash, the machine
 // going down) still leaves the file patched, and `git checkout` undoes it.
-function withClientComponent(projectPath, fn) {
+function withClientComponent<T>(projectPath: string, fn: () => T): T {
   const testFile = path.join(projectPath, "src/component/Test.tsx");
   const original = fs.readFileSync(testFile, "utf8");
 
@@ -406,7 +442,7 @@ function withClientComponent(projectPath, fn) {
 // inline styles -- and a bare `"flex"` occurs in the framework chunks too.
 // Requiring the component under test to be in the chunk keeps that collision out
 // without a hand-maintained denylist.
-function clientChunks(projectPath, classNames) {
+function clientChunks(projectPath: string, classNames: ClassNames): BuildFile[] {
   return readFiles(path.join(projectPath, ".next/static/chunks"), (name) =>
     name.endsWith(".js"),
   ).filter(
@@ -417,7 +453,11 @@ function clientChunks(projectPath, classNames) {
   );
 }
 
-function report(title, { rows, structure, runtime, total }, chunkName) {
+function report(
+  title: string,
+  { rows, structure, runtime, total }: ChunkAnalysis,
+  chunkName: string,
+): void {
   console.log(`\n  ${title}  ${total}B  ${chunkName}`);
   for (const row of rows) {
     const entries = row.entries ? `${row.entries} entries` : "";
@@ -439,7 +479,7 @@ function report(title, { rows, structure, runtime, total }, chunkName) {
 // string literal survives verbatim, and so does every property key -- an
 // identifier followed by `:` is the table's own shape, not a generated name --
 // and what is left over becomes `#`.
-function contentSignature(text) {
+function contentSignature(text: string): string {
   let signature = "";
   let last = 0;
 
@@ -451,12 +491,12 @@ function contentSignature(text) {
   return signature + blankNames(text.slice(last));
 }
 
-const blankNames = (code) => code.replace(/[A-Za-z_$][\w$]*\b(?!\s*:)/g, "#");
+const blankNames = (code: string): string => code.replace(/[A-Za-z_$][\w$]*\b(?!\s*:)/g, "#");
 
 // Same label appearing in more than one module is summed, so that e.g. all five
 // `$$css` variant maps collapse into one comparable line.
-function foldRows(rows) {
-  const folded = new Map();
+function foldRows(rows: Row[]): Map<string, FoldedRow> {
+  const folded = new Map<string, FoldedRow>();
   for (const row of rows) {
     if (!row.counted) continue;
     const prev = folded.get(row.label) ?? {
@@ -493,13 +533,16 @@ function foldRows(rows) {
 // What the two sides genuinely share, or null when there is nothing to claim:
 // a label only one side has, two different sizes, or the same size over
 // different class names.
-function duplication(a, b) {
+function duplication(
+  a: FoldedRow | undefined,
+  b: FoldedRow | undefined,
+): "identical" | "same size" | null {
   if (!a || !b || a.bytes !== b.bytes) return null;
   if (a.signature === null || b.signature === null) return "same size";
   return a.signature === b.signature ? "identical" : null;
 }
 
-function compare(ssrRows, clientRows) {
+function compare(ssrRows: Row[], clientRows: Row[]): void {
   const ssr = foldRows(ssrRows);
   const client = foldRows(clientRows);
   const labels = [...new Set([...ssr.keys(), ...client.keys()])];
@@ -528,7 +571,7 @@ function compare(ssrRows, clientRows) {
   );
 }
 
-function dump(title, rows) {
+function dump(title: string, rows: Row[]): void {
   console.log(`\n  --- ${title}`);
   for (const row of rows) {
     if (!row.text) continue;
@@ -536,11 +579,13 @@ function dump(title, rows) {
   }
 }
 
-function run() {
+function run(): void {
   const measureClient = process.argv.includes("--client");
   const showContents = process.argv.includes("--dump");
-  const summary = {};
-  const rows = [];
+  // Both are handed to `console.table`/`updateResults` as rows of named cells;
+  // the client columns are added only when `--client` asked for them.
+  const summary: Record<string, Record<string, number | string>> = {};
+  const rows: Record<string, number | string>[] = [];
 
   // A lane whose chunk cannot be analysed is reported and skipped, so one
   // broken lane never costs the run every other lane's numbers.
@@ -568,7 +613,7 @@ function run() {
       report("SSR chunk", ssr, chunk.name);
       if (showContents) dump("SSR chunk contents", ssr.rows);
 
-      const row = {
+      const row: Record<string, number | string> = {
         "SSR chunk (B)": ssr.total,
         "Structure (B)": ssr.structure,
         "Runtime (B)": ssr.runtime || "—",
