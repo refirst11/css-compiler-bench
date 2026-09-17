@@ -223,7 +223,7 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
                   ? `${data.build.iterations} per lane, ${data.build.warmupIterations} discarded`
                   : "—",
               ],
-              ["Seed", data?.build ? String(data.build.seed) : "—"],
+              ["Lane order", "rotates one place per round"],
             ].map(([label, value]) => (
               <div key={label}>
                 <dt>{label}</dt>
