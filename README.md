@@ -66,7 +66,13 @@ scoreboard/                 the Vite + React report
   1,000 _distinct_ styled definitions, holding the rendered instance count fixed. This
   separates "how big is the codebase" from "how many elements are on screen"
 - **`.next` and CSS** (bytes): real file sizes summed recursively, not `du`, which rounds
-  every file up to a disk block and overstates a tree of many small files
+  every file up to a disk block and overstates a tree of many small files. This is build
+  output only — `.next/cache` is reported on its own column instead
+- **Build cache** (bytes): what Turbopack persisted into `.next/cache` while compiling this
+  lane. Since `.next` is deleted before every measured build, all of it was written by the
+  build being timed, and it is reproducible to ±0.01MB across cold builds. It is kept apart
+  from the output size because it is not a proxy for it — the two correlate at r=0.38, and
+  at 81–87% of their sum the cache would otherwise decide the ranking
 - **Shipped structure** (bytes): the class-name machinery each lane leaves in the SSR
   chunk — lookup tables, baked class strings, and any resolver that ships with them —
   split from the component code around it. A string counts as class-name payload only if
