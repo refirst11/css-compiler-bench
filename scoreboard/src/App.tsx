@@ -430,7 +430,7 @@ function App() {
           title="Speed, drawn to scale"
           detail={
             data?.build
-              ? `${data.build.iterations - data.build.warmupIterations} measured rounds · seed ${data.build.seed} · control: ${data.build.baseline}`
+              ? `${data.build.iterations - data.build.warmupIterations} measured rounds · rotating order · control: ${data.build.baseline}`
               : "The chart appears once a benchmark run publishes its JSON."
           }
         />
