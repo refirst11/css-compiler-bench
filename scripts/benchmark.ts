@@ -58,20 +58,32 @@ function stdDev(xs) {
 
 // Sums real file sizes rather than shelling out to `du`, which rounds every
 // file up to a disk block and would overstate a tree of many small files.
-function dirSize(dirPath, matches = (_name: string) => true) {
+// `skipDirs` drops whole subtrees before they are walked.
+function dirSize(dirPath, matches = (_name: string) => true, skipDirs = new Set<string>()) {
   if (!fs.existsSync(dirPath)) return 0;
 
   let size = 0;
   for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
     const entryPath = path.join(dirPath, entry.name);
     if (entry.isDirectory()) {
-      size += dirSize(entryPath, matches);
+      if (skipDirs.has(entry.name)) continue;
+      size += dirSize(entryPath, matches, skipDirs);
     } else if (entry.isFile() && matches(entry.name)) {
       size += fs.statSync(entryPath).size;
     }
   }
   return size;
 }
+
+// `.next/cache` is Turbopack's persistent cache. It is reported, but on its own
+// column rather than inside `.next`, because it is a real measurement of a
+// different thing: `prebuild` deletes the whole of `.next`, so a lane's cache is
+// written entirely by the build being timed, and it is reproducible to +/-0.01MB
+// across cold builds while spanning 26.25-32.77MB across lanes. What it is not is
+// a proxy for output size -- the two correlate at r=0.38 -- so summing them gives
+// a number that answers neither question, and at 81-87% of that sum the cache
+// decides the ranking. Separate columns keep both readable.
+const BUILD_CACHE = new Set(["cache"]);
 
 function buildOnce(lane: Lane, env) {
   // Clean builds are intentionally retained. The round-robin order keeps this
@@ -95,7 +107,7 @@ function buildOnce(lane: Lane, env) {
 
 function runBenchmark() {
   const measurements = Object.fromEntries(
-    laneList.map((lane) => [lane.name, { times: [], buildSize: 0, cssSize: 0 }]),
+    laneList.map((lane) => [lane.name, { times: [], buildSize: 0, cssSize: 0, cacheSize: 0 }]),
   );
   // A lane that cannot build is dropped from the remaining rounds and reported,
   // rather than aborting a run the other lanes would have completed.
@@ -136,8 +148,13 @@ function runBenchmark() {
       // position in that round's shuffle.
       if (i === ITERATIONS) {
         const nextPath = path.join(lane.dir, ".next");
-        measurements[lane.name].buildSize = dirSize(nextPath);
-        measurements[lane.name].cssSize = dirSize(nextPath, (name) => name.endsWith(".css"));
+        measurements[lane.name].buildSize = dirSize(nextPath, undefined, BUILD_CACHE);
+        measurements[lane.name].cssSize = dirSize(
+          nextPath,
+          (name) => name.endsWith(".css"),
+          BUILD_CACHE,
+        );
+        measurements[lane.name].cacheSize = dirSize(path.join(nextPath, "cache"));
       }
     }
   }
@@ -151,7 +168,7 @@ function runBenchmark() {
       results[lane.name] = { "Avg Build (s)": "failed" };
       continue;
     }
-    const { times, buildSize, cssSize } = measurements[lane.name];
+    const { times, buildSize, cssSize, cacheSize } = measurements[lane.name];
 
     results[lane.name] = {
       "Avg Build (s)": mean(times).toFixed(3),
@@ -161,6 +178,7 @@ function runBenchmark() {
       "Library Cost (ms)": lane.baseline ? "—" : ((mean(times) - baselineMean) * 1000).toFixed(1),
       ".next (MB)": (buildSize / 1024 / 1024).toFixed(2),
       "CSS (KB)": (cssSize / 1024).toFixed(2),
+      "Cache (MB)": (cacheSize / 1024 / 1024).toFixed(2),
     };
     measurementRows.push({
       project: lane.name,
@@ -173,6 +191,7 @@ function runBenchmark() {
       libraryCostMs: lane.baseline ? null : (mean(times) - baselineMean) * 1000,
       nextBytes: buildSize,
       cssBytes: cssSize,
+      cacheBytes: cacheSize,
       samples: times,
     });
   }
