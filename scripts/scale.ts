@@ -45,6 +45,10 @@ function scaleSource(kind, count) {
       definitions.push(
         `const Scale${i} = () => <div className={styles.item${i}}>Scale fixture</div>;`,
       );
+    } else if (kind === "panda") {
+      definitions.push(
+        `const style${i} = css({ display: "inline-block", padding: "1px" });\nconst Scale${i} = () => <div className={style${i}}>Scale fixture</div>;`,
+      );
     } else if (kind === "next-yak") {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "cn") {
@@ -61,6 +65,7 @@ function scaleSource(kind, count) {
   const imports = {
     "css-modules": 'import styles from "./Scale.module.css";',
     "vanilla-extract": 'import * as styles from "./Scale.css";',
+    panda: 'import { css } from "../../styled-system/css";',
     plumeria: 'import * as css from "@plumeria/core";',
     stylex: 'import * as stylex from "@stylexjs/stylex";',
     devup: 'import { Box } from "@devup-ui/react";',
