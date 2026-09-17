@@ -4,12 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@types/node':
+      specifier: ^24.8.1
+      version: 24.13.3
+
 importers:
 
   .:
     devDependencies:
       '@types/node':
-        specifier: ^24.8.1
+        specifier: 'catalog:'
         version: 24.13.3
       prettier:
         specifier: ^3.9.6
@@ -22,7 +28,7 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -31,7 +37,7 @@ importers:
         version: 19.2.4(react@19.2.4)
     devDependencies:
       '@types/node':
-        specifier: ^24.8.1
+        specifier: 'catalog:'
         version: 24.13.3
       '@types/react':
         specifier: ^19
@@ -53,7 +59,7 @@ importers:
         version: 1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -63,10 +69,10 @@ importers:
     devDependencies:
       '@devup-ui/next-plugin':
         specifier: ^1.0.83
-        version: 1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        version: 1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -84,10 +90,10 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-yak:
         specifier: ^9.9.0
-        version: 9.9.0(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@8.3.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
+        version: 9.9.0(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -96,8 +102,8 @@ importers:
         version: 19.2.4(react@19.2.4)
     devDependencies:
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -115,7 +121,7 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -127,8 +133,8 @@ importers:
         specifier: ^1.12.1
         version: 1.12.1(typescript@5.9.3)
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -146,7 +152,7 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -164,7 +170,7 @@ importers:
         specifier: ^19.1.4
         version: 19.1.4(@swc/helpers@0.5.23)
       '@types/node':
-        specifier: ^24.8.1
+        specifier: 'catalog:'
         version: 24.13.3
       '@types/react':
         specifier: ^19
@@ -189,7 +195,7 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -201,8 +207,8 @@ importers:
         version: 6.5.3(css-to-react-native@3.2.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     devDependencies:
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -223,7 +229,7 @@ importers:
         version: 0.19.0
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -238,8 +244,8 @@ importers:
         specifier: ^0.19.0
         version: 0.19.0
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -263,7 +269,7 @@ importers:
         version: 0.19.0
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -273,13 +279,13 @@ importers:
     devDependencies:
       '@stylexswc/nextjs-plugin':
         specifier: ^0.18.6
-        version: 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))(next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        version: 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))(next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@stylexswc/postcss-plugin':
         specifier: ^0.18.6
         version: 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -300,7 +306,7 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -312,7 +318,7 @@ importers:
         specifier: ^4.3.3
         version: 4.3.3
       '@types/node':
-        specifier: ^24.8.1
+        specifier: 'catalog:'
         version: 24.13.3
       '@types/react':
         specifier: ^19
@@ -337,7 +343,7 @@ importers:
         version: 0.3.0
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -349,8 +355,8 @@ importers:
         specifier: ^4.3.3
         version: 4.3.3
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -374,7 +380,7 @@ importers:
         version: 1.21.2
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -383,8 +389,8 @@ importers:
         version: 19.2.4(react@19.2.4)
     devDependencies:
       '@types/node':
-        specifier: ^20
-        version: 20.19.43
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -393,7 +399,7 @@ importers:
         version: 19.2.3(@types/react@19.2.17)
       '@vanilla-extract/next-plugin':
         specifier: ^2.5.2
-        version: 2.5.2(@swc/helpers@0.5.23)(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))
+        version: 2.5.2(@swc/helpers@0.5.23)(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -2226,9 +2232,6 @@ packages:
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
-  '@types/node@20.19.43':
-    resolution: {integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA==}
-
   '@types/node@24.13.3':
     resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
 
@@ -3753,9 +3756,6 @@ packages:
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
 
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
-
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
@@ -4075,12 +4075,12 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.1
 
-  '@devup-ui/next-plugin@1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@devup-ui/next-plugin@1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       '@devup-ui/plugin-utils': 1.0.13
       '@devup-ui/wasm': 1.0.78
       '@devup-ui/webpack-plugin': 1.0.66(@devup-ui/wasm@1.0.78)
-      next: 16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@devup-ui/plugin-utils@1.0.13': {}
 
@@ -5040,14 +5040,14 @@ snapshots:
       invariant: 2.2.4
       styleq: 0.2.1
 
-  '@stylexswc/nextjs-plugin@0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))(next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@stylexswc/nextjs-plugin@0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))(next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       '@stylexswc/plugin-shared': 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))
       '@stylexswc/rs-compiler': 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))
       '@stylexswc/rspack-plugin': 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))
       '@stylexswc/turbopack-plugin': 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))
       '@stylexswc/webpack-plugin': 0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))
-      next: 16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     transitivePeerDependencies:
       - '@swc/core'
       - supports-color
@@ -5353,10 +5353,6 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
-  '@types/node@20.19.43':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
@@ -5426,12 +5422,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vanilla-extract/compiler@0.7.2(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)':
+  '@vanilla-extract/compiler@0.7.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)':
     dependencies:
       '@vanilla-extract/css': 1.21.2
       '@vanilla-extract/integration': 8.0.10
-      vite: 7.3.6(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)
-      vite-node: 6.0.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
+      vite: 7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)
+      vite-node: 6.0.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
     transitivePeerDependencies:
       - '@types/node'
       - '@vitejs/devtools'
@@ -5481,11 +5477,11 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  '@vanilla-extract/next-plugin@2.5.2(@swc/helpers@0.5.23)(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))':
+  '@vanilla-extract/next-plugin@2.5.2(@swc/helpers@0.5.23)(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))':
     dependencies:
-      '@vanilla-extract/turbopack-plugin': 0.1.4(@swc/helpers@0.5.23)(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)
+      '@vanilla-extract/turbopack-plugin': 0.1.4(@swc/helpers@0.5.23)(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)
       '@vanilla-extract/webpack-plugin': 2.3.27(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))
-      next: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       semver: 7.8.5
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -5508,12 +5504,12 @@ snapshots:
 
   '@vanilla-extract/private@1.0.9': {}
 
-  '@vanilla-extract/turbopack-plugin@0.1.4(@swc/helpers@0.5.23)(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)':
+  '@vanilla-extract/turbopack-plugin@0.1.4(@swc/helpers@0.5.23)(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)':
     dependencies:
       '@swc/core': 1.15.47(@swc/helpers@0.5.23)
-      '@vanilla-extract/compiler': 0.7.2(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)
+      '@vanilla-extract/compiler': 0.7.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)
       '@vanilla-extract/integration': 8.0.10
-      next: 16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@types/node'
@@ -6426,70 +6422,20 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-yak@9.9.0(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@8.3.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)):
+  next-yak@9.9.0(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)):
     dependencies:
       '@babel/parser': 8.0.0
       '@swc/core': 1.15.43(@swc/helpers@0.5.23)
       yak-swc: 9.9.0
     optionalDependencies:
       '@types/react': 19.2.17
-      next: 16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
-      vite: 8.3.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
+      vite: 8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  next@16.3.3(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
-    dependencies:
-      '@next/env': 16.3.3
-      '@swc/helpers': 0.5.23
-      baseline-browser-mapping: 2.10.43
-      caniuse-lite: 1.0.30001806
-      postcss: 8.5.23
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.2.4)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 16.3.3
-      '@next/swc-darwin-x64': 16.3.3
-      '@next/swc-linux-arm64-gnu': 16.3.3
-      '@next/swc-linux-arm64-musl': 16.3.3
-      '@next/swc-linux-x64-gnu': 16.3.3
-      '@next/swc-linux-x64-musl': 16.3.3
-      '@next/swc-win32-arm64-msvc': 16.3.3
-      '@next/swc-win32-x64-msvc': 16.3.3
-      sharp: 0.35.3(@types/node@20.19.43)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@types/node'
-      - babel-plugin-macros
-
-  next@16.3.3(@types/node@20.19.43)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
-    dependencies:
-      '@next/env': 16.3.3
-      '@swc/helpers': 0.5.23
-      baseline-browser-mapping: 2.10.43
-      caniuse-lite: 1.0.30001806
-      postcss: 8.5.23
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.2.4)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 16.3.3
-      '@next/swc-darwin-x64': 16.3.3
-      '@next/swc-linux-arm64-gnu': 16.3.3
-      '@next/swc-linux-arm64-musl': 16.3.3
-      '@next/swc-linux-x64-gnu': 16.3.3
-      '@next/swc-linux-x64-musl': 16.3.3
-      '@next/swc-win32-arm64-msvc': 16.3.3
-      '@next/swc-win32-x64-msvc': 16.3.3
-      sharp: 0.35.3(@types/node@20.19.43)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@types/node'
-      - babel-plugin-macros
-
-  next@16.3.3(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  next@16.3.3(@babel/core@7.29.7)(@types/node@24.13.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@next/env': 16.3.3
       '@swc/helpers': 0.5.23
@@ -6796,40 +6742,6 @@ snapshots:
 
   semver@7.8.5: {}
 
-  sharp@0.35.3(@types/node@20.19.43):
-    dependencies:
-      '@img/colour': 1.1.0
-      detect-libc: 2.1.2
-      semver: 7.8.5
-    optionalDependencies:
-      '@img/sharp-darwin-arm64': 0.35.3
-      '@img/sharp-darwin-x64': 0.35.3
-      '@img/sharp-freebsd-wasm32': 0.35.3
-      '@img/sharp-libvips-darwin-arm64': 1.3.2
-      '@img/sharp-libvips-darwin-x64': 1.3.2
-      '@img/sharp-libvips-linux-arm': 1.3.2
-      '@img/sharp-libvips-linux-arm64': 1.3.2
-      '@img/sharp-libvips-linux-ppc64': 1.3.2
-      '@img/sharp-libvips-linux-riscv64': 1.3.2
-      '@img/sharp-libvips-linux-s390x': 1.3.2
-      '@img/sharp-libvips-linux-x64': 1.3.2
-      '@img/sharp-libvips-linuxmusl-arm64': 1.3.2
-      '@img/sharp-libvips-linuxmusl-x64': 1.3.2
-      '@img/sharp-linux-arm': 0.35.3
-      '@img/sharp-linux-arm64': 0.35.3
-      '@img/sharp-linux-ppc64': 0.35.3
-      '@img/sharp-linux-riscv64': 0.35.3
-      '@img/sharp-linux-s390x': 0.35.3
-      '@img/sharp-linux-x64': 0.35.3
-      '@img/sharp-linuxmusl-arm64': 0.35.3
-      '@img/sharp-linuxmusl-x64': 0.35.3
-      '@img/sharp-webcontainers-wasm32': 0.35.3
-      '@img/sharp-win32-arm64': 0.35.3
-      '@img/sharp-win32-ia32': 0.35.3
-      '@img/sharp-win32-x64': 0.35.3
-      '@types/node': 20.19.43
-    optional: true
-
   sharp@0.35.3(@types/node@24.13.3):
     dependencies:
       '@img/colour': 1.1.0
@@ -6990,8 +6902,6 @@ snapshots:
 
   ufo@1.6.4: {}
 
-  undici-types@6.21.0: {}
-
   undici-types@7.18.2: {}
 
   unicode-trie@2.0.0:
@@ -7019,13 +6929,13 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite-node@6.0.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2):
+  vite-node@6.0.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2):
     dependencies:
       cac: 7.0.0
       es-module-lexer: 2.3.2
       obug: 2.2.1
       pathe: 2.0.3
-      vite: 8.3.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
+      vite: 8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
     transitivePeerDependencies:
       - '@types/node'
       - '@vitejs/devtools'
@@ -7039,21 +6949,6 @@ snapshots:
       - terser
       - tsx
       - yaml
-
-  vite@7.3.6(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2):
-    dependencies:
-      esbuild: 0.28.2
-      fdir: 6.5.0(picomatch@4.0.5)
-      picomatch: 4.0.5
-      postcss: 8.5.26
-      rollup: 4.63.2
-      tinyglobby: 0.2.17
-    optionalDependencies:
-      '@types/node': 20.19.43
-      fsevents: 2.3.3
-      jiti: 2.7.0
-      lightningcss: 1.33.0
-      terser: 5.51.2
 
   vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2):
     dependencies:
@@ -7070,7 +6965,7 @@ snapshots:
       lightningcss: 1.33.0
       terser: 5.51.2
 
-  vite@8.3.0(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2):
+  vite@8.3.0(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -7078,7 +6973,7 @@ snapshots:
       rolldown: 1.2.9
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 20.19.43
+      '@types/node': 24.13.3
       esbuild: 0.28.2
       fsevents: 2.3.3
       jiti: 2.7.0
