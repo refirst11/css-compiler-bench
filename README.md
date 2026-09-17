@@ -5,12 +5,13 @@
 [![Benchmark](https://github.com/refirst11/css-compiler-bench/actions/workflows/benchmark.yml/badge.svg)](https://github.com/refirst11/css-compiler-bench/actions/workflows/benchmark.yml)
 
 Build-time cost of compile-time CSS for React, on one identical Next.js app — with CSS
-Modules and Tailwind as no-compiler controls. Every setup ("lane") builds the same
+Modules and Tailwind as no-compiler controls, and styled-components at the other end as the
+runtime approach the rest are an alternative to. Every setup ("lane") builds the same
 components under the same conditions, so the numbers are actually comparable
 
 A lane is one configuration, not one library: StyleX appears twice, compiled through Babel
-and through SWC, and Tailwind appears with and without `cn`. Seven libraries currently
-occupy ten lanes
+and through SWC, and Tailwind appears with and without `cn`. Eight libraries currently
+occupy eleven lanes
 
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
@@ -37,7 +38,8 @@ Two rules shape everything here:
   is why a value reached through a binding defeats them; and Panda does neither — it scans
   source to generate the stylesheet, then ships a function that decides the class on every
   render. Which of the three a lane is doing is not in its README, it is in its Structure
-  and Runtime columns
+  and Runtime columns. styled-components marks the far end of that same line: no stylesheet
+  is produced at build at all, and the rule is written into a `<style>` node at render
 - **Isolation.** Each lane is its own package under `benchmark/<lane>/` with its own
   `package.json`, its own dependencies and its own build config. The StyleX lane physically
   cannot import Plumeria, or a stray React copy; it only sees what it declares
@@ -47,18 +49,19 @@ root picks it up through a `benchmark/*/` glob, and every harness in `scripts/` 
 it from the filesystem. Adding one is a folder, never an edit to a shared list
 
 ```
-benchmark/baseline/         CSS Modules — the no-library control
-benchmark/plumeria/         Plumeria
-benchmark/stylex/           StyleX (Babel)
-benchmark/stylexswc/        StyleX (SWC)
-benchmark/next-yak/         next-yak
-benchmark/panda/            Panda CSS
-benchmark/vanilla-extract/  vanilla-extract
-benchmark/devup-ui/         Devup UI
-benchmark/tailwind/         Tailwind CSS — concatenate only
-benchmark/tailwind-cn/      Tailwind CSS + cn
-scripts/                    the harnesses and their JSON exporter
-scoreboard/                 the Vite + React report
+benchmark/baseline/           CSS Modules — the no-library control
+benchmark/plumeria/           Plumeria
+benchmark/stylex/             StyleX (Babel)
+benchmark/stylexswc/          StyleX (SWC)
+benchmark/next-yak/           next-yak
+benchmark/panda/              Panda CSS
+benchmark/vanilla-extract/    vanilla-extract
+benchmark/devup-ui/           Devup UI
+benchmark/styled-components/  styled-components — the runtime end of the range
+benchmark/tailwind/           Tailwind CSS — concatenate only
+benchmark/tailwind-cn/        Tailwind CSS + cn
+scripts/                      the harnesses and their JSON exporter
+scoreboard/                   the Vite + React report
 ```
 
 ## What is measured
