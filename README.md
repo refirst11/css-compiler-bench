@@ -9,8 +9,8 @@ Modules and Tailwind as no-compiler controls. Every setup ("lane") builds the sa
 components under the same conditions, so the numbers are actually comparable
 
 A lane is one configuration, not one library: StyleX appears twice, compiled through Babel
-and through SWC, and Tailwind appears with and without `cn`. Five libraries currently
-occupy eight lanes
+and through SWC, and Tailwind appears with and without `cn`. Six libraries currently
+occupy nine lanes
 
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
@@ -29,7 +29,7 @@ Two rules shape everything here:
   Modules compiles no styles at all, it only rewrites local class names to globally unique
   ones, and Tailwind generates its stylesheet by scanning for class names the author already
   wrote by hand. Neither reads a style declaration and decides what class it becomes, which
-  is exactly what makes them the baselines the four compilers are measured against
+  is exactly what makes them the baselines the five compilers are measured against
 - **Isolation.** Each lane is its own package under `benchmark/<lane>/` with its own
   `package.json`, its own dependencies and its own build config. The StyleX lane physically
   cannot import Plumeria, or a stray React copy; it only sees what it declares
@@ -39,16 +39,17 @@ root picks it up through a `benchmark/*/` glob, and every harness in `scripts/` 
 it from the filesystem. Adding one is a folder, never an edit to a shared list
 
 ```
-benchmark/baseline/      CSS Modules — the no-library control
-benchmark/plumeria/      Plumeria
-benchmark/stylex/        StyleX (Babel)
-benchmark/stylexswc/     StyleX (SWC)
-benchmark/next-yak/      next-yak
-benchmark/devup-ui/      Devup UI
-benchmark/tailwind/      Tailwind CSS — concatenate only
-benchmark/tailwind-cn/   Tailwind CSS + cn
-scripts/                 the harnesses and their JSON exporter
-scoreboard/              the Vite + React report
+benchmark/baseline/         CSS Modules — the no-library control
+benchmark/plumeria/         Plumeria
+benchmark/stylex/           StyleX (Babel)
+benchmark/stylexswc/        StyleX (SWC)
+benchmark/next-yak/         next-yak
+benchmark/vanilla-extract/  vanilla-extract
+benchmark/devup-ui/         Devup UI
+benchmark/tailwind/         Tailwind CSS — concatenate only
+benchmark/tailwind-cn/      Tailwind CSS + cn
+scripts/                    the harnesses and their JSON exporter
+scoreboard/                 the Vite + React report
 ```
 
 ## What is measured
