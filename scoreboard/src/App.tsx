@@ -358,7 +358,16 @@ function StructureTable({
 function App() {
   const { data, error, latestRun, staleSince } = useBenchmark();
 
-  const measurements = data?.build?.measurements ?? [];
+  // Fastest first. The section draws speed as bar length, so leaving the rows in
+  // lane order asked the reader to sort eleven bars by eye. The control keeps its
+  // badge and is findable wherever the run puts it.
+  const measurements = useMemo(
+    () =>
+      [...(data?.build?.measurements ?? [])].sort(
+        (a, b) => a.averageBuildSeconds - b.averageBuildSeconds,
+      ),
+    [data],
+  );
   const fastest = useMemo(
     () =>
       measurements.length
