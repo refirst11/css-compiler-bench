@@ -239,6 +239,46 @@ function styleqRuntime(src) {
   return parts;
 }
 
+// Panda ships its resolver instead of the class names it resolves to. There is
+// no bundler plugin to rewrite the `css()` call sites, so the module carries the
+// whole of `styled-system/css` ahead of the component: a property-to-
+// abbreviation table, and the resolver that reads it to build a class name per
+// render. The span runs from the module body to the end of the
+// `mergeCss`/`assignCss` factory, which is the last thing that module exports
+// before the fixture's own code starts. Both anchors are object property names,
+// so they survive minification where the variable names around them do not.
+function pandaRuntime(src) {
+  const tableEnd = src.indexOf('.split(",").forEach');
+  const factory = src.indexOf("mergeCss:");
+  if (tableEnd === -1 || factory === -1) return null;
+
+  const PRELUDE = '"use strict";';
+  const prelude = src.indexOf(PRELUDE);
+  const start = prelude === -1 ? 0 : prelude + PRELUDE.length;
+
+  const fnStart = src.indexOf("=function(", factory);
+  if (fnStart === -1) return null;
+  let end = scanBlock(src, src.indexOf("{", fnStart));
+  // The factory is invoked immediately with the config object it closes over.
+  const invocation = src.slice(end).match(/^\([A-Za-z_$][\w$]*\)/);
+  if (invocation) end += invocation[0].length;
+  if (end <= start) return null;
+
+  // The table is a single string literal -- `strokeLinejoin:stk-lj,...` -- that
+  // the module splits on "," at init. It holds no quotes, so the two nearest
+  // ones delimit it exactly.
+  const close = src.lastIndexOf('"', tableEnd);
+  const open = src.lastIndexOf('"', close - 1);
+  const tableBytes = close - open + 1;
+
+  return [
+    { label: "css() resolver", bytes: end - start - tableBytes },
+    { label: "utility abbreviation table", bytes: tableBytes },
+  ];
+}
+
+const runtimeParts = (body) => [...(styleqRuntime(body) ?? []), ...(pandaRuntime(body) ?? [])];
+
 function analyseChunk(chunk, classNames) {
   const modules = splitModules(chunk);
   const rows = [];
@@ -248,7 +288,11 @@ function analyseChunk(chunk, classNames) {
   for (const { body } of modules) {
     const objects = payloadObjects(body, classNames);
     const baked = bakedStrings(body, classNames, objects);
-    if (!objects.length && !baked.length) continue;
+    // A lane that resolves class names at render ships none of them as strings,
+    // so it reaches this point with nothing but its resolver -- and skipping on
+    // payload alone would drop exactly the lane the runtime column is for.
+    const parts = runtimeParts(body);
+    if (!objects.length && !baked.length && !parts.length) continue;
 
     // A CSS Modules stylesheet map is a whole module of the form `<x>.v({...})`;
     // the shared page.module.css one is reported but never counted.
@@ -281,7 +325,7 @@ function analyseChunk(chunk, classNames) {
       if (!shared) structure += bakedBytes;
     }
 
-    for (const part of styleqRuntime(body) ?? []) {
+    for (const part of parts) {
       rows.push({
         label: part.label,
         bytes: part.bytes,
@@ -332,7 +376,8 @@ function clientChunks(projectPath, classNames) {
   ).filter(
     ({ source }) =>
       source.includes(APP_MARKER) &&
-      stringLiterals(source).some((l) => isClassPayload(l.value, classNames)),
+      (stringLiterals(source).some((l) => isClassPayload(l.value, classNames)) ||
+        runtimeParts(source).length > 0),
   );
 }
 
