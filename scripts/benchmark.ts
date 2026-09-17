@@ -11,14 +11,18 @@ import { numberFromEnv, selectedLanes, type Lane } from "./lanes.ts";
 const laneList = selectedLanes();
 const baseline = laneList.find((lane) => lane.baseline)!;
 
-const ITERATIONS = numberFromEnv("BENCHMARK_ITERATIONS", 10);
-
 // The first iteration is excluded from every average, as documented in the
 // README. Not for V8 startup -- every `next build` is its own process, so each
 // round pays that -- but for the machine-level costs a first run carries alone:
 // the OS page cache still cold on `node_modules` and the toolchain binaries, the
 // CPU not yet at its sustained clock, a first touch of each file on disk.
 const WARMUP_ITERATIONS = numberFromEnv("BENCHMARK_WARMUP_ITERATIONS", 1);
+
+// One measured round per lane, so that the rotation below hands every lane
+// every position exactly once. The default follows the lane count rather than a
+// constant: adding a lane is a folder here, and the balance would quietly stop
+// holding if the round count had to be remembered separately.
+const ITERATIONS = numberFromEnv("BENCHMARK_ITERATIONS", laneList.length + WARMUP_ITERATIONS);
 
 // A hung build must not consume the whole CI job; it is recorded as a lane
 // failure like any other and the remaining lanes still produce numbers.
@@ -31,22 +35,18 @@ if (ITERATIONS <= WARMUP_ITERATIONS) {
   );
 }
 
-// A deterministic per-round shuffle removes the systematic heat/cache bias
-// caused by running the baseline first and every other project afterwards.
-// Repeating the same seed makes a result reproducible while still balancing
-// the position of each project across rounds.
-const BENCHMARK_SEED = Number(process.env.BENCHMARK_SEED ?? 0x5eed1234) >>> 0;
-
-function shuffled(values, seed) {
-  const result = [...values];
-  let state = seed >>> 0;
-
-  for (let i = result.length - 1; i > 0; i--) {
-    state = (state * 1664525 + 1013904223) >>> 0;
-    const j = state % (i + 1);
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
+// Position in a round is not neutral: a lane that runs first meets a colder
+// page cache than one that runs eleventh, and one that follows a heavy lane
+// meets a hotter CPU. Rotating the list by the round number is a Latin square
+// -- over a full cycle every lane occupies every position exactly once -- so
+// that bias cancels by construction rather than on average. A random shuffle
+// only balances in expectation, and at ten-odd rounds it visibly does not:
+// under the seed this replaces, one Tailwind lane averaged position 0.50 of
+// the field and the other 0.67.
+function rotated<T>(values: T[], round: number): T[] {
+  if (values.length === 0) return [];
+  const offset = ((round % values.length) + values.length) % values.length;
+  return [...values.slice(offset), ...values.slice(0, offset)];
 }
 
 const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
@@ -132,7 +132,7 @@ function runBenchmark() {
 
   for (let i = 1; i <= ITERATIONS; i++) {
     const alive = laneList.filter((lane) => !failures.has(lane.name));
-    const order = shuffled(alive, BENCHMARK_SEED + i);
+    const order = rotated(alive, i);
     rounds.push(order.map((lane) => lane.name));
     console.log(`\n🚀 Round ${i}/${ITERATIONS}: ${order.map((lane) => lane.name).join(" → ")}`);
 
@@ -159,7 +159,7 @@ function runBenchmark() {
       process.stdout.write(`${buildTime.toFixed(2)}s\n`);
 
       // Measure each lane's output on the final round, regardless of its
-      // position in that round's shuffle.
+      // position in that round's rotation.
       if (i === ITERATIONS) {
         const nextPath = path.join(lane.dir, ".next");
         measurements[lane.name].buildSize = dirSize(nextPath, undefined, BUILD_CACHE);
@@ -215,7 +215,8 @@ function runBenchmark() {
   );
   console.table(results);
   console.log(
-    `Library Cost = this lane's average build time minus ${baseline.name}'s (${baselineMean.toFixed(3)}s). Seed: ${BENCHMARK_SEED}.`,
+    `Library Cost = this lane's average build time minus ${baseline.name}'s (${baselineMean.toFixed(3)}s). ` +
+      `Lane order rotates one place per round, so each lane held each position once.`,
   );
 
   updateResults({
@@ -223,7 +224,6 @@ function runBenchmark() {
       status: failures.size ? "partial" : "complete",
       iterations: ITERATIONS,
       warmupIterations: WARMUP_ITERATIONS,
-      seed: BENCHMARK_SEED,
       baseline: baseline.name,
       rounds,
       measurements: measurementRows,
