@@ -68,8 +68,15 @@ function readFiles(dir, filter) {
 // hand-written selectors out of the authority set -- `globals.css` contributes
 // a bare `.p`, and a one-character name would match the string `"p"` in every
 // React element type in the framework chunks.
+//
+// vanilla-extract's production identifiers (`adxey20`, `_141vzpi2`) are a file
+// hash plus an index and match neither pattern, and loosening the regex to
+// `^_?[a-z0-9]{6,}$` would admit `children` and `display` from the framework
+// chunks. It takes the broad authority instead: its `globals.css` declares no
+// class selector at all, so every class in this lane's emitted CSS is either
+// vanilla-extract's or the shared `page.module.css`, which is excluded anyway.
 const GENERATED = /-module__|^x[a-z0-9]{5,}$/;
-const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "next-yak"]);
+const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "next-yak", "vanilla-extract"]);
 
 // Tailwind's utility names -- `p-2`, `border`, `min-[800px]:mb-3` -- match
 // neither pattern in GENERATED, and loosening that regex enough to admit
