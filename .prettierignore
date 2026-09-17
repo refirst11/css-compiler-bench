@@ -6,3 +6,4 @@ build
 coverage
 *.min.*
 df/
+styled-system/
