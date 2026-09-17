@@ -11,6 +11,10 @@ export type BuildMeasurement = {
   libraryCostMs: number | null;
   nextBytes: number;
   cssBytes: number;
+  // Absent from results measured before the cache was split out of nextBytes;
+  // deploy.yml can redeploy from an older run's artifact, so the table has to
+  // render without it.
+  cacheBytes?: number;
   samples: number[];
 };
 

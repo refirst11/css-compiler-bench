@@ -192,6 +192,7 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
             <th>SD</th>
             <th>.next</th>
             <th>CSS</th>
+            <th>Build cache</th>
           </tr>
         </thead>
         <tbody>
@@ -208,6 +209,9 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
               <td className="number">{item.standardDeviationMs.toFixed(1)} ms</td>
               <td className="number">{formatBytes(item.nextBytes, "MB")}</td>
               <td className="number">{formatBytes(item.cssBytes, "KB")}</td>
+              <td className="number">
+                {item.cacheBytes === undefined ? "—" : formatBytes(item.cacheBytes, "MB")}
+              </td>
             </tr>
           ))}
         </tbody>
