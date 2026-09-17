@@ -59,7 +59,6 @@ export type BenchmarkData = {
     status: string;
     iterations: number;
     warmupIterations: number;
-    seed: number;
     baseline: string;
     measurements: BuildMeasurement[];
     failures?: LaneFailure[];
