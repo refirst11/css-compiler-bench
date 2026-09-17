@@ -22,7 +22,7 @@
     "@plumeria/core": "^19.1.4",
     "@plumeria/eslint-plugin": "^19.1.4",
     "@plumeria/next-plugin": "^19.1.4",
-    "@types/node": "^24.8.1",
+    "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9.39.2",
