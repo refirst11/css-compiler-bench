@@ -66,15 +66,20 @@ scoreboard/                   the Vite + React report
 
 ## What is measured
 
-- **Cold build** (seconds, lower better): 10 clean builds per lane, `.next` deleted before
-  each, and the first round discarded — not for V8 startup, since every build is its own
+- **Cold build** (seconds, lower better): one measured round per lane plus a discarded
+  first one — twelve clean builds each at eleven lanes — with `.next` deleted before every
+  one. The discarded round is not there for V8 startup, since every build is its own
   process and pays that anyway, but for what only a first run pays: a cold OS page cache
   over `node_modules` and the toolchain, and a CPU not yet at its sustained clock. The
   clock covers the lane's whole `npm run build`, including the `prebuild` step npm runs
   ahead of it, so a lane that needs a generation pass before `next build` (`panda codegen`)
   is timed with it; deleting the previous round's output happens before the clock starts.
-  Lanes are shuffled deterministically per round, so no lane is systematically first on a
-  cold machine or last on a hot one. The average is reported with its standard deviation beside it — a
+  Lane order rotates one place per round, which over a full cycle puts every lane in every
+  position exactly once: no lane is systematically first on a cold machine, last on a hot
+  one, or behind the same heavy neighbour. Running the lanes in parallel instead would
+  destroy the measurement rather than balance it — Turbopack already uses every core, and
+  eleven concurrent builds on this laptop stretched each lane from 4.6–6.3s to 45–49s while
+  inflating them unequally. The average is reported with its standard deviation beside it — a
   difference smaller than the SD is noise, and the report is built so you can see that
 - **Library cost** (ms): that average minus the control's. This is everything adopting the
   library entails, not just time inside its compiler — a lane that moves the app off
