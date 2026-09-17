@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@devup-ui/next-plugin": "^1.0.83",
-    "@types/node": "^20",
+    "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "rimraf": "^6.1.3",
