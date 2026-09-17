@@ -13,8 +13,11 @@ const baseline = laneList.find((lane) => lane.baseline)!;
 
 const ITERATIONS = numberFromEnv("BENCHMARK_ITERATIONS", 10);
 
-// The first iteration absorbs V8/compiler cold start overhead and is excluded
-// from every average, as documented in the README.
+// The first iteration is excluded from every average, as documented in the
+// README. Not for V8 startup -- every `next build` is its own process, so each
+// round pays that -- but for the machine-level costs a first run carries alone:
+// the OS page cache still cold on `node_modules` and the toolchain binaries, the
+// CPU not yet at its sustained clock, a first touch of each file on disk.
 const WARMUP_ITERATIONS = numberFromEnv("BENCHMARK_WARMUP_ITERATIONS", 1);
 
 // A hung build must not consume the whole CI job; it is recorded as a lane
@@ -88,6 +91,17 @@ const BUILD_CACHE = new Set(["cache"]);
 function buildOnce(lane: Lane, env) {
   // Clean builds are intentionally retained. The round-robin order keeps this
   // cold-build comparison from favoring whichever lane runs first.
+  //
+  // npm runs a script's `pre` lifecycle itself, so the timed section below is
+  // `prebuild` *and* `build` -- the whole of what a user typing `npm run build`
+  // in this lane waits for, which is the cost the README's "library cost" column
+  // claims to report. A lane whose build needs a generation step ahead of
+  // `next build` (`panda codegen`) is timed with it, because adopting it means
+  // paying it. What the explicit call here does is run that same step once more
+  // ahead of the clock, so the timed window always starts from an identical
+  // deleted-`.next` state and never contains the removal of the previous
+  // round's build output, whose cost would scale with that lane's output size
+  // rather than with its compiler.
   execSync("npm run prebuild", {
     cwd: lane.dir,
     env,
