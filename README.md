@@ -66,10 +66,15 @@ scoreboard/                   the Vite + React report
 
 ## What is measured
 
-- **Cold build** (seconds, lower better): 10 clean builds per lane, the first discarded to
-  omit V8 and compiler cold start, `.next` deleted before each. Lanes are shuffled
-  deterministically per round, so no lane is systematically first on a cold machine or last
-  on a hot one. The average is reported with its standard deviation beside it — a
+- **Cold build** (seconds, lower better): 10 clean builds per lane, `.next` deleted before
+  each, and the first round discarded — not for V8 startup, since every build is its own
+  process and pays that anyway, but for what only a first run pays: a cold OS page cache
+  over `node_modules` and the toolchain, and a CPU not yet at its sustained clock. The
+  clock covers the lane's whole `npm run build`, including the `prebuild` step npm runs
+  ahead of it, so a lane that needs a generation pass before `next build` (`panda codegen`)
+  is timed with it; deleting the previous round's output happens before the clock starts.
+  Lanes are shuffled deterministically per round, so no lane is systematically first on a
+  cold machine or last on a hot one. The average is reported with its standard deviation beside it — a
   difference smaller than the SD is noise, and the report is built so you can see that
 - **Library cost** (ms): that average minus the control's. This is everything adopting the
   library entails, not just time inside its compiler — a lane that moves the app off
@@ -92,7 +97,9 @@ scoreboard/                   the Vite + React report
   the measurement cannot drift into counting ordinary strings
 - **Client chunk** (bytes): the same measurement on a rebuild with the fixture marked
   `"use client"`, which is the normal case for variant-driven UI. This is where a runtime
-  resolver stops being free
+  resolver stops being free. It counts the chunks the fixture itself landed in — today
+  Turbopack inlines each lane's styling code there, but a runtime hoisted into a shared
+  vendor chunk by some future split would fall outside it
 
 A lane that fails to build is recorded and dropped from the rest of the run, so one broken
 library still leaves every other lane measured; the run goes red and the report names the
