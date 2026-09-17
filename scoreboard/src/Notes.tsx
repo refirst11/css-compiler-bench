@@ -105,9 +105,12 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           <dd>
             Panda scans source to generate the stylesheet but never rewrites the call sites it
             scanned — there is no bundler plugin to do it — so the style objects survive into the
-            bundle and <code>css()</code> turns them into class names on every render. It is the one
-            lane whose Structure column is 0 B, and not because nothing ships: what ships is the
-            resolver instead of the names it resolves to.
+            bundle and <code>css()</code> turns them into class names on every render.
+            styled-components goes further and produces no stylesheet at all: the template literal
+            is evaluated at render, hashed into a class name, and the rule written into a{" "}
+            <code>&lt;style&gt;</code> node inserted beside the component. Both read 0 B of
+            Structure, and not because nothing ships — what ships is the resolver instead of the
+            names it resolves to.
           </dd>
         </dl>
         <p>
@@ -134,8 +137,16 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
         <p>
           Panda's is there for a different reason. It buys no late composition the others lack; it
           is what a library needs when it declines to touch the call site at all, and the whole
-          property-to-abbreviation table travels with it. Two lanes with a Runtime column, two
-          different things being paid for.
+          property-to-abbreviation table travels with it. styled-components pays the most and gets
+          the most for it: a style can depend on anything a prop can hold, because nothing had to be
+          decided early enough to constrain it.
+        </p>
+        <p>
+          Read down the Runtime column and it is a price list for how late a class name is allowed
+          to be decided: vanilla-extract bakes the name and ships nothing, StyleX ships{" "}
+          <code>styleq</code> to merge, Panda ships a resolver, styled-components ships the whole
+          library. The CSS column tells the same story from the other side — styled-components
+          produces no stylesheet for it to measure.
         </p>
       </Detail>
 
