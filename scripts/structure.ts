@@ -526,10 +526,16 @@ function run() {
 
       if (measureClient) {
         const client = withClientComponent(projectPath, () => {
-          const chunks = clientChunks(projectPath, classNames);
+          // Read from the build being measured, not carried over from the SSR
+          // pass: a lane whose class names or emitted rules change once the
+          // component is a Client Component would otherwise be scanned against
+          // an authority set that no longer describes its output, and every
+          // changed name would silently drop out of the payload.
+          const clientClassNames = cssClassNames(projectPath, project);
+          const chunks = clientChunks(projectPath, clientClassNames);
           return chunks.map((c) => ({
             name: c.name,
-            ...analyseChunk(c.source, classNames),
+            ...analyseChunk(c.source, clientClassNames),
           }));
         });
         const clientBytes = client.reduce((n, c) => n + c.total, 0);
