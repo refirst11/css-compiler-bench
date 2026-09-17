@@ -280,15 +280,20 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
             .sort((a, b) => a.count - b.count)
             .map((item) => `${x(item.count)},${y(item.buildSeconds)}`)
             .join(" ");
+          // The viewBox is 760 wide and the chart is stretched to its container,
+          // so a stroke width set on the element is multiplied by whatever that
+          // ratio happens to be -- the old 3 landed near 4.3px on a wide screen,
+          // heavy once eleven lanes overlap. Non-scaling keeps it in device
+          // pixels, so styles.css can set the width and mean it.
           return (
             <polyline
               key={project}
               points={points}
               fill="none"
               stroke={LANE_COLORS[index % LANE_COLORS.length]}
-              strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
             />
           );
         })}

@@ -293,6 +293,9 @@ td:first-child {
   overflow: visible;
   margin: 10px 0 20px;
 }
+.scale-chart polyline {
+  stroke-width: 2;
+}
 .grid-line {
   stroke: #24304b;
   stroke-width: 1;
