@@ -9,8 +9,8 @@ Modules and Tailwind as no-compiler controls. Every setup ("lane") builds the sa
 components under the same conditions, so the numbers are actually comparable
 
 A lane is one configuration, not one library: StyleX appears twice, compiled through Babel
-and through SWC, and Tailwind appears with and without `cn`. Six libraries currently
-occupy nine lanes
+and through SWC, and Tailwind appears with and without `cn`. Seven libraries currently
+occupy ten lanes
 
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
@@ -29,7 +29,15 @@ Two rules shape everything here:
   Modules compiles no styles at all, it only rewrites local class names to globally unique
   ones, and Tailwind generates its stylesheet by scanning for class names the author already
   wrote by hand. Neither reads a style declaration and decides what class it becomes, which
-  is exactly what makes them the baselines the five compilers are measured against
+  is exactly what makes them the baselines the other lanes are measured against. Note that
+  deciding the class is not the same as deciding it at build. Three things get called
+  compile-time CSS here and they are not the same mechanism: vanilla-extract **executes**
+  the style code at build, in a compiler that evaluates `.css.ts` as a module; StyleX,
+  Plumeria, next-yak and Devup UI **read the AST** at build and rewrite the call site, which
+  is why a value reached through a binding defeats them; and Panda does neither — it scans
+  source to generate the stylesheet, then ships a function that decides the class on every
+  render. Which of the three a lane is doing is not in its README, it is in its Structure
+  and Runtime columns
 - **Isolation.** Each lane is its own package under `benchmark/<lane>/` with its own
   `package.json`, its own dependencies and its own build config. The StyleX lane physically
   cannot import Plumeria, or a stray React copy; it only sees what it declares
@@ -44,6 +52,7 @@ benchmark/plumeria/         Plumeria
 benchmark/stylex/           StyleX (Babel)
 benchmark/stylexswc/        StyleX (SWC)
 benchmark/next-yak/         next-yak
+benchmark/panda/            Panda CSS
 benchmark/vanilla-extract/  vanilla-extract
 benchmark/devup-ui/         Devup UI
 benchmark/tailwind/         Tailwind CSS — concatenate only
