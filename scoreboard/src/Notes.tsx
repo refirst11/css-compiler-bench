@@ -93,13 +93,21 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           <dd>
             StyleX keeps maps keyed by a hash of the CSS property and merges them with{" "}
             <code>styleq</code> at render — the same merge, kept alive at the cost of a resolver in
-            the bundle. It is the only lane with a Runtime column that is not a dash.
+            the bundle.
           </dd>
           <dt>Not resolved</dt>
           <dd>
-            CSS Modules, next-yak and Tailwind emit every candidate class and let the cascade
-            decide; none of them can detect that two of them set the same property. The{" "}
+            CSS Modules, vanilla-extract, next-yak and Tailwind emit every candidate class and let
+            the cascade decide; none of them can detect that two of them set the same property. The{" "}
             <code>tailwind-cn</code> lane buys that resolution back with a client-side library.
+          </dd>
+          <dt>Not at build</dt>
+          <dd>
+            Panda scans source to generate the stylesheet but never rewrites the call sites it
+            scanned — there is no bundler plugin to do it — so the style objects survive into the
+            bundle and <code>css()</code> turns them into class names on every render. It is the one
+            lane whose Structure column is 0 B, and not because nothing ships: what ships is the
+            resolver instead of the names it resolves to.
           </dd>
         </dl>
         <p>
@@ -118,10 +126,16 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           every dynamic request, and every client render.
         </p>
         <p>
-          That resolver is not waste. It merges style objects the compiler never saw — composed
-          across module boundaries by callers no build ever observed together — and makes the
-          outcome independent of stylesheet order. A compiler can only bake the combinations it can
-          enumerate. The Runtime column is the price of the ones it cannot.
+          That resolver is not always waste. StyleX's merges style objects the compiler never saw —
+          composed across module boundaries by callers no build ever observed together — and makes
+          the outcome independent of stylesheet order. A compiler can only bake the combinations it
+          can enumerate, and the Runtime column is the price of the ones it cannot.
+        </p>
+        <p>
+          Panda's is there for a different reason. It buys no late composition the others lack; it
+          is what a library needs when it declines to touch the call site at all, and the whole
+          property-to-abbreviation table travels with it. Two lanes with a Runtime column, two
+          different things being paid for.
         </p>
       </Detail>
 
