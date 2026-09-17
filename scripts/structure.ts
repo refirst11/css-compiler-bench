@@ -277,7 +277,33 @@ function pandaRuntime(src) {
   ];
 }
 
-const runtimeParts = (body) => [...(styleqRuntime(body) ?? []), ...(pandaRuntime(body) ?? [])];
+// styled-components resolves nothing at build either, and resolves it later than
+// Panda does: the template literal is evaluated at render, hashed into a class
+// name, and the rule written into a `<style>` node the library inserts beside the
+// component. So what the bundle carries is the library itself -- stylis, the
+// sheet, the component factory -- ahead of the fixture's own
+// `styled.div.withConfig(...)` calls, and that first call is where the span ends.
+// `data-styled` is the attribute it stamps on those nodes; `withConfig` is
+// emitted by Next's transform. Both are string literals, so both outlive
+// minification.
+function styledComponentsRuntime(src) {
+  if (!src.includes("data-styled")) return null;
+  const userCode = src.indexOf(".withConfig(");
+  if (userCode === -1) return null;
+
+  const PRELUDE = '"use strict";';
+  const prelude = src.indexOf(PRELUDE);
+  const start = prelude === -1 ? 0 : prelude + PRELUDE.length;
+  if (userCode <= start) return null;
+
+  return [{ label: "styled-components (stylis, sheet, factory)", bytes: userCode - start }];
+}
+
+const runtimeParts = (body) => [
+  ...(styleqRuntime(body) ?? []),
+  ...(pandaRuntime(body) ?? []),
+  ...(styledComponentsRuntime(body) ?? []),
+];
 
 function analyseChunk(chunk, classNames) {
   const modules = splitModules(chunk);
