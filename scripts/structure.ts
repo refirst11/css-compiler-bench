@@ -464,10 +464,14 @@ function run() {
       const project = lane.name;
       const label = lane.label;
       const projectPath = lane.dir;
-      if (!fs.existsSync(path.join(projectPath, ".next"))) {
-        console.log(`\n🔨 ${project} has no build; building...`);
-        execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
-      }
+      // Always build, never adopt a `.next` this run did not produce.
+      // scripts/scale.ts restores the sources it generated but leaves its last
+      // build behind, so reusing an existing tree measured the scale fixture's
+      // 1,000 definitions as if they were the component's -- and only in the SSR
+      // columns, since the client measurement rebuilds for itself. `prebuild`
+      // deletes `.next` first, so this is a cold build either way.
+      console.log(`\n🔨 ${project}: building...`);
+      execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
 
       const classNames = cssClassNames(projectPath, project);
       const chunk = ssrChunk(projectPath);
