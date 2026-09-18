@@ -161,14 +161,14 @@ importers:
         version: 19.2.4(react@19.2.4)
     devDependencies:
       '@plumeria/core':
-        specifier: ^19.1.4
-        version: 19.1.4
+        specifier: ^19.2.4
+        version: 19.2.4
       '@plumeria/eslint-plugin':
-        specifier: ^19.1.4
-        version: 19.1.4(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+        specifier: ^19.2.4
+        version: 19.2.4(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       '@plumeria/next-plugin':
-        specifier: ^19.1.4
-        version: 19.1.4(@swc/helpers@0.5.23)
+        specifier: ^19.2.4
+        version: 19.2.4(@swc/helpers@0.5.23)
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.3
@@ -1440,24 +1440,24 @@ packages:
     resolution: {integrity: sha512-ucDQwuOrSKhXDuTFMB/VZsrH4zK1DtOvrkCMuzNL9brJiUS8+5IcGR4uP2/jNXm05/iI6zaBbWjwGhbRDsFicQ==}
     engines: {node: '>=20'}
 
-  '@plumeria/compiler@19.1.4':
-    resolution: {integrity: sha512-yKRu4n0NkByrdNZm1hRwMUvMwejZhK1fhMVPdIaQHfBMEYU5pnXYbcu1l+3n/ohSBFEDcbyRitAyDqEAFehO/g==}
+  '@plumeria/compiler@19.2.4':
+    resolution: {integrity: sha512-CDfeXZDRADnc6wla8p1PAUK7X0hYiABhTPFZIUnHxNAl73GUgVgiCHBViFHwmFyHEwlNxttl9nGQMo+3dfCwoA==}
 
-  '@plumeria/core@19.1.4':
-    resolution: {integrity: sha512-LBe9664RkY9mBdRllGRDxSDKq1PsGTAdz3zXJZcjK+FKmQYm7azKhv6SFZ9rx96wEybd2u4v1CgPjSOLoMy2Pw==}
+  '@plumeria/core@19.2.4':
+    resolution: {integrity: sha512-iYvsHsdQbJl4sxVNOw4X/BhWYtU7E/ubzKEPeKFKROok/sHWaCFtAEIaZdprM+PrEVBDglznGAzSvCfyEaDXqg==}
 
-  '@plumeria/eslint-plugin@19.1.4':
-    resolution: {integrity: sha512-ysPeby/hztAEWVA3IJMt/Renyl32DHqIJ11MC3poHxfaF+Ukt7+az8VLzgrqYlbgclXzkAFmtBiL9SZRJxOGWA==}
+  '@plumeria/eslint-plugin@19.2.4':
+    resolution: {integrity: sha512-ARnhAESi+j1+7XlsbZB3i9T4fnLlXv0VqdlY+Rd7Ho7PphqjT4ANPb1gtv/jKcri0bGawwaeIYAU5NPZNO30xw==}
     hasBin: true
 
-  '@plumeria/next-plugin@19.1.4':
-    resolution: {integrity: sha512-Xwvbqtwmy82yyL9B+VMyFTENFnoKvntl31u2GMrMn4xBq4FrDFfHivCxpl2V3KU7AFlFI/NQpHfs9SVlw/Uz6g==}
+  '@plumeria/next-plugin@19.2.4':
+    resolution: {integrity: sha512-SqbDj1fSq4MLxIIFypyuCoh0YRCaxWAOfZmMaGtVCx46Y7TRN00xcmSAibDjEcHhzYYonA130mmaxYzFMqIgLg==}
 
-  '@plumeria/turbopack-loader@19.1.4':
-    resolution: {integrity: sha512-1AhXX/OS0z/1bcA1zYE+jN3F1fpUK0GkrXqN8XixLRCt/Nlm55QpWZM44f2zNK8XZ/4AgPikcH3q4FLaLKJluA==}
+  '@plumeria/turbopack-loader@19.2.4':
+    resolution: {integrity: sha512-00MyWxGTSPRMkC8xloqKYNnTNCmf78UBmmDXCoC2c5tksfcXb2gx0qMPoKJu7HSijD96/HyBk4seL7kUV8oRgA==}
 
-  '@plumeria/utils@19.1.4':
-    resolution: {integrity: sha512-qSS0FmFnozvEIrz6A4YZTzMjbAasttSVGmKTRUBU3Rt/yzIOu3SaXccP63zi8mzYRbRVhD+e/7thPk4uSXaEPA==}
+  '@plumeria/utils@19.2.4':
+    resolution: {integrity: sha512-bnEIIOCda6K7kNzCClK9jTqmw82TQ68pYHwNOk7GL79RSdVwkI8hmK5xUxqiao5fT4CvhBGqlJzdVhg2FfWTgA==}
 
   '@resvg/resvg-js-android-arm-eabi@2.6.2':
     resolution: {integrity: sha512-FrJibrAk6v29eabIPgcTUMPXiEz8ssrAk7TXxsiZzww9UTQ1Z5KAbFJs+Z0Ez+VZTYgnE5IQJqBcoSiMebtPHA==}
@@ -1779,66 +1779,66 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@rust-gear/glob-darwin-arm64@1.1.1':
-    resolution: {integrity: sha512-CbFos1AwQR955N6FqeMBE3LOTL5BW/jz9H6lFAfB207KsyTEkT+luhqUKfLyW8HXnNKX9LMwNKPHJmWszI/nDg==}
+  '@rust-gear/glob-darwin-arm64@1.2.1':
+    resolution: {integrity: sha512-9CQ7metP8hAjNuK8+ySv0epmB1RKp1X/5hBilI0x1VEvIKcFDr8WCg/onE8MyrpzMANoV+P0R/hS5KqB8Zh10Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@rust-gear/glob-darwin-x64@1.1.1':
-    resolution: {integrity: sha512-TrhFoxcjMGf+zvlkVVVD2vL1LM68LYXwTlEMU0BPm/XIAK69Dxib8bBN7oXUpVLzRcWk4Lz3IZFWiXqGC493qg==}
+  '@rust-gear/glob-darwin-x64@1.2.1':
+    resolution: {integrity: sha512-z/JscokRKjI7TlrdbKrECdP/ZW92HSsaWd6kfutvW9TXQS231L+9+0XYCUAe+jqDPxZ3wiOuNHXxg9mwIDdalw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@rust-gear/glob-linux-arm64-gnu@1.1.1':
-    resolution: {integrity: sha512-6EdBoH+sASFJc6BmXcI8+woSB80pRRNMIJgpu4zKU//nodif1QWOzcQTEphTch9GJaSyAnhJO/vrw0hajTXwpg==}
+  '@rust-gear/glob-linux-arm64-gnu@1.2.1':
+    resolution: {integrity: sha512-AjMgjmhL5cHAohMVEEdfBwkUbxDw3DY7rOUR2d8FE18NRKRsx0GvkOILVTNi3F815Tfbk0jm2qDQ8nYVOvkomw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@rust-gear/glob-linux-arm64-musl@1.1.1':
-    resolution: {integrity: sha512-LHJj59/iMqC1z/goPW60DHgNHCP5OzvBMkr0+IoAARY5gqo1/4o3VMvqFVysdLhczJoil4bUoIchEInObZBZ4g==}
+  '@rust-gear/glob-linux-arm64-musl@1.2.1':
+    resolution: {integrity: sha512-ovHxZXZm/SUlFrcEXwMGqpW8/tWRmS6hOsO9XgkCnPDuQFD0ZSG9sQGMSfe3S1NrDZ+hOVE1wIPgq083SZdZmQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@rust-gear/glob-linux-x64-gnu@1.1.1':
-    resolution: {integrity: sha512-bMsy2Qk5nD+XTBIQJKbA3m5x8DQZxZxlHz0YuVDYWHeTpaTS0n9vEZhqubiRzSWu5TI4P6Om/YJE0m74/y2TdQ==}
+  '@rust-gear/glob-linux-x64-gnu@1.2.1':
+    resolution: {integrity: sha512-gqwlxkN2x+jfSJeaRHkh4HY3futEt88fbCz0sCw2OxtnZxY4YU9HZe6xNphB4LMXUQmVrNMiBeCcSfH8RVQ3KQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@rust-gear/glob-linux-x64-musl@1.1.1':
-    resolution: {integrity: sha512-tCTO4UR3pviyPjRUBpDJKkgFbtvsI4bctPWS2P6XtL2MI6FhT9ppu2tqGqI9SjZXYdVT9xNfs5d3Z6a4BKJRCQ==}
+  '@rust-gear/glob-linux-x64-musl@1.2.1':
+    resolution: {integrity: sha512-iohCFTn+TbniNSR1LxzBn+Z/3puJpHz5829KEtbV6YOhVltzQvak9tn06tLN3Newtkhtir0GIC7fVTD5QNBnRA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@rust-gear/glob-win32-arm64-msvc@1.1.1':
-    resolution: {integrity: sha512-VxpcHGpV6U+hL+mVeUfYONIh7QVzOs8leoyNwfwce5q7w2/OHDbDk9vrRKADbEDH26ITavbSNUr3dwNGo2yWGA==}
+  '@rust-gear/glob-win32-arm64-msvc@1.2.1':
+    resolution: {integrity: sha512-mzhYu2LUHoW5MTgFWY5UnsE8CKM7pel87nBPdh/9fjY7ekrtYzk9CFzYl092yRptxNpgwDgN/lmXCVuBIn+nYw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@rust-gear/glob-win32-ia32-msvc@1.1.1':
-    resolution: {integrity: sha512-YaM1Jhjeb200qEK8vZFzqrwhVLyPR81RbO9eYgnqYouaztUaqODn38FcpLSzdgx/9mjxdMAMBtWpH1s73v5yjA==}
+  '@rust-gear/glob-win32-ia32-msvc@1.2.1':
+    resolution: {integrity: sha512-d5N9hJE76rtSTpr4rFfn2+PFb3BADdgO491KuZrDSXcxnXPr9AcjFL8b5PCDCz2M7Bm3VOSarTj5qISVuPBB3Q==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@rust-gear/glob-win32-x64-msvc@1.1.1':
-    resolution: {integrity: sha512-FWt+0Y2XWu8kxH0NSiVnsGgTRpNt2C0avVc+YQ3pqoZeYBxdw6YqOtoKGd3jBUrgJ3wae55G3jDQxJckb8Lp3A==}
+  '@rust-gear/glob-win32-x64-msvc@1.2.1':
+    resolution: {integrity: sha512-jiGUfPfki0eB5YC7N+TY6WKYnjemHE5aNB4FVMLzntsJIAP2yjM5BIXCfPyJaZcMw87kT7G3Axh/KJ6jKrjtRA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@rust-gear/glob@1.1.1':
-    resolution: {integrity: sha512-Y1RWXed7qkXuhSi3ZHpA1qkSFIK9elfns01IbbOjUEuClC6YoCANlMLPT2UW/YGD7kO31LlVXwWRKekjliwCPw==}
+  '@rust-gear/glob@1.2.1':
+    resolution: {integrity: sha512-SGNRWmQzSwLPvlHWZ1euKLR6LdYqNcbuX540VWRPtvq31C1Lm6UMFV4kLq6EkxQ6DpE3hkHp3BYryULQrBMHdw==}
     engines: {node: '>=10'}
 
   '@shuding/opentype.js@1.4.0-beta.0':
@@ -2633,10 +2633,6 @@ packages:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
 
-  enhanced-resolve@5.24.5:
-    resolution: {integrity: sha512-L1l8TNvomm6UVW5B253AGxQagSQr+vGwhMlrrfRS2qmhx46AMpMVJKQYLvWYbysTMY8VoicOvzHzoHMbyzB+4A==}
-    engines: {node: '>=10.13.0'}
-
   enhanced-resolve@5.25.1:
     resolution: {integrity: sha512-nGXts5znJzmWPu+mIE9izCOzdg63oJca2mDzGWWTth7sr4aCToKcoyFVBQwN75Ij5Pf6p510EwkTqViTRzDV+w==}
     engines: {node: '>=10.13.0'}
@@ -3427,10 +3423,6 @@ packages:
 
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
-    engines: {node: '>=12'}
-
-  picomatch@4.0.5:
-    resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
     engines: {node: '>=12'}
 
   picomatch@4.0.7:
@@ -4748,15 +4740,15 @@ snapshots:
 
   '@pandacss/types@1.12.1': {}
 
-  '@plumeria/compiler@19.1.4(@swc/helpers@0.5.23)':
+  '@plumeria/compiler@19.2.4(@swc/helpers@0.5.23)':
     dependencies:
-      '@plumeria/utils': 19.1.4(@swc/helpers@0.5.23)
+      '@plumeria/utils': 19.2.4(@swc/helpers@0.5.23)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@plumeria/core@19.1.4': {}
+  '@plumeria/core@19.2.4': {}
 
-  '@plumeria/eslint-plugin@19.1.4(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@plumeria/eslint-plugin@19.2.4(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/utils': 8.64.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       known-css-properties: 0.37.0
@@ -4766,24 +4758,24 @@ snapshots:
       - supports-color
       - typescript
 
-  '@plumeria/next-plugin@19.1.4(@swc/helpers@0.5.23)':
+  '@plumeria/next-plugin@19.2.4(@swc/helpers@0.5.23)':
     dependencies:
-      '@plumeria/turbopack-loader': 19.1.4(@swc/helpers@0.5.23)
+      '@plumeria/turbopack-loader': 19.2.4(@swc/helpers@0.5.23)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@plumeria/turbopack-loader@19.1.4(@swc/helpers@0.5.23)':
+  '@plumeria/turbopack-loader@19.2.4(@swc/helpers@0.5.23)':
     dependencies:
-      '@plumeria/compiler': 19.1.4(@swc/helpers@0.5.23)
-      '@plumeria/utils': 19.1.4(@swc/helpers@0.5.23)
+      '@plumeria/compiler': 19.2.4(@swc/helpers@0.5.23)
+      '@plumeria/utils': 19.2.4(@swc/helpers@0.5.23)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@plumeria/utils@19.1.4(@swc/helpers@0.5.23)':
+  '@plumeria/utils@19.2.4(@swc/helpers@0.5.23)':
     dependencies:
-      '@rust-gear/glob': 1.1.1
+      '@rust-gear/glob': 1.2.1
       '@swc/core': 1.15.47(@swc/helpers@0.5.23)
-      lightningcss: 1.32.0
+      lightningcss: 1.33.0
       postcss: 8.5.26
       zss-engine: 2.8.0
     transitivePeerDependencies:
@@ -4964,44 +4956,44 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.63.2':
     optional: true
 
-  '@rust-gear/glob-darwin-arm64@1.1.1':
+  '@rust-gear/glob-darwin-arm64@1.2.1':
     optional: true
 
-  '@rust-gear/glob-darwin-x64@1.1.1':
+  '@rust-gear/glob-darwin-x64@1.2.1':
     optional: true
 
-  '@rust-gear/glob-linux-arm64-gnu@1.1.1':
+  '@rust-gear/glob-linux-arm64-gnu@1.2.1':
     optional: true
 
-  '@rust-gear/glob-linux-arm64-musl@1.1.1':
+  '@rust-gear/glob-linux-arm64-musl@1.2.1':
     optional: true
 
-  '@rust-gear/glob-linux-x64-gnu@1.1.1':
+  '@rust-gear/glob-linux-x64-gnu@1.2.1':
     optional: true
 
-  '@rust-gear/glob-linux-x64-musl@1.1.1':
+  '@rust-gear/glob-linux-x64-musl@1.2.1':
     optional: true
 
-  '@rust-gear/glob-win32-arm64-msvc@1.1.1':
+  '@rust-gear/glob-win32-arm64-msvc@1.2.1':
     optional: true
 
-  '@rust-gear/glob-win32-ia32-msvc@1.1.1':
+  '@rust-gear/glob-win32-ia32-msvc@1.2.1':
     optional: true
 
-  '@rust-gear/glob-win32-x64-msvc@1.1.1':
+  '@rust-gear/glob-win32-x64-msvc@1.2.1':
     optional: true
 
-  '@rust-gear/glob@1.1.1':
+  '@rust-gear/glob@1.2.1':
     optionalDependencies:
-      '@rust-gear/glob-darwin-arm64': 1.1.1
-      '@rust-gear/glob-darwin-x64': 1.1.1
-      '@rust-gear/glob-linux-arm64-gnu': 1.1.1
-      '@rust-gear/glob-linux-arm64-musl': 1.1.1
-      '@rust-gear/glob-linux-x64-gnu': 1.1.1
-      '@rust-gear/glob-linux-x64-musl': 1.1.1
-      '@rust-gear/glob-win32-arm64-msvc': 1.1.1
-      '@rust-gear/glob-win32-ia32-msvc': 1.1.1
-      '@rust-gear/glob-win32-x64-msvc': 1.1.1
+      '@rust-gear/glob-darwin-arm64': 1.2.1
+      '@rust-gear/glob-darwin-x64': 1.2.1
+      '@rust-gear/glob-linux-arm64-gnu': 1.2.1
+      '@rust-gear/glob-linux-arm64-musl': 1.2.1
+      '@rust-gear/glob-linux-x64-gnu': 1.2.1
+      '@rust-gear/glob-linux-x64-musl': 1.2.1
+      '@rust-gear/glob-win32-arm64-msvc': 1.2.1
+      '@rust-gear/glob-win32-ia32-msvc': 1.2.1
+      '@rust-gear/glob-win32-x64-msvc': 1.2.1
 
   '@shuding/opentype.js@1.4.0-beta.0':
     dependencies:
@@ -5028,7 +5020,7 @@ snapshots:
       fast-glob: 3.3.3
       glob-parent: 6.0.2
       is-glob: 4.0.3
-      postcss: 8.5.26
+      postcss: 8.5.28
     transitivePeerDependencies:
       - supports-color
 
@@ -5069,7 +5061,7 @@ snapshots:
       fast-glob: 3.3.3
       glob-parent: 6.0.2
       is-glob: 4.0.3
-      postcss: 8.5.26
+      postcss: 8.5.28
     transitivePeerDependencies:
       - '@swc/core'
       - supports-color
@@ -5098,7 +5090,7 @@ snapshots:
   '@stylexswc/rs-compiler@0.18.6(@swc/core@1.15.47(@swc/helpers@0.5.23))':
     dependencies:
       '@swc/core': 1.15.47(@swc/helpers@0.5.23)
-      picomatch: 4.0.5
+      picomatch: 4.0.7
     optionalDependencies:
       '@stylexswc/rs-compiler-darwin-arm64': 0.18.6
       '@stylexswc/rs-compiler-darwin-x64': 0.18.6
@@ -5254,7 +5246,7 @@ snapshots:
   '@tailwindcss/node@4.3.3':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      enhanced-resolve: 5.24.5
+      enhanced-resolve: 5.25.1
       jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -5317,7 +5309,7 @@ snapshots:
       '@alloc/quick-lru': 5.2.0
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
-      postcss: 8.5.26
+      postcss: 8.5.28
       tailwindcss: 4.3.3
 
   '@ts-morph/common@0.29.0':
@@ -5855,11 +5847,6 @@ snapshots:
 
   emojis-list@3.0.0: {}
 
-  enhanced-resolve@5.24.5:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.3
-
   enhanced-resolve@5.25.1:
     dependencies:
       graceful-fs: 4.2.11
@@ -6044,9 +6031,9 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.5.0(picomatch@4.0.5):
+  fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
-      picomatch: 4.0.5
+      picomatch: 4.0.7
 
   fflate@0.7.3: {}
 
@@ -6547,8 +6534,6 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  picomatch@4.0.5: {}
-
   picomatch@4.0.7: {}
 
   pkg-types@1.3.1:
@@ -6865,8 +6850,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.5)
-      picomatch: 4.0.5
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   to-regex-range@5.0.1:
     dependencies:
@@ -6953,9 +6938,9 @@ snapshots:
   vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2):
     dependencies:
       esbuild: 0.28.2
-      fdir: 6.5.0(picomatch@4.0.5)
-      picomatch: 4.0.5
-      postcss: 8.5.26
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
+      postcss: 8.5.28
       rollup: 4.63.2
       tinyglobby: 0.2.17
     optionalDependencies:
