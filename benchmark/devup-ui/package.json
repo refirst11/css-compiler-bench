@@ -14,13 +14,13 @@
     "start": "next start"
   },
   "dependencies": {
-    "@devup-ui/react": "^1.0.40",
+    "@devup-ui/react": "1.0.40",
     "next": "16.3.3",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@devup-ui/next-plugin": "^1.0.83",
+    "@devup-ui/next-plugin": "1.0.83",
     "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
