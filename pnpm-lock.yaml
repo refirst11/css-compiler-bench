@@ -55,8 +55,8 @@ importers:
   benchmark/devup-ui:
     dependencies:
       '@devup-ui/react':
-        specifier: ^1.0.40
-        version: 1.0.43(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)
+        specifier: 1.0.40
+        version: 1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)
       next:
         specifier: 16.3.3
         version: 16.3.3(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -68,8 +68,8 @@ importers:
         version: 19.2.4(react@19.2.4)
     devDependencies:
       '@devup-ui/next-plugin':
-        specifier: ^1.0.83
-        version: 1.0.87(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        specifier: 1.0.83
+        version: 1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.6
@@ -574,8 +574,8 @@ packages:
     peerDependencies:
       postcss-selector-parser: ^7.0.0
 
-  '@devup-ui/next-plugin@1.0.87':
-    resolution: {integrity: sha512-Lf/ScAC9EuvbhmBGmbbSqyUObaghuhFNERoJ6jg91XfHhZOSqJNaqLK89oO+7DFB93FslU1rAAaBzavxmCC9TA==}
+  '@devup-ui/next-plugin@1.0.83':
+    resolution: {integrity: sha512-H3s5aRbhuz91G5UgXUlcdDCgKrbdsNowKQ47dSNGHH45fAvCeXDj0W8PKx3sfc8nzwDKX79WOIHR1KnQvUZlcg==}
     peerDependencies:
       '@devup-ui/wasm': '*'
       '@devup-ui/webpack-plugin': '*'
@@ -584,8 +584,8 @@ packages:
   '@devup-ui/plugin-utils@1.0.15':
     resolution: {integrity: sha512-0fJpf/itSLMOsNmM4YnNPCTwMcI81aQIcyiIulhNItO5eN0Aix2y9pT/QsEYaFwAy6dipQICsZM+ROPM/2DMcg==}
 
-  '@devup-ui/react@1.0.43':
-    resolution: {integrity: sha512-KxtUR1E0wcKvQK67O9GhSY0p8vQTz7oyr8v4wLP4NYyjFLpAjzta6lsFC1qi0U0kgd8/X7MLuGejdAtFGAwZPw==}
+  '@devup-ui/react@1.0.40':
+    resolution: {integrity: sha512-Ffvl2hIbuLMQbWznAgZ/98NMxiDIh3xjh6XA7F6MPvVS8/PVw6nc8I9/1fdQe6zgx2Av6zYJM5axsOT+cQYgOA==}
     peerDependencies:
       csstype-extra: '*'
       react: '*'
@@ -4073,7 +4073,7 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.1
 
-  '@devup-ui/next-plugin@1.0.87(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@devup-ui/next-plugin@1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.3.3(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       '@devup-ui/plugin-utils': 1.0.15
       '@devup-ui/wasm': 1.0.78
@@ -4082,7 +4082,7 @@ snapshots:
 
   '@devup-ui/plugin-utils@1.0.15': {}
 
-  '@devup-ui/react@1.0.43(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)':
+  '@devup-ui/react@1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)':
     dependencies:
       csstype-extra: 0.1.35(typescript@5.9.3)
       react: 19.2.4
