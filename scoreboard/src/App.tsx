@@ -204,7 +204,22 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
               </td>
               <td className="number">{formatSeconds(item.averageBuildSeconds)}</td>
               <td className="number">
-                {item.libraryCostMs === null ? "control" : `${item.libraryCostMs.toFixed(1)} ms`}
+                {item.libraryCostMs === null ? (
+                  "control"
+                ) : (
+                  <>
+                    <span className={item.separation?.significant === false ? "indistinct" : ""}>
+                      {item.libraryCostMs.toFixed(1)} ms
+                    </span>
+                    {item.separation ? (
+                      <small>
+                        {item.separation.significant
+                          ? `95% ${item.separation.ci95LowMs.toFixed(0)} – ${item.separation.ci95HighMs.toFixed(0)} ms`
+                          : "within noise"}
+                      </small>
+                    ) : null}
+                  </>
+                )}
               </td>
               <td className="number">{item.standardDeviationMs.toFixed(1)} ms</td>
               <td className="number">{formatBytes(item.nextBytes, "MB")}</td>
@@ -441,7 +456,9 @@ function App() {
             {fastest !== null && (
               <p className="annotation">
                 Fastest observed average: <strong>{formatSeconds(fastest)}</strong>. Line length is
-                relative within this run; it is not a universal performance score.
+                relative within this run; it is not a universal performance score. A library cost
+                shown struck through is not distinguishable from the control at 95% confidence:
+                treat it as zero, not as a ranking.
               </p>
             )}
           </>
