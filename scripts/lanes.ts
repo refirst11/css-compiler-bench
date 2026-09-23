@@ -15,10 +15,15 @@ export type Lane = {
   mechanism: Mechanism;
 };
 
+// Scanning for class names the author already wrote and scanning declarations
+// to generate a stylesheet are not the same act, and this benchmark is about
+// exactly that difference: Tailwind never reads a style declaration, while
+// Panda reads them and then ships a resolver that picks the class at render.
 export type Mechanism =
   | "evaluates-module"
   | "rewrites-ast"
   | "scans-source"
+  | "authored-classes"
   | "runtime"
   | "names-only";
 
@@ -26,6 +31,7 @@ const MECHANISMS = [
   "evaluates-module",
   "rewrites-ast",
   "scans-source",
+  "authored-classes",
   "runtime",
   "names-only",
 ] as const;
