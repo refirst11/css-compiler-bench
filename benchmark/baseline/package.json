@@ -5,7 +5,8 @@
   "bench": {
     "label": "CSS Modules",
     "scaleKind": "css-modules",
-    "baseline": true
+    "baseline": true,
+    "mechanism": "names-only"
   },
   "scripts": {
     "predev": "rimraf .next",
