@@ -649,3 +649,51 @@ footer a {
   margin: 0;
   font-size: 0.8rem;
 }
+
+.mechanism {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid #232c4a;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.reach {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.reach-yes {
+  color: #86efac;
+}
+
+.reach-no {
+  color: #fb7185;
+}
+
+.reach-na {
+  opacity: 0.45;
+}
+
+.verdict {
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.verdict-dropped,
+.verdict-build-failed {
+  color: #fb7185;
+}
+
+.verdict-escaped-to-runtime {
+  color: #ffbd69;
+}
+
+.verdict-sees-through {
+  color: #86efac;
+}
+
+.verdict-not-applicable {
+  opacity: 0.45;
+}
