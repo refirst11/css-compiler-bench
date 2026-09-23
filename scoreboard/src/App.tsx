@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { MachineNote, Notes } from "./Notes";
 import { repositoryUrl, useBenchmark } from "./data";
 import type {
+  BindingMeasurement,
   BenchmarkData,
   BuildMeasurement,
   LaneFailure,
@@ -187,6 +188,7 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
         <thead>
           <tr>
             <th>Implementation</th>
+            <th>Mechanism</th>
             <th>Average</th>
             <th>Library cost</th>
             <th>SD</th>
@@ -201,6 +203,9 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
               <td>
                 <span className="table-label">{item.label}</span>
                 <small>{item.project}</small>
+              </td>
+              <td>
+                <span className="mechanism">{mechanismLabel(item.mechanism)}</span>
               </td>
               <td className="number">{formatSeconds(item.averageBuildSeconds)}</td>
               <td className="number">
@@ -357,6 +362,85 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
         not start at zero, so read the slope, not the height. The faint line repeated in each
         panel is the control.
       </p>
+    </div>
+  );
+}
+
+const MECHANISM_LABELS: Record<string, string> = {
+  "names-only": "names only",
+  "authored-classes": "authored classes",
+  "scans-source": "scans source",
+  "rewrites-ast": "rewrites AST",
+  "evaluates-module": "evaluates module",
+  runtime: "runtime",
+};
+
+function mechanismLabel(mechanism?: string) {
+  if (!mechanism) return "—";
+  return MECHANISM_LABELS[mechanism] ?? mechanism;
+}
+
+const OUTCOME_LABELS: Record<string, string> = {
+  "sees-through": "resolves it",
+  dropped: "drops it",
+  "escaped-to-runtime": "ships it to the runtime",
+  "build-failed": "refuses to build",
+  "not-applicable": "no style value to bind",
+};
+
+function Reach({ value }: { value: boolean | null }) {
+  if (value === null) return <span className="reach reach-na">—</span>;
+  return (
+    <span className={value ? "reach reach-yes" : "reach reach-no"}>{value ? "yes" : "no"}</span>
+  );
+}
+
+// The repository's central claim is that "compile-time CSS" names several
+// different mechanisms. This table is where that claim is measured rather than
+// asserted: the same declaration written three ways, and what each lane's build
+// managed to resolve.
+function BindingTable({ measurements }: { measurements: BindingMeasurement[] }) {
+  return (
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Implementation</th>
+            <th>Mechanism</th>
+            <th>At the call site</th>
+            <th>Behind a const</th>
+            <th>Behind an expression</th>
+            <th>Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          {measurements.map((item) => (
+            <tr key={item.project}>
+              <td>
+                <span className="table-label">{item.label}</span>
+                <small>{item.project}</small>
+              </td>
+              <td>
+                <span className="mechanism">{mechanismLabel(item.mechanism)}</span>
+              </td>
+              <td>
+                <Reach value={item.literalInCss} />
+              </td>
+              <td>
+                <Reach value={item.boundInCss} />
+              </td>
+              <td>
+                <Reach value={item.computedInCss} />
+              </td>
+              <td>
+                <span className={`verdict verdict-${item.outcome}`}>
+                  {OUTCOME_LABELS[item.outcome] ?? item.outcome}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -521,7 +605,32 @@ function App() {
 
       <section className="section">
         <SectionHeading
-          eyebrow="03 / shipped structure"
+          eyebrow="03 / binding escape"
+          title="What the build can still see"
+          detail={
+            data?.binding
+              ? `The same declaration written three ways — ${data.binding.literalSentinel} at the call site, ${data.binding.boundSentinel} behind a const, ${data.binding.computedSentinel} behind an expression — and whether each reached the stylesheet.`
+              : "Which lanes resolve a value they have to evaluate, and which do not."
+          }
+        />
+        {data?.binding?.measurements?.length ? (
+          <>
+            <BindingTable measurements={data.binding.measurements} />
+            <p className="annotation">
+              A lane that resolves the const but not the expression is folding constants while
+              reading the AST. One that resolves all three is executing the module. Reading a
+              declaration at all is what separates a compiler here from a scanner.
+            </p>
+          </>
+        ) : (
+          <EmptyState>Binding results appear after the probe runs.</EmptyState>
+        )}
+        <Failures failures={data?.binding?.failures} />
+      </section>
+
+      <section className="section">
+        <SectionHeading
+          eyebrow="04 / shipped structure"
           title="What survives the build"
           detail={
             data?.structure?.client
