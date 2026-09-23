@@ -428,6 +428,13 @@ code {
 .failures code {
   color: #edf2ff;
 }
+.failures-info {
+  border-color: #29456b;
+  background: #101c30;
+}
+.failures-info strong {
+  color: #93c5fd;
+}
 footer a {
   color: #8ea0c6;
 }
@@ -669,7 +676,7 @@ footer a {
 }
 
 .reach-no {
-  color: #fb7185;
+  color: #93c5fd;
 }
 
 .reach-na {
@@ -681,9 +688,12 @@ footer a {
   white-space: nowrap;
 }
 
-.verdict-dropped,
-.verdict-build-failed {
+.verdict-dropped {
   color: #fb7185;
+}
+
+.verdict-build-failed {
+  color: #93c5fd;
 }
 
 .verdict-escaped-to-runtime {
