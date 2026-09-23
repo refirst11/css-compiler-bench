@@ -36,7 +36,12 @@ Structure and Runtime columns.
 | Panda CSS | `panda` | scans source to generate the stylesheet | render, by a shipped function |
 | styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
 
-The AST readers share one limit: a value reached through a binding defeats them.
+The AST readers share one limit, and `pnpm bench:binding` measures it rather than asserting
+it. The probe writes the same declaration three ways — the value at the call site, the value
+behind a module-scope `const`, and the value behind an expression that has to be evaluated —
+then looks for each in the emitted CSS. A plain binding does **not** defeat them: they fold
+the constant. The expression does, and that is the line between reading the AST and executing
+the module — vanilla-extract compiles all three, the AST readers compile the first two.
 
 Deciding the class is not the same as deciding it at build. Panda decides it on every
 render, and styled-components writes the rule at render too — which is why the last two
@@ -80,6 +85,7 @@ scoreboard/         the Vite + React report
 | **Build cache** | bytes | what Turbopack persisted into `.next/cache` compiling this lane |
 | **Shipped structure** | bytes | the class-name machinery left in the SSR chunk |
 | **Client chunk** | bytes | the same, rebuilt with the fixture marked `"use client"` |
+| **Binding escape** | verdict | whether the lane compiles a value it has to evaluate to know |
 
 > [!IMPORTANT]
 > **A difference smaller than the standard deviation is noise.** Every average is reported
@@ -142,6 +148,7 @@ pnpm measure       # the full suite, exactly what CI runs
 # or one measurement at a time:
 pnpm bench                     # rounds = lanes + 1, first discarded
 pnpm bench:scale               # 10 / 100 / 1,000 distinct definitions
+pnpm bench:binding             # what each lane does with a value it must evaluate
 pnpm structure --client        # class-name structure, server and client
 
 pnpm dev           # the scoreboard, reading whatever you just measured
