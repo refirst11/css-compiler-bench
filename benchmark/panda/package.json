@@ -4,7 +4,8 @@
   "private": true,
   "bench": {
     "label": "Panda CSS",
-    "scaleKind": "panda"
+    "scaleKind": "panda",
+    "mechanism": "scans-source"
   },
   "scripts": {
     "predev": "rimraf .next styled-system && panda codegen",
