@@ -16,6 +16,21 @@ export type BuildMeasurement = {
   // render without it.
   cacheBytes?: number;
   samples: number[];
+  // Absent from results measured before the significance test was added;
+  // deploy.yml can redeploy from an older run's artifact, so the table has to
+  // render without it.
+  mechanism?: string;
+  medianBuildSeconds?: number;
+  madMs?: number;
+  sampleCount?: number;
+  noiseFloorMs?: number;
+  separation?: {
+    vs: string;
+    deltaMs: number;
+    ci95LowMs: number;
+    ci95HighMs: number;
+    significant: boolean;
+  } | null;
 };
 
 export type ScaleMeasurement = {
