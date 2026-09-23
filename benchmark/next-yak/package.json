@@ -4,7 +4,8 @@
   "private": true,
   "bench": {
     "label": "next-yak",
-    "scaleKind": "next-yak"
+    "scaleKind": "next-yak",
+    "mechanism": "rewrites-ast"
   },
   "scripts": {
     "predev": "rimraf .next",
