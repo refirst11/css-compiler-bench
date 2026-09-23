@@ -65,12 +65,22 @@ function SectionHeading({
 
 // A lane that could not be measured is named here rather than silently missing
 // from the chart above it.
-function Failures({ failures }: { failures?: LaneFailure[] }) {
+function Failures({
+  failures,
+  unit = "lane(s)",
+  tone = "error",
+}: {
+  failures?: LaneFailure[];
+  unit?: string;
+  tone?: "error" | "info";
+}) {
   if (!failures?.length) return null;
 
   return (
-    <div className="failures">
-      <strong>{failures.length} lane(s) failed this run</strong>
+    <div className={`failures failures-${tone}`}>
+      <strong>
+        {failures.length} {unit} failed this run
+      </strong>
       <ul>
         {failures.map((failure) => (
           <li key={failure.project}>
@@ -275,12 +285,12 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
     return padX + ((Math.log10(count) - Math.log10(counts[0])) / span) * (width - padX * 2);
   };
   const y = (value: number) =>
-    height - padBottom - ((value - low) / Math.max(high - low, 0.001)) * (height - padTop - padBottom);
+    height -
+    padBottom -
+    ((value - low) / Math.max(high - low, 0.001)) * (height - padTop - padBottom);
 
   const series = (project: string) =>
-    data.measurements
-      .filter((item) => item.project === project)
-      .sort((a, b) => a.count - b.count);
+    data.measurements.filter((item) => item.project === project).sort((a, b) => a.count - b.count);
 
   const baselineProject = lanes[0]?.[0];
   const baselinePoints = baselineProject
@@ -358,9 +368,9 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
         );
       })}
       <p className="scale-note">
-        Every panel shares one vertical scale, {low.toFixed(1)}s to {high.toFixed(1)}s — it does
-        not start at zero, so read the slope, not the height. The faint line repeated in each
-        panel is the control.
+        Every panel shares one vertical scale, {low.toFixed(1)}s to {high.toFixed(1)}s — it does not
+        start at zero, so read the slope, not the height. The faint line repeated in each panel is
+        the control.
       </p>
     </div>
   );
@@ -410,7 +420,7 @@ function BindingTable({ measurements }: { measurements: BindingMeasurement[] }) 
             <th>At the call site</th>
             <th>Behind a const</th>
             <th>Behind an expression</th>
-            <th>Verdict</th>
+            <th>Expression outcome</th>
           </tr>
         </thead>
         <tbody>
@@ -617,15 +627,15 @@ function App() {
           <>
             <BindingTable measurements={data.binding.measurements} />
             <p className="annotation">
-              A lane that resolves the const but not the expression is folding constants while
-              reading the AST. One that resolves all three is executing the module. Reading a
-              declaration at all is what separates a compiler here from a scanner.
+              Each form is built separately. A dash means that case has no result; a failed
+              expression build does not erase the literal or const results. Finding a value in the
+              stylesheet does not establish whether the compiler executes the module.
             </p>
           </>
         ) : (
           <EmptyState>Binding results appear after the probe runs.</EmptyState>
         )}
-        <Failures failures={data?.binding?.failures} />
+        <Failures failures={data?.binding?.failures} unit="probe case(s)" tone="info" />
       </section>
 
       <section className="section">
