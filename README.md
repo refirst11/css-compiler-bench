@@ -16,41 +16,64 @@ occupy eleven lanes
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
 
-## The three mechanisms
+## What "compile-time CSS" actually names
 
-"Compile-time CSS" names three different things here, and the difference is what this
-benchmark is really measuring. Which one a lane does is not in its README — it is in its
-Structure and Runtime columns.
+Several different mechanisms travel under that phrase, and separating them is what this
+benchmark is for. A lane declares its mechanism in its `package.json`; `pnpm bench:binding`
+then measures how far that mechanism actually reaches, so the classification is checked
+rather than taken on trust.
 
-| Lane | Folder | What it does at build | Where the class is decided |
+| Lane | Folder | Mechanism | Where the class is decided |
 |---|---|---|---|
 | CSS Modules | `baseline` | rewrites local class names to unique ones; compiles no styles | build, names only |
-| Tailwind | `tailwind` | scans for class names the author wrote by hand | authored |
+| Tailwind | `tailwind` | scans for class names the author wrote by hand; never reads a declaration | authored |
 | Tailwind + `cn` | `tailwind-cn` | the same, through `cn` | authored |
-| vanilla-extract | `vanilla-extract` | **executes** `.css.ts` as a module | build |
-| StyleX (Babel) | `stylex` | **reads the AST** and rewrites the call site | build |
-| StyleX (SWC) | `stylexswc` | **reads the AST** and rewrites the call site | build |
-| Plumeria | `plumeria` | **reads the AST** and rewrites the call site | build |
-| next-yak | `next-yak` | **reads the AST** and rewrites the call site | build |
-| Devup UI | `devup-ui` | **reads the AST** and rewrites the call site | build |
-| Panda CSS | `panda` | scans source to generate the stylesheet | render, by a shipped function |
+| Panda CSS | `panda` | scans declarations out of source to generate the stylesheet | render, by a shipped function |
+| vanilla-extract | `vanilla-extract` | executes `.css.ts` as a module | build |
+| StyleX (Babel) | `stylex` | reads the AST and rewrites the call site | build |
+| StyleX (SWC) | `stylexswc` | reads the AST and rewrites the call site | build |
+| Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
+| next-yak | `next-yak` | reads the AST and rewrites the call site | build |
+| Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
 | styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
 
-The AST readers share one limit, and `pnpm bench:binding` measures it rather than asserting
-it. The probe writes the same declaration three ways — the value at the call site, the value
+Reading a declaration at all is the line between a compiler and a scanner, and it is why
+Tailwind and Panda sit in different rows despite both scanning source: Tailwind only
+recognises class names somebody already wrote, while Panda reads the declaration and then
+ships a function that picks the class at render.
+
+### How far each one reaches
+
+The probe writes the same declaration three ways — the value at the call site, the value
 behind a module-scope `const`, and the value behind an expression that has to be evaluated —
-then looks for each in the emitted CSS. A plain binding does **not** defeat them: they fold
-the constant. The expression does, and that is the line between reading the AST and executing
-the module — vanilla-extract compiles all three, the AST readers compile the first two.
+and looks for each in the emitted CSS.
+
+| Lane | At the call site | Behind a const | Behind an expression |
+|---|---|---|---|
+| vanilla-extract | resolved | resolved | resolved |
+| StyleX (Babel / SWC) | resolved | resolved | resolved |
+| Panda CSS | resolved | resolved | resolved |
+| Plumeria | resolved | resolved | dropped |
+| Tailwind (both) | resolved | resolved | left to the runtime |
+| Devup UI | resolved | left to the runtime | left to the runtime |
+| next-yak | — | — | refuses to build |
+| styled-components | written at render | written at render | written at render |
+
+Two things in that table are worth knowing before reading anything else here. **A plain
+binding defeats almost nothing** — most of these fold the constant, so "a value behind a
+variable" is not the limit it is often described as. And **StyleX and Panda resolve the
+expression too**, which puts their reach alongside vanilla-extract even though they never
+execute the module the way it does. Only Devup UI is stopped by an ordinary `const`, and
+only next-yak treats the unresolvable case as an error rather than something to hand to the
+runtime.
 
 Deciding the class is not the same as deciding it at build. Panda decides it on every
-render, and styled-components writes the rule at render too — which is why the last two
-rows cost nothing at build and show up in the Runtime column instead.
+render, and styled-components writes the rule at render too — which is why those two cost
+nothing at build and show up in the Runtime column instead.
 
-The first three lanes are controls rather than contestants: neither CSS Modules nor Tailwind
-reads a style declaration and decides what class it becomes, which is exactly what makes
-them the baseline the rest are measured against. styled-components marks the other end of
-the same line.
+CSS Modules and Tailwind are controls rather than contestants: neither reads a style
+declaration and decides what class it becomes, which is exactly what makes them the baseline
+the rest are measured against. styled-components marks the other end of the same line.
 
 ## Philosophy
 
