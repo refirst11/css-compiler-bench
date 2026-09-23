@@ -53,19 +53,19 @@ and looks for each in the emitted CSS.
 | vanilla-extract | resolved | resolved | resolved |
 | StyleX (Babel / SWC) | resolved | resolved | resolved |
 | Panda CSS | resolved | resolved | resolved |
-| Plumeria | resolved | resolved | dropped |
+| Plumeria | resolved | resolved | — |
 | Tailwind (both) | resolved | resolved | left to the runtime |
 | Devup UI | resolved | left to the runtime | left to the runtime |
-| next-yak | — | — | refuses to build |
+| next-yak | resolved | resolved | — |
 | styled-components | written at render | written at render | written at render |
 
-Two things in that table are worth knowing before reading anything else here. **A plain
-binding defeats almost nothing** — most of these fold the constant, so "a value behind a
-variable" is not the limit it is often described as. And **StyleX and Panda resolve the
-expression too**, which puts their reach alongside vanilla-extract even though they never
-execute the module the way it does. Only Devup UI is stopped by an ordinary `const`, and
-only next-yak treats the unresolvable case as an error rather than something to hand to the
-runtime.
+Each form is built separately, so a failure in one does not erase the other results.
+Plumeria and next-yak both resolve the literal and the module-scope constant. Their expression
+probes fail to build; the dash means no emitted-CSS result, not a silently dropped value.
+
+Among the lanes with a complete result, **StyleX and Panda resolve the expression too**,
+which puts their reach alongside vanilla-extract even though they never execute the module
+the way it does. Devup UI leaves values behind a `const` or expression to the runtime.
 
 Deciding the class is not the same as deciding it at build. Panda decides it on every
 render, and styled-components writes the rule at render too — which is why those two cost
