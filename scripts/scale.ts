@@ -146,6 +146,66 @@ function restore(snapshot) {
   }
 }
 
+type ScaleRow = { count: number; project: string; label: string; buildSeconds: number };
+
+function slopesFrom(rows: ScaleRow[], counts: number[]) {
+  const ordered = [...counts].sort((a, b) => a - b);
+  const projects = [...new Map(rows.map((row) => [row.project, row.label])).entries()];
+  const controlName = laneList.find((lane) => lane.baseline)?.name;
+
+  const perDefinition = (project: string) => {
+    const points = ordered
+      .map((count) => rows.find((row) => row.project === project && row.count === count))
+      .filter(Boolean);
+    if (points.length < 2) return null;
+
+    const first = points[0];
+    const last = points[points.length - 1];
+    const segments = points.slice(1).map((point, index) => ({
+      from: points[index].count,
+      to: point.count,
+      msPerDefinition:
+        ((point.buildSeconds - points[index].buildSeconds) * 1000) /
+        (point.count - points[index].count),
+    }));
+    return {
+      msPerDefinition:
+        ((last.buildSeconds - first.buildSeconds) * 1000) / (last.count - first.count),
+      segments,
+    };
+  };
+
+  const control = controlName ? perDefinition(controlName) : null;
+
+  // The sweep takes one build per point, so there is no interval to test a
+  // per-definition cost against. The control's own segments disagree by some
+  // amount purely from run-to-run wobble, and that disagreement is the only
+  // noise estimate this measurement contains. It is reported as a number rather
+  // than resolved into a verdict here: the threshold belongs to whoever is
+  // reading, and moving it must not mean measuring again.
+  const controlSpread = control
+    ? Math.max(...control.segments.map((segment) => segment.msPerDefinition)) -
+      Math.min(...control.segments.map((segment) => segment.msPerDefinition))
+    : null;
+
+  return projects.flatMap(([project, label]) => {
+    const slope = perDefinition(project);
+    if (!slope) return [];
+    const overControl =
+      control && project !== controlName ? slope.msPerDefinition - control.msPerDefinition : null;
+    return [
+      {
+        project,
+        label,
+        msPerDefinition: slope.msPerDefinition,
+        msPerDefinitionOverControl: overControl,
+        controlSpreadMsPerDefinition: controlSpread,
+        segments: slope.segments,
+      },
+    ];
+  });
+}
+
 function run() {
   const counts = countsFromArgs();
   const allFiles = laneList.flatMap(fixtureFiles);
@@ -194,13 +254,33 @@ function run() {
     restore(snapshot);
   }
 
+  const slopes = slopesFrom(rows, counts);
+
   console.log("\n📈 Distinct styled component scale");
   console.table(rows);
+  console.table(
+    Object.fromEntries(
+      slopes.map((slope) => [
+        slope.label,
+        {
+          "ms / definition": slope.msPerDefinition.toFixed(3),
+          "over control": slope.msPerDefinitionOverControl?.toFixed(3) ?? "control",
+        },
+      ]),
+    ),
+  );
+  console.log(
+    "One build per lane per count, so these slopes carry no interval. Compare a cost over the " +
+      "control against the control's own segment spread, which is the only noise this " +
+      "measurement contains.",
+  );
+
   updateResults({
     scale: {
       status: failures.size ? "partial" : "complete",
       counts,
       measurements: rows,
+      slopes,
       failures: [...failures].map(([project, error]) => ({ project, error })),
     },
   });
