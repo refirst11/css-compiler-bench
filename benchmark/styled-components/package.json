@@ -4,7 +4,8 @@
   "private": true,
   "bench": {
     "label": "styled-components",
-    "scaleKind": "styled-components"
+    "scaleKind": "styled-components",
+    "mechanism": "runtime"
   },
   "scripts": {
     "predev": "rimraf .next",
