@@ -50,6 +50,17 @@ export type StructureMeasurement = {
   "Client chunk (B)"?: number;
 };
 
+export type BindingMeasurement = {
+  project: string;
+  label: string;
+  mechanism?: string;
+  outcome: "sees-through" | "dropped" | "escaped-to-runtime" | "build-failed" | "not-applicable";
+  literalInCss: boolean | null;
+  boundInCss: boolean | null;
+  computedInCss: boolean | null;
+  computedInJs: boolean | null;
+};
+
 export type Environment = {
   node?: string;
   platform?: string;
@@ -82,6 +93,14 @@ export type BenchmarkData = {
     status: string;
     counts: number[];
     measurements: ScaleMeasurement[];
+    failures?: LaneFailure[];
+  };
+  binding?: {
+    status: string;
+    literalSentinel: string;
+    boundSentinel: string;
+    computedSentinel: string;
+    measurements: BindingMeasurement[];
     failures?: LaneFailure[];
   };
   structure?: {
