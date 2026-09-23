@@ -589,3 +589,63 @@ footer a {
   text-decoration: line-through;
   text-decoration-thickness: 1px;
 }
+
+.scale-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.scale-panel {
+  margin: 0;
+  padding: 10px 10px 4px;
+  border: 1px solid #1d2540;
+  border-radius: 10px;
+  background: #0c1120;
+}
+
+.scale-panel figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.scale-panel-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.scale-panel figcaption small {
+  font-variant-numeric: tabular-nums;
+}
+
+.scale-panel svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.scale-line {
+  stroke: #ffbd69;
+  stroke-width: 2;
+}
+
+.scale-ghost {
+  stroke: #4a5578;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.scale-dot {
+  fill: #ffbd69;
+  stroke: #0c1120;
+  stroke-width: 2;
+}
+
+.scale-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.8rem;
+}
