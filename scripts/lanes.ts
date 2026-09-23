@@ -12,10 +12,35 @@ export type Lane = {
   baseline: boolean;
   // Which fixture generator scripts/scale.ts writes into this lane.
   scaleKind: string;
+  mechanism: Mechanism;
 };
+
+export type Mechanism =
+  | "evaluates-module"
+  | "rewrites-ast"
+  | "scans-source"
+  | "runtime"
+  | "names-only";
+
+const MECHANISMS = [
+  "evaluates-module",
+  "rewrites-ast",
+  "scans-source",
+  "runtime",
+  "names-only",
+] as const;
 
 export const repositoryRoot = path.resolve(import.meta.dirname, "..");
 export const benchmarkRoot = path.join(repositoryRoot, "benchmark");
+
+function readMechanism(name: string, value: unknown): Mechanism {
+  if (!MECHANISMS.includes(value as Mechanism)) {
+    throw new Error(
+      `benchmark/${name}/package.json needs "bench.mechanism", one of: ${MECHANISMS.join(", ")}.`,
+    );
+  }
+  return value as Mechanism;
+}
 
 function readLane(name: string): Lane | null {
   const dir = path.join(benchmarkRoot, name);
@@ -26,8 +51,9 @@ function readLane(name: string): Lane | null {
   const bench = manifest.bench;
   if (!bench) {
     throw new Error(
-      `benchmark/${name}/package.json has no "bench" block. Add { "label", "scaleKind" } ` +
-        `(and "baseline": true for the control lane) or move the folder out of benchmark/.`,
+      `benchmark/${name}/package.json has no "bench" block. Add ` +
+        `{ "label", "scaleKind", "mechanism" } (and "baseline": true for the control lane) ` +
+        `or move the folder out of benchmark/.`,
     );
   }
   return {
@@ -36,6 +62,7 @@ function readLane(name: string): Lane | null {
     dir,
     baseline: bench.baseline === true,
     scaleKind: bench.scaleKind ?? "tailwind",
+    mechanism: readMechanism(name, bench.mechanism),
   };
 }
 
