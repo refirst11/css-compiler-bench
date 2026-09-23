@@ -235,97 +235,128 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
   );
 }
 
-const LANE_COLORS = [
-  "#ffbd69",
-  "#7dd3fc",
-  "#c4b5fd",
-  "#86efac",
-  "#fb7185",
-  "#f0abfc",
-  "#facc15",
-  "#67e8f9",
-];
+function niceFloor(value: number) {
+  return Math.floor(value * 2) / 2;
+}
 
+function niceCeil(value: number) {
+  return Math.ceil(value * 2) / 2;
+}
+
+// Eleven lanes cannot be told apart by eleven line colours on one pair of axes:
+// the palette runs out at eight and the lines cross in a band a few tenths of a
+// second wide. One panel per lane on a shared scale compares the slopes without
+// asking the reader to hold a legend in their head.
 function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
   const lanes = [
     ...new Map(
       data.measurements.map((item) => [item.project, item.label ?? item.project]),
     ).entries(),
   ];
-  const max = Math.max(...data.measurements.map((item) => item.buildSeconds));
-  const min = Math.min(...data.measurements.map((item) => item.buildSeconds));
-  const width = 760;
-  const height = 250;
+  const counts = [...data.counts].sort((a, b) => a - b);
+  const seconds = data.measurements.map((item) => item.buildSeconds);
+  const low = niceFloor(Math.min(...seconds));
+  const high = niceCeil(Math.max(...seconds));
+
+  const width = 200;
+  const height = 104;
+  const padX = 18;
+  const padTop = 10;
+  const padBottom = 18;
+
   const x = (count: number) => {
-    const minCount = Math.min(...data.counts);
-    const maxCount = Math.max(...data.counts);
-    if (minCount === maxCount) return width / 2;
-    return (
-      32 +
-      ((Math.log10(count) - Math.log10(minCount)) / (Math.log10(maxCount) - Math.log10(minCount))) *
-        (width - 64)
-    );
+    if (counts.length < 2) return width / 2;
+    const span = Math.log10(counts[counts.length - 1]) - Math.log10(counts[0]);
+    return padX + ((Math.log10(count) - Math.log10(counts[0])) / span) * (width - padX * 2);
   };
-  const y = (seconds: number) =>
-    height - 30 - ((seconds - min) / Math.max(max - min, 0.001)) * (height - 58);
+  const y = (value: number) =>
+    height - padBottom - ((value - low) / Math.max(high - low, 0.001)) * (height - padTop - padBottom);
+
+  const series = (project: string) =>
+    data.measurements
+      .filter((item) => item.project === project)
+      .sort((a, b) => a.count - b.count);
+
+  const baselineProject = lanes[0]?.[0];
+  const baselinePoints = baselineProject
+    ? series(baselineProject)
+        .map((item) => `${x(item.count)},${y(item.buildSeconds)}`)
+        .join(" ")
+    : "";
 
   return (
-    <div className="chart-layout">
-      <svg
-        className="scale-chart"
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label="Build time by number of distinct styled definitions"
-      >
-        {[0, 1, 2, 3].map((step) => {
-          const value = min + ((max - min) * step) / 3;
-          const yPosition = y(value);
-          return (
-            <g key={step}>
-              <line x1="32" x2={width - 32} y1={yPosition} y2={yPosition} className="grid-line" />
-              <text x="0" y={yPosition + 4} className="axis-label">
-                {value.toFixed(1)}s
-              </text>
-            </g>
-          );
-        })}
-        {lanes.map(([project], index) => {
-          const points = data.measurements
-            .filter((item) => item.project === project)
-            .sort((a, b) => a.count - b.count)
-            .map((item) => `${x(item.count)},${y(item.buildSeconds)}`)
-            .join(" ");
-          // The viewBox is 760 wide and the chart is stretched to its container,
-          // so a stroke width set on the element is multiplied by whatever that
-          // ratio happens to be -- the old 3 landed near 4.3px on a wide screen,
-          // heavy once eleven lanes overlap. Non-scaling keeps it in device
-          // pixels, so styles.css can set the width and mean it.
-          return (
-            <polyline
-              key={project}
-              points={points}
-              fill="none"
-              stroke={LANE_COLORS[index % LANE_COLORS.length]}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
-            />
-          );
-        })}
-        {data.counts.map((count) => (
-          <text key={count} x={x(count)} y={height - 5} textAnchor="middle" className="axis-label">
-            {count}
-          </text>
-        ))}
-      </svg>
-      <div className="legend">
-        {lanes.map(([project, label], index) => (
-          <span key={project}>
-            <i style={{ background: LANE_COLORS[index % LANE_COLORS.length] }} />
-            {label}
-          </span>
-        ))}
-      </div>
+    <div className="scale-grid">
+      {lanes.map(([project, label]) => {
+        const points = series(project);
+        const last = points[points.length - 1];
+        return (
+          <figure className="scale-panel" key={project}>
+            <figcaption>
+              <span className="scale-panel-label">{label}</span>
+              {last ? <small>{formatSeconds(last.buildSeconds)}</small> : null}
+            </figcaption>
+            <svg
+              viewBox={`0 0 ${width} ${height}`}
+              role="img"
+              aria-label={`${label}: build time across ${counts.join(", ")} distinct definitions`}
+            >
+              {[low, (low + high) / 2, high].map((value) => (
+                <line
+                  key={value}
+                  x1={padX}
+                  x2={width - padX}
+                  y1={y(value)}
+                  y2={y(value)}
+                  className="grid-line"
+                />
+              ))}
+              {project !== baselineProject && baselinePoints ? (
+                <polyline
+                  points={baselinePoints}
+                  fill="none"
+                  className="scale-ghost"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ) : null}
+              <polyline
+                points={points.map((item) => `${x(item.count)},${y(item.buildSeconds)}`).join(" ")}
+                fill="none"
+                className="scale-line"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              {points.map((item) => (
+                <circle
+                  key={item.count}
+                  cx={x(item.count)}
+                  cy={y(item.buildSeconds)}
+                  r="4"
+                  className="scale-dot"
+                >
+                  <title>{`${item.count} definitions — ${formatSeconds(item.buildSeconds)}`}</title>
+                </circle>
+              ))}
+              {counts.map((count) => (
+                <text
+                  key={count}
+                  x={x(count)}
+                  y={height - 4}
+                  textAnchor="middle"
+                  className="axis-label"
+                >
+                  {count}
+                </text>
+              ))}
+            </svg>
+          </figure>
+        );
+      })}
+      <p className="scale-note">
+        Every panel shares one vertical scale, {low.toFixed(1)}s to {high.toFixed(1)}s — it does
+        not start at zero, so read the slope, not the height. The faint line repeated in each
+        panel is the control.
+      </p>
     </div>
   );
 }
