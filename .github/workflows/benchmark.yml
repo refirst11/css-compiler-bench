@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
     inputs:
       iterations:
-        description: Cold builds per lane (the first is a discarded warm-up).
+        description: Cold builds per lane (the first is a discarded warm-up). Empty means one per lane plus the warm-up.
         type: string
         required: false
-        default: "10"
+        default: ""
       scale_counts:
         description: Distinct styled definitions to sweep, comma separated.
         type: string
@@ -46,7 +46,11 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  BENCHMARK_ITERATIONS: ${{ github.event.inputs.iterations || '10' }}
+  # Left empty so the harness picks its own default, which is one round per
+  # lane plus a discarded warm-up. Anything smaller stops the rotation from
+  # putting every lane in every position exactly once, which is the whole
+  # reason the order rotates.
+  BENCHMARK_ITERATIONS: ${{ github.event.inputs.iterations || '' }}
   BENCHMARK_SCALE_COUNTS: ${{ github.event.inputs.scale_counts || '10,100,1000' }}
   BENCHMARK_LANES: ${{ github.event.inputs.lanes || '' }}
   NEXT_TELEMETRY_DISABLED: "1"
@@ -124,7 +128,7 @@ jobs:
             echo
             echo "- Runner: ubuntu-24.04 ($(nproc) cores)"
             echo "- Node: $(node --version) · pnpm: $(pnpm --version)"
-            echo "- Iterations: ${BENCHMARK_ITERATIONS} · scale counts: ${BENCHMARK_SCALE_COUNTS} · lanes: ${BENCHMARK_LANES:-all}"
+            echo "- Iterations: ${BENCHMARK_ITERATIONS:-one per lane plus warm-up} · scale counts: ${BENCHMARK_SCALE_COUNTS} · lanes: ${BENCHMARK_LANES:-all}"
             echo
             echo "| Measurement | Result |"
             echo "| :--- | :--- |"
