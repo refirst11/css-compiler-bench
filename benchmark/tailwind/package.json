@@ -5,7 +5,7 @@
   "bench": {
     "label": "Tailwind",
     "scaleKind": "tailwind",
-    "mechanism": "scans-source"
+    "mechanism": "authored-classes"
   },
   "scripts": {
     "predev": "rimraf .next",
