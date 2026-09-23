@@ -4,7 +4,8 @@
   "private": true,
   "bench": {
     "label": "vanilla-extract",
-    "scaleKind": "vanilla-extract"
+    "scaleKind": "vanilla-extract",
+    "mechanism": "evaluates-module"
   },
   "scripts": {
     "predev": "rimraf .next",
