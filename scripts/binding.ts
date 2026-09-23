@@ -11,56 +11,69 @@ const BUILD_TIMEOUT_MS = numberFromEnv("BENCHMARK_BUILD_TIMEOUT_MS", 10 * 60 * 1
 
 const laneList = selectedLanes();
 
-function probeSource(kind: string): string | null {
+const cases = ["literal", "bound", "computed"] as const;
+type ProbeCase = (typeof cases)[number];
+
+function probeFiles(lane: Lane, probeCase: ProbeCase = "literal") {
+  const kind = lane.scaleKind;
   if (kind === "css-modules") return null;
+  const sentinel = { literal: LITERAL, bound: BOUND, computed: COMPUTED }[probeCase];
+  const tailwind = kind === "tailwind" || kind === "cn";
+  const value = tailwind ? `tracking-[${sentinel}]` : sentinel;
+  const binding =
+    probeCase === "literal"
+      ? ""
+      : probeCase === "bound"
+        ? `const VALUE = ${JSON.stringify(value)};`
+        : `const VALUE = [${JSON.stringify(tailwind ? "tracking-[0.7" : "0.7")}, ${JSON.stringify(tailwind ? "89px]" : "89px")}].join("");`;
+  const expression = probeCase === "literal" ? JSON.stringify(value) : "VALUE";
+  let imports = "";
+  let declaration = "";
+  let element: string;
+  const files: { path: string; source: string }[] = [];
 
-  const binds = `const BOUND = "${BOUND}";\nconst COMPUTED = ["${COMPUTED.slice(0, 3)}", "${COMPUTED.slice(3)}"].join("");`;
-
-  if (kind === "plumeria")
-    return `import * as css from "@plumeria/core";\n\n${binds}\n\nconst literal = css.create({ a: { letterSpacing: "${LITERAL}" } });\nconst bound = css.create({ b: { letterSpacing: BOUND } });\nconst computed = css.create({ c: { letterSpacing: COMPUTED } });\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <div classStyle={literal.a}>literal</div>\n      <div classStyle={bound.b}>bound</div>\n      <div classStyle={computed.c}>computed</div>\n    </>\n  );\n}\n`;
-
-  if (kind === "stylex")
-    return `import * as stylex from "@stylexjs/stylex";\n\n${binds}\n\nconst literal = stylex.create({ a: { letterSpacing: "${LITERAL}" } });\nconst bound = stylex.create({ b: { letterSpacing: BOUND } });\nconst computed = stylex.create({ c: { letterSpacing: COMPUTED } });\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <div {...stylex.props(literal.a)}>literal</div>\n      <div {...stylex.props(bound.b)}>bound</div>\n      <div {...stylex.props(computed.c)}>computed</div>\n    </>\n  );\n}\n`;
-
-  if (kind === "panda")
-    return `import { css } from "../../styled-system/css";\n\n${binds}\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <div className={css({ letterSpacing: "${LITERAL}" })}>literal</div>\n      <div className={css({ letterSpacing: BOUND })}>bound</div>\n      <div className={css({ letterSpacing: COMPUTED })}>computed</div>\n    </>\n  );\n}\n`;
-
-  if (kind === "devup")
-    return `import { Box } from "@devup-ui/react";\n\n${binds}\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <Box letterSpacing="${LITERAL}">literal</Box>\n      <Box letterSpacing={BOUND}>bound</Box>\n      <Box letterSpacing={COMPUTED}>computed</Box>\n    </>\n  );\n}\n`;
-
-  if (kind === "next-yak" || kind === "styled-components") {
-    const imp =
+  if (kind === "plumeria" || kind === "stylex") {
+    imports =
+      kind === "plumeria"
+        ? 'import * as css from "@plumeria/core";'
+        : 'import * as css from "@stylexjs/stylex";';
+    declaration = `const styles = css.create({ probe: { letterSpacing: ${expression} } });`;
+    element =
+      kind === "plumeria"
+        ? "<div classStyle={styles.probe}>probe</div>"
+        : "<div {...css.props(styles.probe)}>probe</div>";
+  } else if (kind === "panda") {
+    imports = 'import { css } from "../../styled-system/css";';
+    element = `<div className={css({ letterSpacing: ${expression} })}>probe</div>`;
+  } else if (kind === "devup") {
+    imports = 'import { Box } from "@devup-ui/react";';
+    element = `<Box letterSpacing={${expression}}>probe</Box>`;
+  } else if (kind === "next-yak" || kind === "styled-components") {
+    imports =
       kind === "next-yak"
         ? 'import { styled } from "next-yak";'
         : 'import styled from "styled-components";';
-    return `${imp}\n\n${binds}\n\nconst Literal = styled.div\`letter-spacing: ${LITERAL};\`;\nconst Bound = styled.div\`letter-spacing: \${BOUND};\`;\nconst Computed = styled.div\`letter-spacing: \${COMPUTED};\`;\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <Literal>literal</Literal>\n      <Bound>bound</Bound>\n      <Computed>computed</Computed>\n    </>\n  );\n}\n`;
-  }
-
-  if (kind === "vanilla-extract")
-    return `import * as styles from "./Scale.css";\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <div className={styles.literal}>literal</div>\n      <div className={styles.bound}>bound</div>\n      <div className={styles.computed}>computed</div>\n    </>\n  );\n}\n`;
-
-  if (kind === "cn")
-    return `import { cn } from "cn";\n\nconst BOUND = "tracking-[${BOUND}]";\nconst COMPUTED = ["tracking-[${COMPUTED.slice(0, 3)}", "${COMPUTED.slice(3)}]"].join("");\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <div className={cn("tracking-[${LITERAL}]")}>literal</div>\n      <div className={cn(BOUND)}>bound</div>\n      <div className={cn(COMPUTED)}>computed</div>\n    </>\n  );\n}\n`;
-
-  if (kind === "tailwind")
-    return `const BOUND = "tracking-[${BOUND}]";\nconst COMPUTED = ["tracking-[${COMPUTED.slice(0, 3)}", "${COMPUTED.slice(3)}]"].join("");\n\nexport default function BindingProbe() {\n  return (\n    <>\n      <div className="tracking-[${LITERAL}]">literal</div>\n      <div className={BOUND}>bound</div>\n      <div className={COMPUTED}>computed</div>\n    </>\n  );\n}\n`;
-
-  throw new Error(
-    `Unknown scaleKind "${kind}". Add a binding probe branch here, or set a known scaleKind in the lane's package.json.`,
-  );
-}
-
-function probeFiles(lane: Lane) {
-  const source = probeSource(lane.scaleKind);
-  if (source === null) return null;
-
-  const files = [{ path: path.join(lane.dir, "src/component/ScaleFixture.tsx"), source }];
-  if (lane.scaleKind === "vanilla-extract") {
+    const interpolation = probeCase === "literal" ? sentinel : "${VALUE}";
+    declaration = "const Probe = styled.div`letter-spacing: " + interpolation + ";`;";
+    element = "<Probe>probe</Probe>";
+  } else if (kind === "vanilla-extract") {
+    imports = 'import { probe } from "./Scale.css";';
+    element = "<div className={probe}>probe</div>";
     files.push({
       path: path.join(lane.dir, "src/component/Scale.css.ts"),
-      source: `import { style } from "@vanilla-extract/css";\n\nconst BOUND = "${BOUND}";\nconst COMPUTED = ["${COMPUTED.slice(0, 3)}", "${COMPUTED.slice(3)}"].join("");\n\nexport const literal = style({ letterSpacing: "${LITERAL}" });\nexport const bound = style({ letterSpacing: BOUND });\nexport const computed = style({ letterSpacing: COMPUTED });\n`,
+      source: `import { style } from "@vanilla-extract/css";\n${binding}\nexport const probe = style({ letterSpacing: ${expression} });\n`,
     });
+  } else if (tailwind) {
+    imports = kind === "cn" ? 'import { cn } from "cn";' : "";
+    element = `<div className={${kind === "cn" ? `cn(${expression})` : expression}}>probe</div>`;
+  } else {
+    throw new Error(`Unknown scaleKind "${kind}". Add a binding probe branch here.`);
   }
+
+  files.push({
+    path: path.join(lane.dir, "src/component/ScaleFixture.tsx"),
+    source: `${imports}\n${kind === "vanilla-extract" ? "" : binding}\n${declaration}\nexport default function BindingProbe() { return (${element}); }\n`,
+  });
   return files;
 }
 
@@ -141,38 +154,46 @@ function run() {
         continue;
       }
 
-      for (const file of files) fs.writeFileSync(file.path, file.source);
-
-      const env = { ...process.env, BENCHMARK_SCALE_COUNT: "1" };
-      const nextPath = path.join(lane.dir, ".next");
-      try {
-        execSync("npm run prebuild", { cwd: lane.dir, env, stdio: "ignore", timeout: BUILD_TIMEOUT_MS });
-        // Piped rather than ignored: a lane that refuses to build is a result
-        // here, not an accident, and "Command failed" alone cannot be told
-        // apart from a probe this script generated wrongly.
-        execSync("npm run build", { cwd: lane.dir, env, stdio: "pipe", timeout: BUILD_TIMEOUT_MS });
-      } catch (error) {
-        const reason = buildFailureReason(error);
-        failures.set(lane.name, reason);
-        rows.push({
-          project: lane.name,
-          label: lane.label,
-          mechanism: lane.mechanism,
-          outcome: "build-failed",
-          literalInCss: null,
-          boundInCss: null,
-          computedInCss: null,
-          computedInJs: null,
-        });
-        console.log(`${lane.name}\tbuild-failed — ${reason}`);
-        continue;
+      const row = {
+        project: lane.name,
+        label: lane.label,
+        mechanism: lane.mechanism,
+        outcome: "build-failed",
+        literalInCss: null as boolean | null,
+        boundInCss: null as boolean | null,
+        computedInCss: null as boolean | null,
+        computedInJs: null as boolean | null,
+      };
+      // Each form gets its own build: rejecting one must not erase the others.
+      for (const probeCase of cases) {
+        for (const file of probeFiles(lane, probeCase)!) fs.writeFileSync(file.path, file.source);
+        const env = { ...process.env, BENCHMARK_SCALE_COUNT: "1" };
+        const nextPath = path.join(lane.dir, ".next");
+        try {
+          execSync("npm run build", {
+            cwd: lane.dir,
+            env,
+            stdio: "pipe",
+            timeout: BUILD_TIMEOUT_MS,
+          });
+        } catch (error) {
+          const reason = buildFailureReason(error);
+          failures.set(`${lane.name}/${probeCase}`, reason);
+          console.log(`${lane.name}/${probeCase}\tbuild-failed — ${reason}`);
+          continue;
+        }
+        const css = read(walk(nextPath, (name) => name.endsWith(".css"), "cache"));
+        const js = read(walk(nextPath, (name) => name.endsWith(".js"), "cache"));
+        const verdict = classify(css, js);
+        const field = `${probeCase}InCss` as const;
+        row[field] = verdict[field];
+        if (probeCase === "computed") {
+          row.computedInJs = verdict.computedInJs;
+          row.outcome = verdict.outcome;
+        }
+        console.log(`${lane.name}/${probeCase}\tCSS: ${row[field]}`);
       }
-
-      const css = read(walk(nextPath, (name) => name.endsWith(".css"), "cache"));
-      const js = read(walk(nextPath, (name) => name.endsWith(".js"), "cache"));
-      const verdict = classify(css, js);
-      rows.push({ project: lane.name, label: lane.label, mechanism: lane.mechanism, ...verdict });
-      console.log(`${lane.name}\t${verdict.outcome}`);
+      rows.push(row);
     }
   } finally {
     for (const [file, source] of snapshot) {
@@ -201,8 +222,8 @@ function run() {
   );
   console.log(
     `literal is written at the call site, bound goes through a module-scope const, and computed ` +
-      `requires evaluating an expression. A lane that compiles bound but not computed is reading the ` +
-      `AST and folding constants; one that compiles computed is executing the module. ` +
+      `requires evaluating an expression. Each form is built separately; null means that form failed to build. ` +
+      `Resolving an expression does not establish whether the compiler executes the module. ` +
       `Sentinels: ${LITERAL} / ${BOUND} / ${COMPUTED}.`,
   );
 
