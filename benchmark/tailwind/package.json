@@ -4,7 +4,8 @@
   "private": true,
   "bench": {
     "label": "Tailwind",
-    "scaleKind": "tailwind"
+    "scaleKind": "tailwind",
+    "mechanism": "scans-source"
   },
   "scripts": {
     "predev": "rimraf .next",
