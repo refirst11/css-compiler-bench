@@ -96,6 +96,22 @@ function classify(css: string, js: string) {
   return { literalInCss, boundInCss, computedInCss, computedInJs, outcome };
 }
 
+function buildFailureReason(error: unknown): string {
+  const output = [
+    (error as { stdout?: Buffer })?.stdout?.toString() ?? "",
+    (error as { stderr?: Buffer })?.stderr?.toString() ?? "",
+  ]
+    .join("\n")
+    .split("\n")
+    .map((line) => line.replace(/\u001b\[[0-9;]*m/g, "").trimEnd())
+    .filter((line) => line.trim().length > 0);
+
+  const marker = output.findIndex((line) => /error/i.test(line));
+  const excerpt = (marker >= 0 ? output.slice(marker, marker + 8) : output.slice(-8)).join(" · ");
+  if (excerpt) return excerpt.slice(0, 600);
+  return error instanceof Error ? error.message.split("\n")[0] : String(error);
+}
+
 function run() {
   const snapshot = new Map<string, string | null>();
   const rows = [];
@@ -131,9 +147,12 @@ function run() {
       const nextPath = path.join(lane.dir, ".next");
       try {
         execSync("npm run prebuild", { cwd: lane.dir, env, stdio: "ignore", timeout: BUILD_TIMEOUT_MS });
-        execSync("npm run build", { cwd: lane.dir, env, stdio: "ignore", timeout: BUILD_TIMEOUT_MS });
+        // Piped rather than ignored: a lane that refuses to build is a result
+        // here, not an accident, and "Command failed" alone cannot be told
+        // apart from a probe this script generated wrongly.
+        execSync("npm run build", { cwd: lane.dir, env, stdio: "pipe", timeout: BUILD_TIMEOUT_MS });
       } catch (error) {
-        const reason = error instanceof Error ? error.message.split("\n")[0] : String(error);
+        const reason = buildFailureReason(error);
         failures.set(lane.name, reason);
         rows.push({
           project: lane.name,
