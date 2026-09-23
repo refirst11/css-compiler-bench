@@ -613,6 +613,7 @@ function run(): void {
       report("SSR chunk", ssr, chunk.name);
       if (showContents) dump("SSR chunk contents", ssr.rows);
 
+      let clientChunkBytes: number | null = null;
       const row: Record<string, number | string> = {
         "SSR chunk (B)": ssr.total,
         "Structure (B)": ssr.structure,
@@ -640,10 +641,20 @@ function run(): void {
         if (showContents) dump("Client chunk contents", clientRows);
         compare(ssr.rows, clientRows);
         row["Client chunk (B)"] = clientBytes;
+        clientChunkBytes = clientBytes;
       }
 
       summary[label] = row;
-      rows.push({ project, label, ...row });
+      rows.push({
+        project,
+        label,
+        mechanism: lane.mechanism,
+        ...row,
+        ssrChunkBytes: ssr.total,
+        structureBytes: ssr.structure,
+        runtimeBytes: ssr.runtime,
+        clientChunkBytes,
+      });
     } catch (error) {
       const reason = error instanceof Error ? error.message.split("\n")[0] : String(error);
       failures.set(lane.name, reason);
