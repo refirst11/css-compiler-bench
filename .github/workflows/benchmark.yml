@@ -92,6 +92,12 @@ jobs:
         shell: bash
         run: set -o pipefail && pnpm bench:scale 2>&1 | tee scale.log
 
+      - name: Binding escape probe
+        id: binding
+        continue-on-error: true
+        shell: bash
+        run: set -o pipefail && pnpm bench:binding 2>&1 | tee binding.log
+
       - name: Server and client structure
         id: structure
         continue-on-error: true
@@ -124,12 +130,13 @@ jobs:
             echo "| :--- | :--- |"
             echo "| Cold build | ${{ steps.bench.outcome }} |"
             echo "| Scale sweep | ${{ steps.scale.outcome }} |"
+            echo "| Binding escape | ${{ steps.binding.outcome }} |"
             echo "| Structure | ${{ steps.structure.outcome }} |"
             echo
             echo "> Shared CI runners are noisy. Treat these numbers as a check that the"
             echo "> relative trend reproduces on another OS and CPU, not as absolute timings."
             echo
-            for log in benchmark scale structure; do
+            for log in benchmark scale binding structure; do
               echo "## ${log}"
               echo
               echo '```text'
@@ -156,6 +163,7 @@ jobs:
           path: |
             benchmark.log
             scale.log
+            binding.log
             structure.log
           if-no-files-found: warn
           retention-days: 90
