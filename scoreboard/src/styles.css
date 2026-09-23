@@ -583,3 +583,9 @@ footer a {
     monospace;
   text-align: right;
 }
+
+.indistinct {
+  opacity: 0.45;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
