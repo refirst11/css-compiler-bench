@@ -4,7 +4,8 @@
   "private": true,
   "bench": {
     "label": "StyleX (SWC)",
-    "scaleKind": "stylex"
+    "scaleKind": "stylex",
+    "mechanism": "rewrites-ast"
   },
   "scripts": {
     "predev": "rimraf .next",
