@@ -59,6 +59,42 @@ function stdDev(xs) {
   return Math.sqrt(xs.reduce((total, x) => total + (x - m) ** 2, 0) / (xs.length - 1));
 }
 
+function median(xs) {
+  const s = [...xs].sort((a, b) => a - b);
+  const mid = s.length >> 1;
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+}
+
+function mad(xs) {
+  const m = median(xs);
+  return median(xs.map((x) => Math.abs(x - m)));
+}
+
+function lcg(seed) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function bootstrapDiffCi95(a, b, resamples = 2000) {
+  if (a.length < 2 || b.length < 2) return null;
+  const rand = lcg(0x5eed);
+  const diffs = [];
+  for (let i = 0; i < resamples; i++) {
+    let sa = 0;
+    for (let j = 0; j < a.length; j++) sa += a[(rand() * a.length) | 0];
+    let sb = 0;
+    for (let j = 0; j < b.length; j++) sb += b[(rand() * b.length) | 0];
+    diffs.push(sa / a.length - sb / b.length);
+  }
+  diffs.sort((x, y) => x - y);
+  const lo = diffs[Math.floor(resamples * 0.025)];
+  const hi = diffs[Math.ceil(resamples * 0.975) - 1];
+  return { lo, hi };
+}
+
 // Sums real file sizes rather than shelling out to `du`, which rounds every
 // file up to a disk block and would overstate a tree of many small files.
 // `skipDirs` drops whole subtrees before they are walked.
@@ -194,15 +230,33 @@ function runBenchmark() {
       "CSS (KB)": (cssSize / 1024).toFixed(2),
       "Cache (MB)": (cacheSize / 1024 / 1024).toFixed(2),
     };
+    const baselineTimes = measurements[baseline.name].times;
+    const ci = lane.baseline ? null : bootstrapDiffCi95(times, baselineTimes);
+    const selfCi = bootstrapDiffCi95(times, times);
+
     measurementRows.push({
       project: lane.name,
       label: lane.label,
       baseline: lane.baseline,
+      mechanism: lane.mechanism,
       averageBuildSeconds: mean(times),
+      medianBuildSeconds: median(times),
       minSeconds: Math.min(...times),
       maxSeconds: Math.max(...times),
       standardDeviationMs: stdDev(times) * 1000,
+      madMs: mad(times) * 1000,
+      sampleCount: times.length,
       libraryCostMs: lane.baseline ? null : (mean(times) - baselineMean) * 1000,
+      separation: ci
+        ? {
+            vs: baseline.name,
+            deltaMs: (mean(times) - baselineMean) * 1000,
+            ci95LowMs: ci.lo * 1000,
+            ci95HighMs: ci.hi * 1000,
+            significant: ci.lo > 0 || ci.hi < 0,
+          }
+        : null,
+      noiseFloorMs: selfCi ? (selfCi.hi - selfCi.lo) * 1000 : null,
       nextBytes: buildSize,
       cssBytes: cssSize,
       cacheBytes: cacheSize,
