@@ -90,6 +90,14 @@ jobs:
         shell: bash
         run: set -o pipefail && pnpm bench 2>&1 | tee benchmark.log
 
+      # Straight after the cold builds, before anything rebuilds a lane with a
+      # different page: every lane must render the control's DOM exactly.
+      - name: Fixture identity
+        id: fixture
+        continue-on-error: true
+        shell: bash
+        run: set -o pipefail && pnpm fixture 2>&1 | tee fixture.log
+
       - name: Distinct-definition scale sweep
         id: scale
         continue-on-error: true
@@ -133,6 +141,7 @@ jobs:
             echo "| Measurement | Result |"
             echo "| :--- | :--- |"
             echo "| Cold build | ${{ steps.bench.outcome }} |"
+            echo "| Fixture identity | ${{ steps.fixture.outcome }} |"
             echo "| Scale sweep | ${{ steps.scale.outcome }} |"
             echo "| Binding escape | ${{ steps.binding.outcome }} |"
             echo "| Structure | ${{ steps.structure.outcome }} |"
@@ -140,7 +149,7 @@ jobs:
             echo "> Shared CI runners are noisy. Treat these numbers as a check that the"
             echo "> relative trend reproduces on another OS and CPU, not as absolute timings."
             echo
-            for log in benchmark scale binding structure; do
+            for log in benchmark fixture scale binding structure; do
               echo "## ${log}"
               echo
               echo '```text'
@@ -166,6 +175,7 @@ jobs:
           name: benchmark-logs
           path: |
             benchmark.log
+            fixture.log
             scale.log
             binding.log
             structure.log
@@ -177,7 +187,7 @@ jobs:
         shell: bash
         run: |
           failed=0
-          for outcome in "${{ steps.bench.outcome }}" "${{ steps.scale.outcome }}" "${{ steps.structure.outcome }}"; do
+          for outcome in "${{ steps.bench.outcome }}" "${{ steps.fixture.outcome }}" "${{ steps.scale.outcome }}" "${{ steps.structure.outcome }}"; do
             [ "$outcome" = "success" ] || failed=1
           done
           if [ "$failed" = "1" ]; then
