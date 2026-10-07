@@ -140,7 +140,7 @@ function buildOnce(lane: Lane, env) {
   // rather than with its compiler.
   execSync("npm run prebuild", {
     cwd: lane.dir,
-    env,
+    env: { ...env, ...lane.env },
     stdio: "ignore",
     timeout: BUILD_TIMEOUT_MS,
   });
@@ -148,7 +148,7 @@ function buildOnce(lane: Lane, env) {
   const start = performance.now();
   execSync("npm run build", {
     cwd: lane.dir,
-    env,
+    env: { ...env, ...lane.env },
     stdio: "ignore",
     timeout: BUILD_TIMEOUT_MS,
   });
