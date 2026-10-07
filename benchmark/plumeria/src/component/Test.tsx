@@ -9,42 +9,90 @@ const styles = css.create({
 });
 
 const colorStyles = css.create({
-  red: { color: "red" },
-  blue: { color: "blue" },
-  green: { color: "green" },
-  yellow: { color: "yellow" },
-  purple: { color: "purple" },
+  red: {
+    color: "red"
+  },
+  blue: {
+    color: "blue"
+  },
+  green: {
+    color: "green"
+  },
+  yellow: {
+    color: "yellow"
+  },
+  purple: {
+    color: "purple"
+  },
 });
 
 const sizeStyles = css.create({
-  small: { fontSize: "12px" },
-  medium: { fontSize: "16px" },
-  large: { fontSize: "20px" },
-  xlarge: { fontSize: "24px" },
+  small: {
+    fontSize: "12px"
+  },
+  medium: {
+    fontSize: "16px"
+  },
+  large: {
+    fontSize: "20px"
+  },
+  xlarge: {
+    fontSize: "24px"
+  },
 });
 
 const paddingStyles = css.create({
-  none: { padding: "0" },
-  small: { padding: "4px" },
-  medium: { padding: "8px" },
-  large: { padding: "16px" },
-  xlarge: { padding: "24px" },
+  none: {
+    padding: "0"
+  },
+  small: {
+    padding: "4px"
+  },
+  medium: {
+    padding: "8px"
+  },
+  large: {
+    padding: "16px"
+  },
+  xlarge: {
+    padding: "24px"
+  },
 });
 
 const borderRadiusStyles = css.create({
-  none: { borderRadius: "0" },
-  small: { borderRadius: "2px" },
-  medium: { borderRadius: "4px" },
-  large: { borderRadius: "8px" },
-  full: { borderRadius: "9999px" },
+  none: {
+    borderRadius: "0"
+  },
+  small: {
+    borderRadius: "2px"
+  },
+  medium: {
+    borderRadius: "4px"
+  },
+  large: {
+    borderRadius: "8px"
+  },
+  full: {
+    borderRadius: "9999px"
+  },
 });
 
 const backgroundStyles = css.create({
-  transparent: { backgroundColor: "transparent" },
-  white: { backgroundColor: "white" },
-  gray: { backgroundColor: "#f0f0f0" },
-  lightBlue: { backgroundColor: "#e3f2fd" },
-  lightGreen: { backgroundColor: "#e8f5e9" },
+  transparent: {
+    backgroundColor: "transparent"
+  },
+  white: {
+    backgroundColor: "white"
+  },
+  gray: {
+    backgroundColor: "#f0f0f0"
+  },
+  lightBlue: {
+    backgroundColor: "#e3f2fd"
+  },
+  lightGreen: {
+    backgroundColor: "#e8f5e9"
+  },
 });
 
 interface TestProps {
