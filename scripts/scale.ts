@@ -225,7 +225,7 @@ function run() {
           fs.writeFileSync(file.path, file.generate(count));
         }
 
-        const env = { ...process.env, BENCHMARK_SCALE_COUNT: String(count) };
+        const env = { ...process.env, ...lane.env, BENCHMARK_SCALE_COUNT: String(count) };
         try {
           execSync("npm run prebuild", {
             cwd: lane.dir,
