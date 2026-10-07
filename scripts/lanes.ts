@@ -13,6 +13,10 @@ export type Lane = {
   // Which fixture generator scripts/scale.ts writes into this lane.
   scaleKind: string;
   mechanism: Mechanism;
+  // Extra environment for this lane's builds. A variant is the same folder
+  // built under a different env (e.g. Plumeria with its lint guard off), so it
+  // gets its own row without a second copy of the app.
+  env: Record<string, string>;
 };
 
 // Scanning for class names the author already wrote and scanning declarations
@@ -48,10 +52,10 @@ function readMechanism(name: string, value: unknown): Mechanism {
   return value as Mechanism;
 }
 
-function readLane(name: string): Lane | null {
+function readLanes(name: string): Lane[] {
   const dir = path.join(benchmarkRoot, name);
   const manifestPath = path.join(dir, "package.json");
-  if (!fs.statSync(dir).isDirectory() || !fs.existsSync(manifestPath)) return null;
+  if (!fs.statSync(dir).isDirectory() || !fs.existsSync(manifestPath)) return [];
 
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   const bench = manifest.bench;
@@ -62,24 +66,33 @@ function readLane(name: string): Lane | null {
         `or move the folder out of benchmark/.`,
     );
   }
-  return {
+  const lane: Lane = {
     name,
     label: bench.label ?? name,
     dir,
     baseline: bench.baseline === true,
     scaleKind: bench.scaleKind ?? "tailwind",
     mechanism: readMechanism(name, bench.mechanism),
+    env: {},
   };
+  // `"variants": { "<lane name>": { "label", "env" } }` adds lanes that share
+  // this folder. A variant is never the control lane.
+  const variants = Object.entries(bench.variants ?? {}).map(
+    ([variantName, variant]: [string, any]): Lane => ({
+      ...lane,
+      name: variantName,
+      label: variant.label ?? variantName,
+      baseline: false,
+      env: variant.env ?? {},
+    }),
+  );
+  return [lane, ...variants];
 }
 
 // The control lane first, then alphabetically. Position within a round is
 // re-randomized by the benchmark itself, so this order is presentation only.
 export function lanes(): Lane[] {
-  const found = fs
-    .readdirSync(benchmarkRoot)
-    .sort()
-    .map(readLane)
-    .filter((lane): lane is Lane => lane !== null);
+  const found = fs.readdirSync(benchmarkRoot).sort().flatMap(readLanes);
 
   const baselines = found.filter((lane) => lane.baseline);
   if (baselines.length !== 1) {
