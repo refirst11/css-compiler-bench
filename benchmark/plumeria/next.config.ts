@@ -5,4 +5,5 @@ const nextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../../"),
 };
 
-export default withPlumeria(nextConfig);
+// The `plumeria-lint-off` lane builds this folder with PLUMERIA_LINT=off.
+export default withPlumeria(nextConfig, { lint: process.env.PLUMERIA_LINT !== "off" });
