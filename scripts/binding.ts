@@ -167,7 +167,7 @@ function run() {
       // Each form gets its own build: rejecting one must not erase the others.
       for (const probeCase of cases) {
         for (const file of probeFiles(lane, probeCase)!) fs.writeFileSync(file.path, file.source);
-        const env = { ...process.env, BENCHMARK_SCALE_COUNT: "1" };
+        const env = { ...process.env, ...lane.env, BENCHMARK_SCALE_COUNT: "1" };
         const nextPath = path.join(lane.dir, ".next");
         try {
           execSync("npm run build", {
