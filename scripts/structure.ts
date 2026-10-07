@@ -414,17 +414,17 @@ function ssrChunk(projectPath: string): BuildFile {
 // restored in `finally`, so a normal exit or a caught build failure both leave
 // the tree clean; a forcibly killed process (SIGKILL, a crash, the machine
 // going down) still leaves the file patched, and `git checkout` undoes it.
-function withClientComponent<T>(projectPath: string, fn: () => T): T {
+function withClientComponent<T>(projectPath: string, env: NodeJS.ProcessEnv, fn: () => T): T {
   const testFile = path.join(projectPath, "src/component/Test.tsx");
   const original = fs.readFileSync(testFile, "utf8");
 
   try {
     fs.writeFileSync(testFile, `"use client";\n${original}`);
-    execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
+    execSync("npm run build", { cwd: projectPath, env, stdio: "ignore" });
     return fn();
   } finally {
     fs.writeFileSync(testFile, original);
-    execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
+    execSync("npm run build", { cwd: projectPath, env, stdio: "ignore" });
   }
 }
 
@@ -603,7 +603,8 @@ function run(): void {
       // columns, since the client measurement rebuilds for itself. `prebuild`
       // deletes `.next` first, so this is a cold build either way.
       console.log(`\n🔨 ${project}: building...`);
-      execSync("npm run build", { cwd: projectPath, stdio: "ignore" });
+      const env = { ...process.env, ...lane.env };
+      execSync("npm run build", { cwd: projectPath, env, stdio: "ignore" });
 
       const classNames = cssClassNames(projectPath, project);
       const chunk = ssrChunk(projectPath);
@@ -622,7 +623,7 @@ function run(): void {
       };
 
       if (measureClient) {
-        const client = withClientComponent(projectPath, () => {
+        const client = withClientComponent(projectPath, env, () => {
           // Read from the build being measured, not carried over from the SSR
           // pass: a lane whose class names or emitted rules change once the
           // component is a Client Component would otherwise be scanned against
