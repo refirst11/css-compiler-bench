@@ -3,9 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "bench": {
-    "label": "Plumeria",
+    "label": "Plumeria lint:on",
     "scaleKind": "plumeria",
-    "mechanism": "rewrites-ast"
+    "mechanism": "rewrites-ast",
+    "variants": {
+      "plumeria-lint-off": {
+        "label": "Plumeria lint:off",
+        "env": {
+          "PLUMERIA_LINT": "off"
+        }
+      }
+    }
   },
   "scripts": {
     "predev": "rimraf .next",
