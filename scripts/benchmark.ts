@@ -18,11 +18,13 @@ const baseline = laneList.find((lane) => lane.baseline)!;
 // CPU not yet at its sustained clock, a first touch of each file on disk.
 const WARMUP_ITERATIONS = numberFromEnv("BENCHMARK_WARMUP_ITERATIONS", 1);
 
-// One measured round per lane, so that the rotation below hands every lane
-// every position exactly once. The default follows the lane count rather than a
+// One measured round per lane (two per lane when the count is odd), so that
+// the Williams design below hands every lane every position, and every
+// predecessor, exactly once. The default follows the lane count rather than a
 // constant: adding a lane is a folder here, and the balance would quietly stop
 // holding if the round count had to be remembered separately.
-const ITERATIONS = numberFromEnv("BENCHMARK_ITERATIONS", laneList.length + WARMUP_ITERATIONS);
+const BALANCED_ROUNDS = laneList.length % 2 ? laneList.length * 2 : laneList.length;
+const ITERATIONS = numberFromEnv("BENCHMARK_ITERATIONS", BALANCED_ROUNDS + WARMUP_ITERATIONS);
 
 // A hung build must not consume the whole CI job; it is recorded as a lane
 // failure like any other and the remaining lanes still produce numbers.
@@ -37,16 +39,25 @@ if (ITERATIONS <= WARMUP_ITERATIONS) {
 
 // Position in a round is not neutral: a lane that runs first meets a colder
 // page cache than one that runs eleventh, and one that follows a heavy lane
-// meets a hotter CPU. Rotating the list by the round number is a Latin square
-// -- over a full cycle every lane occupies every position exactly once -- so
-// that bias cancels by construction rather than on average. A random shuffle
-// only balances in expectation, and at ten-odd rounds it visibly does not:
-// under the seed this replaces, one Tailwind lane averaged position 0.50 of
-// the field and the other 0.67.
-function rotated<T>(values: T[], round: number): T[] {
-  if (values.length === 0) return [];
-  const offset = ((round % values.length) + values.length) % values.length;
-  return [...values.slice(offset), ...values.slice(0, offset)];
+// meets a hotter CPU -- or, for a variant sharing its folder with another lane,
+// a page cache that lane just warmed. A plain rotation balances position but
+// keeps every lane behind the same neighbour in every round, so the order is a
+// Williams design instead: a Latin square whose base row is 0, 1, n-1, 2, n-2,
+// ... and whose later rows shift it by one. Over n rows every lane occupies
+// every position once and, as a predecessor, precedes every other lane once.
+// With an odd lane count that second property needs each row's reverse too, so
+// the cycle is 2n rows. Both biases cancel by construction rather than on
+// average; a random shuffle only balances in expectation, and at ten-odd rounds
+// it visibly does not: under the seed this replaces, one Tailwind lane averaged
+// position 0.50 of the field and the other 0.67.
+function williamsOrder<T>(values: T[], row: number): T[] {
+  const n = values.length;
+  if (n === 0) return [];
+  const cycle = n % 2 ? n * 2 : n;
+  const r = ((row % cycle) + cycle) % cycle;
+  const base = values.map((_, j) => (j === 0 ? 0 : j % 2 ? (j + 1) / 2 : n - j / 2));
+  const order = base.map((b) => values[(b + r) % n]);
+  return r < n ? order : order.reverse();
 }
 
 const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
@@ -168,7 +179,7 @@ function runBenchmark() {
 
   for (let i = 1; i <= ITERATIONS; i++) {
     const alive = laneList.filter((lane) => !failures.has(lane.name));
-    const order = rotated(alive, i);
+    const order = williamsOrder(alive, i - WARMUP_ITERATIONS - 1);
     rounds.push(order.map((lane) => lane.name));
     console.log(`\n🚀 Round ${i}/${ITERATIONS}: ${order.map((lane) => lane.name).join(" → ")}`);
 
@@ -195,7 +206,7 @@ function runBenchmark() {
       process.stdout.write(`${buildTime.toFixed(2)}s\n`);
 
       // Measure each lane's output on the final round, regardless of its
-      // position in that round's rotation.
+      // position in that round's order.
       if (i === ITERATIONS) {
         const nextPath = path.join(lane.dir, ".next");
         measurements[lane.name].buildSize = dirSize(nextPath, undefined, BUILD_CACHE);
@@ -270,7 +281,7 @@ function runBenchmark() {
   console.table(results);
   console.log(
     `Library Cost = this lane's average build time minus ${baseline.name}'s (${baselineMean.toFixed(3)}s). ` +
-      `Lane order rotates one place per round, so each lane held each position once.`,
+      `Lane order follows a Williams design, so each lane held each position and followed each other lane once.`,
   );
 
   updateResults({
