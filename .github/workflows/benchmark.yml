@@ -47,9 +47,9 @@ concurrency:
 
 env:
   # Left empty so the harness picks its own default, which is one round per
-  # lane plus a discarded warm-up. Anything smaller stops the rotation from
-  # putting every lane in every position exactly once, which is the whole
-  # reason the order rotates.
+  # lane (two for an odd lane count) plus a discarded warm-up. Anything smaller
+  # stops the Williams design from putting every lane in every position, and
+  # behind every other lane, exactly once.
   BENCHMARK_ITERATIONS: ${{ github.event.inputs.iterations || '' }}
   BENCHMARK_SCALE_COUNTS: ${{ github.event.inputs.scale_counts || '10,100,1000' }}
   BENCHMARK_LANES: ${{ github.event.inputs.lanes || '' }}

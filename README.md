@@ -117,13 +117,15 @@ scoreboard/         the Vite + React report
 ### How the numbers are taken
 
 - **Rounds.** Each lane is built once per round, `.next` deleted before every build. There
-  are as many rounds as lanes plus one, and the first is discarded — eleven measured builds
+  are as many rounds as lanes plus one, and the first is discarded — twelve measured builds
   per lane today. The discarded round is not for V8 startup, since every build is its own
   process and pays that anyway, but for what only a first run pays: a cold OS page cache
   over `node_modules` and the toolchain, and a CPU not yet at its sustained clock
-- **Rotation.** Lane order rotates one place per round, which over a full cycle puts every
-  lane in every position exactly once: no lane is systematically first on a cold machine,
-  last on a hot one, or behind the same heavy neighbour
+- **Ordering.** Lane order follows a Williams design, a Latin square that over a full cycle
+  puts every lane in every position exactly once and behind every other lane exactly once:
+  no lane is systematically first on a cold machine, last on a hot one, or behind the same
+  heavy neighbour — or behind the lane whose folder it shares, as Plumeria lint:off does.
+  With an odd lane count the cycle is two rounds per lane
 - **No parallelism.** Running the lanes at once would destroy the measurement rather than
   balance it — Turbopack already uses every core, and eleven concurrent builds on this
   laptop stretched each lane from 4.6–6.3s to 45–49s while inflating them unequally
