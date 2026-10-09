@@ -116,6 +116,28 @@ jobs:
         shell: bash
         run: set -o pipefail && pnpm structure --client 2>&1 | tee structure.log
 
+      # Diagnostic only, after every measurement: whether Plumeria's lint read
+      # its Node compile cache. The benchmark discards build output, so this one
+      # extra build logs Node's cache decisions for the files oxlint loads.
+      - name: Plumeria lint compile cache
+        continue-on-error: true
+        shell: bash
+        working-directory: benchmark/plumeria
+        run: |
+          cache=node_modules/.cache/plumeria-lint
+          if [ -d "$cache" ]; then
+            echo "$cache: $(find "$cache" -type f | wc -l) files, $(du -sh "$cache" | cut -f1)"
+          else
+            echo "$cache does not exist"
+          fi
+          NODE_DEBUG_NATIVE=COMPILE_CACHE npm run build > compile-cache.log 2>&1 || true
+          lint=$(grep -E 'V8 code cache for .*(/oxlint/|@plumeria/eslint-plugin/)' compile-cache.log || true)
+          hits=$(grep -c 'was accepted' <<< "$lint" || true)
+          misses=$(grep -c 'was not in the cache' <<< "$lint" || true)
+          echo "lint compile cache: $hits hits, $misses misses"
+          echo "Plumeria lint compile cache: $hits hits, $misses misses" >> "$GITHUB_STEP_SUMMARY"
+          grep -o 'reading cache from [^ ]*' compile-cache.log | sed 's|/[^/]*$||' | sort | uniq -c
+
       - name: Check for a publishable result
         id: results
         if: always()
