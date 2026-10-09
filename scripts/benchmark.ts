@@ -105,6 +105,23 @@ function bootstrapDiffCi95(a, b, resamples = 2000) {
   return { lo, hi };
 }
 
+// The interval of a mean, by resampling its values. Used on a lane's per-round
+// differences from the control, so a whole round is resampled as one unit.
+function bootstrapMeanCi95(xs, resamples = 2000) {
+  if (xs.length < 2) return null;
+  const rand = lcg(0x5eed);
+  const means = [];
+  for (let i = 0; i < resamples; i++) {
+    let sum = 0;
+    for (let j = 0; j < xs.length; j++) sum += xs[(rand() * xs.length) | 0];
+    means.push(sum / xs.length);
+  }
+  means.sort((x, y) => x - y);
+  const lo = means[Math.floor(resamples * 0.025)];
+  const hi = means[Math.ceil(resamples * 0.975) - 1];
+  return { lo, hi };
+}
+
 // Sums real file sizes rather than shelling out to `du`, which rounds every
 // file up to a disk block and would overstate a tree of many small files.
 // `skipDirs` drops whole subtrees before they are walked.
@@ -229,6 +246,15 @@ function runBenchmark() {
       continue;
     }
     const { times, buildSize, cssSize, cacheSize } = measurements[lane.name];
+    // Every lane is built once in every measured round, so times[k] and the
+    // control's times[k] were taken minutes apart on the same machine. Their
+    // difference cancels whatever drifted between rounds (a throttled CPU, a
+    // busy neighbour on a shared runner), which comparing the two sets of times
+    // as wholes leaves in. The mean of these differences equals the difference
+    // of the means; what pairing changes is the median and the interval.
+    const baselineTimes = measurements[baseline.name].times;
+    const deltas = lane.baseline ? null : times.map((time, k) => time - baselineTimes[k]);
+    const ci = deltas ? bootstrapMeanCi95(deltas) : null;
 
     results[lane.name] = {
       "Avg Build (s)": mean(times).toFixed(3),
@@ -236,12 +262,11 @@ function runBenchmark() {
       "Max (s)": Math.max(...times).toFixed(3),
       "SD (ms)": (stdDev(times) * 1000).toFixed(1),
       "Library Cost (ms)": lane.baseline ? "—" : ((mean(times) - baselineMean) * 1000).toFixed(1),
+      "Median Cost (ms)": deltas ? (median(deltas) * 1000).toFixed(1) : "—",
       ".next (MB)": (buildSize / 1024 / 1024).toFixed(2),
       "CSS (KB)": (cssSize / 1024).toFixed(2),
       "Cache (MB)": (cacheSize / 1024 / 1024).toFixed(2),
     };
-    const baselineTimes = measurements[baseline.name].times;
-    const ci = lane.baseline ? null : bootstrapDiffCi95(times, baselineTimes);
     const selfCi = bootstrapDiffCi95(times, times);
 
     measurementRows.push({
@@ -261,6 +286,8 @@ function runBenchmark() {
         ? {
             vs: baseline.name,
             deltaMs: (mean(times) - baselineMean) * 1000,
+            medianDeltaMs: median(deltas) * 1000,
+            paired: true,
             ci95LowMs: ci.lo * 1000,
             ci95HighMs: ci.hi * 1000,
             significant: ci.lo > 0 || ci.hi < 0,
@@ -279,7 +306,8 @@ function runBenchmark() {
   );
   console.table(results);
   console.log(
-    `Library Cost = this lane's average build time minus ${baseline.name}'s (${baselineMean.toFixed(3)}s). ` +
+    `Library Cost = this lane's average build time minus ${baseline.name}'s (${baselineMean.toFixed(3)}s); ` +
+      `Median Cost = the median of its per-round differences from ${baseline.name}. ` +
       `Lane order follows a Williams design, so each lane held each position and followed each other lane once.`,
   );
 
