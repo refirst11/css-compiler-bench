@@ -174,7 +174,8 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           </li>
           <li>
             <strong>Library cost.</strong> That average minus the control's — everything adopting
-            the library entails, not just time inside its compiler.
+            the library entails, not just time inside its compiler. Its median and 95% interval come
+            from each round's difference from the control, so drift between rounds cancels.
           </li>
           <li>
             <strong>Scale.</strong> The same lane rebuilt with 10 / 100 / 1,000 distinct styled
