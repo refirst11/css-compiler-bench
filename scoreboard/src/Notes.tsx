@@ -168,9 +168,11 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
       <Detail title="How each number is measured">
         <ul className="method">
           <li>
-            <strong>Cold build.</strong> Ten builds per lane with <code>.next</code> deleted before
-            each, the first discarded. Lanes are shuffled deterministically per round, so none is
-            systematically first on a cold machine.
+            <strong>Cold build.</strong> Every lane built once per round with <code>.next</code>{" "}
+            deleted before each build, as many rounds as lanes plus one (twice as many with an odd
+            lane count), the first discarded. Lane order follows a Williams design: every lane holds
+            every position and follows every other lane exactly once, so none is systematically
+            first on a cold machine or behind the same neighbour.
           </li>
           <li>
             <strong>Library cost.</strong> That average minus the control's — everything adopting
