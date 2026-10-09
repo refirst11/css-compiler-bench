@@ -27,6 +27,11 @@ export type BuildMeasurement = {
   separation?: {
     vs: string;
     deltaMs: number;
+    // Absent from results measured before the interval was taken over
+    // per-round differences from the control; those compared the two sets of
+    // times as wholes.
+    medianDeltaMs?: number;
+    paired?: boolean;
     ci95LowMs: number;
     ci95HighMs: number;
     significant: boolean;
