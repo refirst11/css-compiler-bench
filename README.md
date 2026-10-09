@@ -103,7 +103,7 @@ scoreboard/         the Vite + React report
 | Measurement | Unit | What it answers |
 |---|---|---|
 | **Cold build** | seconds ↓ | what one clean `next build` costs this lane |
-| **Library cost** | ms | that build minus the control — everything adopting the library entails |
+| **Library cost** | ms | that build minus the control — everything adopting the library entails; median and 95% interval from each round's difference from the control |
 | **Scale** | seconds at 10 / 100 / 1,000 | whether cost tracks the number of *distinct definitions*, with rendered instances held fixed |
 | **`.next` and CSS** | bytes | build output size, with `.next/cache` excluded |
 | **Build cache** | bytes | what Turbopack persisted into `.next/cache` compiling this lane |
