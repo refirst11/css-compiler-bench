@@ -133,6 +133,9 @@ scoreboard/         the Vite + React report
   npm runs ahead of it, so a lane needing a generation pass before `next build`
   (`panda codegen`) is timed with it. Deleting the previous round's output happens before
   the clock starts
+- **Caches outside `.next`** survive between rounds. Plumeria's build lint keeps a Node
+  compile cache in `node_modules/.cache/plumeria-lint`, written in the discarded round, so
+  its measured builds load oxlint and the lint rules without compiling them again
 - **Library cost** is everything adopting the library entails, not just time inside its
   compiler — a lane that moves the app off Next.js's SWC pipeline onto Babel pays for that
   here, because a user would too
