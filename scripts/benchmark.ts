@@ -39,12 +39,11 @@ if (ITERATIONS <= WARMUP_ITERATIONS) {
 
 // Position in a round is not neutral: a lane that runs first meets a colder
 // page cache than one that runs eleventh, and one that follows a heavy lane
-// meets a hotter CPU -- or, for a variant sharing its folder with another lane,
-// a page cache that lane just warmed. A plain rotation balances position but
-// keeps every lane behind the same neighbour in every round, so the order is a
-// Williams design instead: a Latin square whose base row is 0, 1, n-1, 2, n-2,
-// ... and whose later rows shift it by one. Over n rows every lane occupies
-// every position once and, as a predecessor, precedes every other lane once.
+// meets a hotter CPU. A plain rotation balances position but keeps every lane
+// behind the same neighbour in every round, so the order is a Williams design
+// instead: a Latin square whose base row is 0, 1, n-1, 2, n-2, ... and whose
+// later rows shift it by one. Over n rows every lane occupies every position
+// once and, as a predecessor, precedes every other lane once.
 // With an odd lane count that second property needs each row's reverse too, so
 // the cycle is 2n rows. Both biases cancel by construction rather than on
 // average; a random shuffle only balances in expectation, and at ten-odd rounds

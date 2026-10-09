@@ -14,8 +14,8 @@ export type Lane = {
   scaleKind: string;
   mechanism: Mechanism;
   // Extra environment for this lane's builds. A variant is the same folder
-  // built under a different env (e.g. Plumeria with its lint guard off), so it
-  // gets its own row without a second copy of the app.
+  // built under a different env, so it gets its own row without a second
+  // copy of the app.
   env: Record<string, string>;
 };
 

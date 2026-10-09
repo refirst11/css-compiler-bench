@@ -1,9 +1,9 @@
 {
-  "name": "plumeria",
+  "name": "plumeria-lint-off",
   "version": "0.1.0",
   "private": true,
   "bench": {
-    "label": "Plumeria lint:on",
+    "label": "Plumeria lint:off",
     "scaleKind": "plumeria",
     "mechanism": "rewrites-ast"
   },

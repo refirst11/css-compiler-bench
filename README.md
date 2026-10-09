@@ -33,6 +33,7 @@ rather than taken on trust.
 | StyleX (Babel) | `stylex` | reads the AST and rewrites the call site | build |
 | StyleX (SWC) | `stylexswc` | reads the AST and rewrites the call site | build |
 | Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
+| Plumeria (lint off) | `plumeria-lint-off` | the same, with the build lint guard off | build |
 | next-yak | `next-yak` | reads the AST and rewrites the call site | build |
 | Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
 | styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
@@ -124,7 +125,7 @@ scoreboard/         the Vite + React report
 - **Ordering.** Lane order follows a Williams design, a Latin square that over a full cycle
   puts every lane in every position exactly once and behind every other lane exactly once:
   no lane is systematically first on a cold machine, last on a hot one, or behind the same
-  heavy neighbour — or behind the lane whose folder it shares, as Plumeria lint:off does.
+  heavy neighbour.
   With an odd lane count the cycle is two rounds per lane
 - **No parallelism.** Running the lanes at once would destroy the measurement rather than
   balance it — Turbopack already uses every core, and eleven concurrent builds on this
@@ -134,8 +135,9 @@ scoreboard/         the Vite + React report
   (`panda codegen`) is timed with it. Deleting the previous round's output happens before
   the clock starts
 - **Caches outside `.next`** survive between rounds. Plumeria's build lint keeps a Node
-  compile cache in `node_modules/.cache/plumeria-lint`, written in the discarded round, so
-  its measured builds load oxlint and the lint rules without compiling them again
+  compile cache in `benchmark/plumeria/node_modules/.cache/plumeria-lint`, written in the
+  discarded round, so its measured builds load oxlint and the lint rules without compiling
+  them again
 - **Library cost** is everything adopting the library entails, not just time inside its
   compiler — a lane that moves the app off Next.js's SWC pipeline onto Babel pays for that
   here, because a user would too
