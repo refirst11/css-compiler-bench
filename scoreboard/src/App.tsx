@@ -228,6 +228,9 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
                     </span>
                     {item.separation ? (
                       <small>
+                        {item.separation.medianDeltaMs === undefined
+                          ? ""
+                          : `median ${item.separation.medianDeltaMs.toFixed(0)} ms · `}
                         {item.separation.significant
                           ? `95% ${item.separation.ci95LowMs.toFixed(0)} – ${item.separation.ci95HighMs.toFixed(0)} ms`
                           : "within noise"}
