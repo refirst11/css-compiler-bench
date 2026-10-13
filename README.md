@@ -33,7 +33,6 @@ rather than taken on trust.
 | StyleX (Babel) | `stylex` | reads the AST and rewrites the call site | build |
 | StyleX (SWC) | `stylexswc` | reads the AST and rewrites the call site | build |
 | Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
-| Plumeria (lint off) | `plumeria-lint-off` | the same, with the build lint guard off | build |
 | next-yak | `next-yak` | reads the AST and rewrites the call site | build |
 | Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
 | styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
@@ -118,10 +117,11 @@ scoreboard/         the Vite + React report
 ### How the numbers are taken
 
 - **Rounds.** Each lane is built once per round, `.next` deleted before every build. There
-  are as many rounds as lanes plus one, and the first is discarded — twelve measured builds
-  per lane today. The discarded round is not for V8 startup, since every build is its own
-  process and pays that anyway, but for what only a first run pays: a cold OS page cache
-  over `node_modules` and the toolchain, and a CPU not yet at its sustained clock
+  are as many rounds as lanes plus one (twice the lane count when it is odd), and the first
+  is discarded — twenty-two measured builds per lane today. The discarded round is not for V8
+  startup, since every build is its own process and pays that anyway, but for what only a
+  first run pays: a cold OS page cache over `node_modules` and the toolchain, and a CPU not
+  yet at its sustained clock
 - **Ordering.** Lane order follows a Williams design, a Latin square that over a full cycle
   puts every lane in every position exactly once and behind every other lane exactly once:
   no lane is systematically first on a cold machine, last on a hot one, or behind the same
