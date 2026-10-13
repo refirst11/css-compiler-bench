@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "bench": {
-    "label": "Plumeria lint:on",
+    "label": "Plumeria",
     "scaleKind": "plumeria",
     "mechanism": "rewrites-ast"
   },
