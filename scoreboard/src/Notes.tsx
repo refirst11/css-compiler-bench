@@ -226,7 +226,7 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
                   ? `${data.build.iterations} per lane, ${data.build.warmupIterations} discarded`
                   : "—",
               ],
-              ["Lane order", "rotates one place per round"],
+              ["Lane order", "Williams design"],
             ].map(([label, value]) => (
               <div key={label}>
                 <dt>{label}</dt>
