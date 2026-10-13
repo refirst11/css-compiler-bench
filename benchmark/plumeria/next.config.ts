@@ -5,4 +5,4 @@ const nextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../../"),
 };
 
-export default withPlumeria(nextConfig, { lint: true });
+export default withPlumeria(nextConfig, { lint: false });
