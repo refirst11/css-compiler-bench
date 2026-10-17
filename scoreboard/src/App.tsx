@@ -149,17 +149,33 @@ function RunStatus({
   );
 }
 
-function SpeedBars({ measurements }: { measurements: BuildMeasurement[] }) {
-  const fastest = Math.min(...measurements.map((item) => item.averageBuildSeconds));
-  const slowest = Math.max(...measurements.map((item) => item.averageBuildSeconds));
-  const span = Math.max(slowest - fastest, 0.001);
+const formatDelta = (ms: number) => `${ms >= 0 ? "+" : "−"}${Math.abs(ms).toFixed(0)} ms`;
+
+// Every lane pays for Next.js itself, so drawing absolute seconds spends most of
+// the line on a cost they all share. Measuring from the control instead leaves
+// only what the library adds. A dimmed bar is one whose 95% interval of the
+// paired per-round differences crosses zero: it cannot be told from the control.
+function CostChart({ measurements }: { measurements: BuildMeasurement[] }) {
+  const bounds = measurements.flatMap((item) =>
+    item.libraryCostMs === null
+      ? [0]
+      : [
+          item.libraryCostMs,
+          item.separation?.ci95LowMs ?? item.libraryCostMs,
+          item.separation?.ci95HighMs ?? item.libraryCostMs,
+        ],
+  );
+  const low = Math.min(0, ...bounds);
+  const high = Math.max(0, ...bounds);
+  const span = Math.max(high - low, 1);
+  const position = (ms: number) => 4 + ((ms - low) / span) * 92;
 
   return (
     <div className="speed-list">
       {measurements.map((item) => {
-        // The shortest line is the fastest result; the line itself encodes the
-        // measured distance from the fastest lane, while the number is exact.
-        const length = 18 + ((item.averageBuildSeconds - fastest) / span) * 82;
+        const cost = item.libraryCostMs ?? 0;
+        const interval = item.separation;
+        const indistinct = interval?.significant === false;
         return (
           <div className="speed-row" key={item.project}>
             <div className="speed-label">
@@ -171,21 +187,39 @@ function SpeedBars({ measurements }: { measurements: BuildMeasurement[] }) {
             </div>
             <div
               className="speed-track"
-              aria-label={`${item.label}: ${formatSeconds(item.averageBuildSeconds)}`}
+              aria-label={
+                item.baseline
+                  ? `${item.label}: control, ${formatSeconds(item.averageBuildSeconds)}`
+                  : `${item.label}: ${formatDelta(cost)} against the control${
+                      interval
+                        ? `, 95% ${interval.ci95LowMs.toFixed(0)} to ${interval.ci95HighMs.toFixed(0)} ms`
+                        : ""
+                    }`
+              }
             >
+              <span className="speed-zero" style={{ left: `${position(0)}%` }} />
               <span
-                className={`speed-line ${item.baseline ? "control" : ""}`}
-                style={{ width: `${length}%` }}
+                className={`speed-bar${indistinct ? " indistinct" : ""}`}
+                style={{
+                  left: `${position(Math.min(0, cost))}%`,
+                  width: `${Math.abs(position(cost) - position(0))}%`,
+                }}
               />
-              <span className="speed-dot" style={{ left: `${length}%` }} />
+              <span
+                className={`speed-dot${item.baseline ? " control" : ""}${indistinct ? " indistinct" : ""}`}
+                style={{ left: `${position(cost)}%` }}
+              />
             </div>
-            <strong>{formatSeconds(item.averageBuildSeconds)}</strong>
+            <strong>
+              {item.baseline ? "control" : formatDelta(cost)}
+              <small>{formatSeconds(item.averageBuildSeconds)}</small>
+            </strong>
           </div>
         );
       })}
       <div className="speed-axis">
-        <span>fastest</span>
-        <span>slowest</span>
+        <span>{formatDelta(low)}</span>
+        <span>{formatDelta(high)}</span>
       </div>
     </div>
   );
@@ -579,14 +613,14 @@ function App() {
         />
         {measurements.length ? (
           <>
-            <SpeedBars measurements={measurements} />
+            <CostChart measurements={measurements} />
             <BuildTable measurements={measurements} />
             {fastest !== null && (
               <p className="annotation">
-                Fastest observed average: <strong>{formatSeconds(fastest)}</strong>. Line length is
-                relative within this run; it is not a universal performance score. A library cost
-                shown struck through is not distinguishable from the control at 95% confidence:
-                treat it as zero, not as a ranking.
+                Fastest observed average: <strong>{formatSeconds(fastest)}</strong>. Each bar is the
+                library cost against the control; a dimmed bar, or a cost struck through in the
+                table, is not distinguishable from the control at 95% confidence: treat it as zero,
+                not as a ranking.
               </p>
             )}
           </>
