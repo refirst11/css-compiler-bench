@@ -187,19 +187,30 @@ td small {
     Menlo,
     monospace;
 }
+td small {
+  display: block;
+}
 .speed-track {
   position: relative;
   height: 12px;
   border-bottom: 1px solid #2b3550;
 }
-.speed-line {
+.speed-zero {
   position: absolute;
-  bottom: -1px;
-  left: 0;
-  height: 3px;
+  top: -8px;
+  bottom: -9px;
+  width: 1px;
+  background: #4b5675;
+}
+.speed-bar {
+  position: absolute;
+  bottom: -3px;
+  height: 5px;
   border-radius: 3px;
-  background: linear-gradient(90deg, #ffbd69, #fb7185);
-  box-shadow: 0 0 13px #fb718577;
+  background: linear-gradient(90deg, #ffbd6955, #fb718599);
+}
+.speed-bar.indistinct {
+  text-decoration: none;
 }
 .speed-dot {
   position: absolute;
@@ -209,7 +220,14 @@ td small {
   margin-left: -5px;
   border: 2px solid #ffbd69;
   border-radius: 50%;
+  background: #ffbd69;
+}
+.speed-dot.indistinct {
   background: #11172a;
+}
+.speed-dot.control {
+  border-color: #7f8ba9;
+  background: #7f8ba9;
 }
 .speed-row > strong {
   color: #f8d4a6;
@@ -219,6 +237,12 @@ td small {
     Menlo,
     monospace;
   text-align: right;
+}
+.speed-row > strong small {
+  display: block;
+  margin-top: 2px;
+  color: #6f7c9a;
+  font-size: 10px;
 }
 .speed-axis {
   display: flex;
@@ -402,10 +426,6 @@ code {
   font-style: normal;
   font-weight: 500;
 }
-.speed-line.control {
-  background: linear-gradient(90deg, #4b5675, #7f8ba9);
-  box-shadow: none;
-}
 .failures {
   margin-top: 22px;
   padding: 14px 16px;
@@ -424,6 +444,7 @@ code {
   color: #98a5c0;
   font-size: 11px;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 .failures code {
   color: #edf2ff;
