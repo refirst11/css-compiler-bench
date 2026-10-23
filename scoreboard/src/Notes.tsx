@@ -97,7 +97,7 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           </dd>
           <dt>Not resolved</dt>
           <dd>
-            CSS Modules, vanilla-extract, next-yak and Tailwind emit every candidate class and let
+            CSS Modules, vanilla-extract, yak and Tailwind emit every candidate class and let
             the cascade decide; none of them can detect that two of them set the same property. The{" "}
             <code>tailwind-cn</code> lane buys that resolution back with a client-side library.
           </dd>
