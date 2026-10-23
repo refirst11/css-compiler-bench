@@ -33,7 +33,7 @@ rather than taken on trust.
 | StyleX (Babel) | `stylex` | reads the AST and rewrites the call site | build |
 | StyleX (SWC) | `stylexswc` | reads the AST and rewrites the call site | build |
 | Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
-| next-yak | `next-yak` | reads the AST and rewrites the call site | build |
+| yak | `yak` | reads the AST and rewrites the call site | build |
 | Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
 | styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
 
@@ -56,11 +56,11 @@ and looks for each in the emitted CSS.
 | Plumeria | resolved | resolved | — |
 | Tailwind (both) | resolved | resolved | left to the runtime |
 | Devup UI | resolved | left to the runtime | left to the runtime |
-| next-yak | resolved | resolved | — |
+| yak | resolved | resolved | — |
 | styled-components | written at render | written at render | written at render |
 
 Each form is built separately, so a failure in one does not erase the other results.
-Plumeria and next-yak both resolve the literal and the module-scope constant. Their expression
+Plumeria and yak both resolve the literal and the module-scope constant. Their expression
 probes fail to build; the dash means no emitted-CSS result, not a silently dropped value.
 
 Among the lanes with a complete result, **StyleX and Panda resolve the expression too**,
