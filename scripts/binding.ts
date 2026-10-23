@@ -48,10 +48,10 @@ function probeFiles(lane: Lane, probeCase: ProbeCase = "literal") {
   } else if (kind === "devup") {
     imports = 'import { Box } from "@devup-ui/react";';
     element = `<Box letterSpacing={${expression}}>probe</Box>`;
-  } else if (kind === "next-yak" || kind === "styled-components") {
+  } else if (kind === "yak" || kind === "styled-components") {
     imports =
-      kind === "next-yak"
-        ? 'import { styled } from "next-yak";'
+      kind === "yak"
+        ? 'import { styled } from "@yak/react";'
         : 'import styled from "styled-components";';
     const interpolation = probeCase === "literal" ? sentinel : "${VALUE}";
     declaration = "const Probe = styled.div`letter-spacing: " + interpolation + ";`;";
