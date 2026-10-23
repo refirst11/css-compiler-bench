@@ -112,7 +112,7 @@ function readFiles(dir: string, filter: (name: string) => boolean): BuildFile[] 
 // class selector at all, so every class in this lane's emitted CSS is either
 // vanilla-extract's or the shared `page.module.css`, which is excluded anyway.
 const GENERATED = /-module__|^x[a-z0-9]{5,}$/;
-const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "next-yak", "vanilla-extract"]);
+const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "yak", "vanilla-extract"]);
 
 // Tailwind's utility names -- `p-2`, `border`, `min-[800px]:mb-3` -- match
 // neither pattern in GENERATED, and loosening that regex enough to admit
