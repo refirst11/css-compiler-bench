@@ -51,7 +51,7 @@ function scaleSource(kind, count) {
       );
     } else if (kind === "styled-components") {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
-    } else if (kind === "next-yak") {
+    } else if (kind === "yak") {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "cn") {
       definitions.push(
@@ -71,7 +71,7 @@ function scaleSource(kind, count) {
     plumeria: 'import * as css from "@plumeria/core";',
     stylex: 'import * as stylex from "@stylexjs/stylex";',
     devup: 'import { Box } from "@devup-ui/react";',
-    "next-yak": 'import { styled } from "next-yak";',
+    "yak": 'import { styled } from "@yak/react";',
     "styled-components": 'import styled from "styled-components";',
     cn: 'import { cn } from "cn";',
     tailwind: "",
