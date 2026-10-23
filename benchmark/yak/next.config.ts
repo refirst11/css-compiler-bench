@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 import path from "node:path";
-import { withYak } from "next-yak/withYak";
+import { withYak } from "@yak/react/withYak";
 
 const nextConfig: NextConfig = {
   turbopack: {},
