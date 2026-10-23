@@ -1,4 +1,4 @@
-import { css, styled } from "next-yak";
+import { css, styled } from "@yak/react";
 
 const StyledBox = styled.div<{ $isRed?: boolean }>`
   padding: 8px;
