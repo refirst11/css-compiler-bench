@@ -1,4 +1,4 @@
-import { css, styled } from "next-yak";
+import { css, styled } from "@yak/react";
 
 type Color = "red" | "blue" | "green" | "yellow" | "purple";
 type Size = "small" | "medium" | "large" | "xlarge";
