@@ -10,8 +10,8 @@
     "build:og": "node scripts/og.ts"
   },
   "dependencies": {
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
