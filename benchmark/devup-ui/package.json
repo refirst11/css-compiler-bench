@@ -17,8 +17,8 @@
   "dependencies": {
     "@devup-ui/react": "1.0.40",
     "next": "catalog:",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@devup-ui/next-plugin": "1.0.83",
