@@ -12,6 +12,12 @@ catalogs:
     next:
       specifier: 16.4.2
       version: 16.4.2
+    react:
+      specifier: 19.3.1
+      version: 19.3.1
+    react-dom:
+      specifier: 19.3.1
+      version: 19.3.1
 
 importers:
 
@@ -34,13 +40,13 @@ importers:
     dependencies:
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -62,20 +68,20 @@ importers:
     dependencies:
       '@devup-ui/react':
         specifier: 1.0.40
-        version: 1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)
+        version: 1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.3.1)
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@devup-ui/next-plugin':
         specifier: 1.0.83
-        version: 1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.4.2(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        version: 1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.4.2(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.6
@@ -96,13 +102,13 @@ importers:
     dependencies:
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@pandacss/dev':
         specifier: ^1.12.1
@@ -127,13 +133,13 @@ importers:
     dependencies:
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@plumeria/core':
         specifier: ^21.1.4
@@ -170,16 +176,16 @@ importers:
     dependencies:
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
       styled-components:
         specifier: ^6.5.3
-        version: 6.5.3(css-to-react-native@3.2.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 6.5.3(css-to-react-native@3.2.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -204,13 +210,13 @@ importers:
         version: 0.19.1
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@stylexjs/babel-plugin':
         specifier: ^0.19.0
@@ -244,17 +250,17 @@ importers:
         version: 0.19.1
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@stylexswc/nextjs-plugin':
         specifier: ^0.18.6
-        version: 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))(next@16.4.2(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        version: 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))(next@16.4.2(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       '@stylexswc/postcss-plugin':
         specifier: ^0.18.6
         version: 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))
@@ -281,13 +287,13 @@ importers:
     dependencies:
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.3.3
@@ -318,13 +324,13 @@ importers:
         version: 0.3.2
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.3.3
@@ -355,13 +361,13 @@ importers:
         version: 1.21.2
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -374,7 +380,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@vanilla-extract/next-plugin':
         specifier: ^2.5.2
-        version: 2.5.2(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))
+        version: 2.5.2(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -386,16 +392,16 @@ importers:
     dependencies:
       '@yak/react':
         specifier: ^10.0.0
-        version: 10.0.0(@swc/helpers@0.5.23)(@types/react@19.3.0)(next@16.4.2(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@8.3.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
+        version: 10.0.0(@swc/helpers@0.5.23)(@types/react@19.3.0)(next@16.4.2(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(vite@8.3.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
       next:
         specifier: 'catalog:'
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -416,11 +422,11 @@ importers:
   scoreboard:
     dependencies:
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: 'catalog:'
+        version: 19.3.1
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@resvg/resvg-js':
         specifier: ^2.6.2
@@ -3426,17 +3432,17 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  react-dom@19.2.4:
-    resolution: {integrity: sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==}
+  react-dom@19.3.1:
+    resolution: {integrity: sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==}
     peerDependencies:
-      react: ^19.2.4
+      react: ^19.3.1
 
   react-refresh@0.18.0:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
     engines: {node: '>=0.10.0'}
 
-  react@19.2.4:
-    resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
+  react@19.3.1:
+    resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
     engines: {node: '>=0.10.0'}
 
   readdirp@4.1.2:
@@ -3483,8 +3489,8 @@ packages:
     resolution: {integrity: sha512-dCnaW6D/tkCJxG5UvpZPWnnvfTdGTVVSAq1tzH6xC5MeOhAeeswRcSq5zT7C6lRCdTGow9PRGus7PCzdp5JJYw==}
     engines: {node: '>=16'}
 
-  scheduler@0.27.0:
-    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
+  scheduler@0.28.0:
+    resolution: {integrity: sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==}
 
   schema-utils@4.5.0:
     resolution: {integrity: sha512-zJlMCZ0cAR5p/Y4oVpRoqioDMJcGxaXRrQ/4rP4WyR84vc5z/DolXdbvXeDpTwbtocDFr2rhPqHPErDCUtz2kA==}
@@ -3974,19 +3980,19 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.1
 
-  '@devup-ui/next-plugin@1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.4.2(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@devup-ui/next-plugin@1.0.83(@devup-ui/wasm@1.0.78)(@devup-ui/webpack-plugin@1.0.66(@devup-ui/wasm@1.0.78))(next@16.4.2(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))':
     dependencies:
       '@devup-ui/plugin-utils': 1.0.15
       '@devup-ui/wasm': 1.0.78
       '@devup-ui/webpack-plugin': 1.0.66(@devup-ui/wasm@1.0.78)
-      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
 
   '@devup-ui/plugin-utils@1.0.15': {}
 
-  '@devup-ui/react@1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.2.4)':
+  '@devup-ui/react@1.0.40(csstype-extra@0.1.35(typescript@5.9.3))(react@19.3.1)':
     dependencies:
       csstype-extra: 0.1.35(typescript@5.9.3)
-      react: 19.2.4
+      react: 19.3.1
 
   '@devup-ui/wasm@1.0.78': {}
 
@@ -4966,14 +4972,14 @@ snapshots:
       invariant: 2.2.4
       styleq: 0.2.1
 
-  '@stylexswc/nextjs-plugin@0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))(next@16.4.2(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@stylexswc/nextjs-plugin@0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))(next@16.4.2(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))':
     dependencies:
       '@stylexswc/plugin-shared': 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))
       '@stylexswc/rs-compiler': 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))
       '@stylexswc/rspack-plugin': 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))
       '@stylexswc/turbopack-plugin': 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))
       '@stylexswc/webpack-plugin': 0.18.6(@swc/core@1.16.20(@swc/helpers@0.5.23))
-      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     transitivePeerDependencies:
       - '@swc/core'
       - supports-color
@@ -5306,11 +5312,11 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  '@vanilla-extract/next-plugin@2.5.2(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))':
+  '@vanilla-extract/next-plugin@2.5.2(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(terser@5.51.2)(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))':
     dependencies:
-      '@vanilla-extract/turbopack-plugin': 0.1.4(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)
+      '@vanilla-extract/turbopack-plugin': 0.1.4(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(terser@5.51.2)
       '@vanilla-extract/webpack-plugin': 2.3.27(webpack@5.111.0(esbuild@0.28.2)(lightningcss@1.33.0))
-      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       semver: 7.8.5
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -5333,12 +5339,12 @@ snapshots:
 
   '@vanilla-extract/private@1.0.9': {}
 
-  '@vanilla-extract/turbopack-plugin@0.1.4(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.51.2)':
+  '@vanilla-extract/turbopack-plugin@0.1.4(@swc/helpers@0.5.23)(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(terser@5.51.2)':
     dependencies:
       '@swc/core': 1.16.20(@swc/helpers@0.5.23)
       '@vanilla-extract/compiler': 0.7.2(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)
       '@vanilla-extract/integration': 8.0.10
-      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@types/node'
@@ -5492,15 +5498,15 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@yak/react@10.0.0(@swc/helpers@0.5.23)(@types/react@19.3.0)(next@16.4.2(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@8.3.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))':
+  '@yak/react@10.0.0(@swc/helpers@0.5.23)(@types/react@19.3.0)(next@16.4.2(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(vite@8.3.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))':
     dependencies:
       '@babel/parser': 8.0.7
       '@swc/core': 1.16.20(@swc/helpers@0.5.23)
       '@yak/swc': 10.0.0
     optionalDependencies:
       '@types/react': 19.3.0
-      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react: 19.2.4
+      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
       vite: 8.3.0(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -6261,16 +6267,16 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  next@16.4.2(@babel/core@7.29.7)(@types/node@24.13.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@next/env': 16.4.2
       '@swc/helpers': 0.5.23
       baseline-browser-mapping: 2.11.25
       caniuse-lite: 1.0.30001810
       postcss: 8.5.23
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.2.4)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.4.2
       '@next/swc-darwin-x64': 16.4.2
@@ -6452,14 +6458,14 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  react-dom@19.2.4(react@19.2.4):
+  react-dom@19.3.1(react@19.3.1):
     dependencies:
-      react: 19.2.4
-      scheduler: 0.27.0
+      react: 19.3.1
+      scheduler: 0.28.0
 
   react-refresh@0.18.0: {}
 
-  react@19.2.4: {}
+  react@19.3.1: {}
 
   readdirp@4.1.2: {}
 
@@ -6551,7 +6557,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       yoga-layout: 3.2.1
 
-  scheduler@0.27.0: {}
+  scheduler@0.28.0: {}
 
   schema-utils@4.5.0:
     dependencies:
@@ -6635,20 +6641,20 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  styled-components@6.5.3(css-to-react-native@3.2.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  styled-components@6.5.3(css-to-react-native@3.2.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
       csstype: 3.2.3
-      react: 19.2.4
+      react: 19.3.1
       stylis: 4.3.6
     optionalDependencies:
       css-to-react-native: 3.2.0
-      react-dom: 19.2.4(react@19.2.4)
+      react-dom: 19.3.1(react@19.3.1)
 
-  styled-jsx@5.1.6(@babel/core@7.29.7)(react@19.2.4):
+  styled-jsx@5.1.6(@babel/core@7.29.7)(react@19.3.1):
     dependencies:
       client-only: 0.0.1
-      react: 19.2.4
+      react: 19.3.1
     optionalDependencies:
       '@babel/core': 7.29.7
 
