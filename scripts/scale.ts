@@ -53,6 +53,8 @@ function scaleSource(kind, count) {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
     } else if (kind === "yak") {
       definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
+    } else if (kind === "zyzz") {
+      definitions.push(`const Scale${i} = () => <div {...styles.item${i}()}>Scale fixture</div>;`);
     } else if (kind === "cn") {
       definitions.push(
         `const Scale${i} = () => <div className={cn("inline-block p-px")}>Scale fixture</div>;`,
@@ -73,6 +75,7 @@ function scaleSource(kind, count) {
     devup: 'import { Box } from "@devup-ui/react";',
     "yak": 'import { styled } from "@yak/react";',
     "styled-components": 'import styled from "styled-components";',
+    zyzz: 'import { style } from "zyzz";',
     cn: 'import { cn } from "cn";',
     tailwind: "",
   };
@@ -84,7 +87,17 @@ function scaleSource(kind, count) {
   }
 
   const componentNames = Array.from({ length: count }, (_, i) => `Scale${i}`).join(", ");
-  return `${imports[kind]}\n\n${definitions.join("\n\n")}\n\nconst components = [${componentNames}];\n\nexport default function ScaleFixture() {\n  return (\n    <>\n      {components.map((Component, i) => (\n        <Component key={i} />\n      ))}\n    </>\n  );\n}\n`;
+  return `${imports[kind]}\n\n${definitions.join("\n\n")}\n\nconst components = [${componentNames}];\n\nexport default function ScaleFixture() {\n  return (\n    <>\n      {components.map((Component, i) => (\n        <Component key={i} />\n      ))}\n    </>\n  );\n}\n${kind === "zyzz" ? zyzzNamespace(count) : ""}`;
+}
+
+// Zyzz keeps a file's definitions in one `namespace styles` at the bottom, so
+// its sweep writes them there rather than beside each component.
+function zyzzNamespace(count) {
+  const members = Array.from(
+    { length: count },
+    (_, i) => `  export const item${i} = style({ display: "inline-block", padding: "1px" });`,
+  ).join("\n");
+  return `\nnamespace styles {\n${members}\n}\n`;
 }
 
 function scaleCss(count) {
