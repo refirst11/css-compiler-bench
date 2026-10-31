@@ -42,6 +42,10 @@ function probeFiles(lane: Lane, probeCase: ProbeCase = "literal") {
       kind === "plumeria"
         ? "<div classStyle={styles.probe}>probe</div>"
         : "<div {...css.props(styles.probe)}>probe</div>";
+  } else if (kind === "zyzz") {
+    imports = 'import { style } from "zyzz";';
+    declaration = `namespace styles { export const probe = style({ letterSpacing: ${expression} }); }`;
+    element = "<div {...styles.probe()}>probe</div>";
   } else if (kind === "panda") {
     imports = 'import { css } from "../../styled-system/css";';
     element = `<div className={css({ letterSpacing: ${expression} })}>probe</div>`;
