@@ -295,7 +295,7 @@ function niceCeil(value: number) {
   return Math.ceil(value * 2) / 2;
 }
 
-// Eleven lanes cannot be told apart by eleven line colours on one pair of axes:
+// Twelve lanes cannot be told apart by twelve line colours on one pair of axes:
 // the palette runs out at eight and the lines cross in a band a few tenths of a
 // second wide. One panel per lane on a shared scale compares the slopes without
 // asking the reader to hold a legend in their head.
@@ -536,7 +536,7 @@ function App() {
   const { data, error, latestRun, staleSince } = useBenchmark();
 
   // Fastest first. The section draws speed as bar length, so leaving the rows in
-  // lane order asked the reader to sort eleven bars by eye. The control keeps its
+  // lane order asked the reader to sort twelve bars by eye. The control keeps its
   // badge and is findable wherever the run puts it.
   const measurements = useMemo(
     () =>
