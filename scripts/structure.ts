@@ -61,7 +61,9 @@ type FoldedRow = { bytes: number; count: number; runtime?: boolean; signature: s
 // Present in all three projects' Test component, and stable across rebuilds --
 // unlike the content-hashed chunk filenames, which cannot be hardcoded.
 const APP_MARKER = "Test Component with Bracket Notation Variants";
-const SHARED_STYLESHEET = "page-module__";
+// Most lanes name it `page-module__…`. The Zyzz lane's build names the same two
+// classes `JLdavW_main` and `JLdavW_page`, so the map's own shape identifies it too.
+const SHARED_STYLESHEET = /page-module__|\.v\(\{main:"[^"]+",page:"[^"]+"\}\)/;
 
 // Walks a balanced `{...}` starting at `openIndex`, skipping over string
 // literals so that a brace inside a string cannot unbalance the scan.
@@ -111,8 +113,9 @@ function readFiles(dir: string, filter: (name: string) => boolean): BuildFile[] 
 // chunks. It takes the broad authority instead: its `globals.css` declares no
 // class selector at all, so every class in this lane's emitted CSS is either
 // vanilla-extract's or the shared `page.module.css`, which is excluded anyway.
+// Zyzz's identifiers (`z_fsqt4X0`) take the same authority for the same reason.
 const GENERATED = /-module__|^x[a-z0-9]{5,}$/;
-const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "yak", "vanilla-extract"]);
+const BROAD_CSS_AUTHORITY = new Set(["devup-ui", "yak", "vanilla-extract", "zyzz"]);
 
 // Tailwind's utility names -- `p-2`, `border`, `min-[800px]:mb-3` -- match
 // neither pattern in GENERATED, and loosening that regex enough to admit
@@ -359,7 +362,7 @@ function analyseChunk(chunk: string, classNames: ClassNames): ChunkAnalysis {
     // A CSS Modules stylesheet map is a whole module of the form `<x>.v({...})`;
     // the shared page.module.css one is reported but never counted.
     const cssModuleMap = objects.length === 1 && /\w+\.v\(\{/.test(body);
-    const shared = body.includes(SHARED_STYLESHEET);
+    const shared = SHARED_STYLESHEET.test(body);
 
     for (const o of objects) {
       const label = cssModuleMap
