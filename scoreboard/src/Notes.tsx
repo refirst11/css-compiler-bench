@@ -89,6 +89,13 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
             Plumeria and Devup UI inline one lookup table per axis, already reduced to the winning
             classes. Rendering is a property read; nothing ships to resolve anything.
           </dd>
+          <dt>At build, selected by attribute</dt>
+          <dd>
+            Zyzz puts every candidate class on every element as one baked string, writes the choice
+            into <code>data-*</code> attributes, and lets <code>:where([data-…])</code> rules pick
+            the winner. Nothing ships to resolve anything, and the markup carries the candidates
+            instead. A conflict keeps both classes and leaves it to stylesheet order.
+          </dd>
           <dt>At build, merged at render</dt>
           <dd>
             StyleX keeps maps keyed by a hash of the CSS property and merges them with{" "}
