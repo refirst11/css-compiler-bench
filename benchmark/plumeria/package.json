@@ -20,6 +20,8 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@emnapi/core": "1.11.3",
+    "@emnapi/runtime": "1.11.3",
     "@plumeria/core": "^21.1.4",
     "@plumeria/eslint-plugin": "^21.1.4",
     "@plumeria/next-plugin": "^21.1.4",
