@@ -10,8 +10,8 @@ runtime approach the rest are an alternative to. Every setup ("lane") builds the
 components under the same conditions, so the numbers are actually comparable
 
 A lane is one configuration, not one library: StyleX appears twice, compiled through Babel
-and through SWC, and Tailwind appears with and without `cn`. Eight libraries currently
-occupy eleven lanes
+and through SWC, and Tailwind appears with and without `cn`. Nine libraries currently
+occupy twelve lanes
 
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
@@ -35,6 +35,7 @@ rather than taken on trust.
 | Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
 | yak | `yak` | reads the AST and rewrites the call site | build |
 | Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
+| Zyzz | `zyzz` | reads the AST and rewrites the call site | build |
 | styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
 
 Reading a declaration at all is the line between a compiler and a scanner, and it is why
@@ -57,10 +58,11 @@ and looks for each in the emitted CSS.
 | Tailwind (both) | resolved | resolved | left to the runtime |
 | Devup UI | resolved | left to the runtime | left to the runtime |
 | yak | resolved | resolved | — |
+| Zyzz | resolved | resolved | — |
 | styled-components | written at render | written at render | written at render |
 
 Each form is built separately, so a failure in one does not erase the other results.
-Plumeria and yak both resolve the literal and the module-scope constant. Their expression
+Plumeria, yak and Zyzz all resolve the literal and the module-scope constant. Their expression
 probes fail to build; the dash means no emitted-CSS result, not a silently dropped value.
 
 Among the lanes with a complete result, **StyleX and Panda resolve the expression too**,
@@ -118,7 +120,7 @@ scoreboard/         the Vite + React report
 
 - **Rounds.** Each lane is built once per round, `.next` deleted before every build. There
   are as many rounds as lanes plus one (twice the lane count when it is odd), and the first
-  is discarded — twenty-two measured builds per lane today. The discarded round is not for V8
+  is discarded — twelve measured builds per lane today. The discarded round is not for V8
   startup, since every build is its own process and pays that anyway, but for what only a
   first run pays: a cold OS page cache over `node_modules` and the toolchain, and a CPU not
   yet at its sustained clock
