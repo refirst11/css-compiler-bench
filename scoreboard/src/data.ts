@@ -24,7 +24,7 @@ async function loadResults(): Promise<BenchmarkData> {
 
 async function loadRuns(): Promise<WorkflowRun[]> {
   const response = await fetch(
-    `https://api.github.com/repos/${REPOSITORY}/actions/workflows/${WORKFLOW}/runs?per_page=5`,
+    `https://api.github.com/repos/${REPOSITORY}/actions/workflows/${WORKFLOW}/runs?per_page=10`,
     { headers: { Accept: "application/vnd.github+json" } },
   );
   // Unauthenticated callers get 60 requests an hour per IP. A 403 here means
@@ -58,6 +58,11 @@ export function useBenchmark() {
   // The deployed JSON knows which run measured it. If CI has finished a newer
   // one since, this page is out of date and says so rather than pretending.
   const measuredBy = data?.environment?.runId ? Number(data.environment.runId) : null;
+  // The run behind the numbers on the page, and a run still measuring, if any.
+  // A run in progress has not replaced anything yet, so it is reported beside
+  // the result rather than in its place.
+  const shownRun = runs?.find((run) => run.id === measuredBy) ?? null;
+  const activeRun = runs?.find((run) => run.status !== "completed") ?? null;
   const staleSince =
     latestRun &&
     latestRun.conclusion === "success" &&
@@ -66,5 +71,5 @@ export function useBenchmark() {
       ? latestRun
       : null;
 
-  return { data, error, runs, latestRun, staleSince };
+  return { data, error, runs, latestRun, shownRun, activeRun, staleSince };
 }
