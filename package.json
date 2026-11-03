@@ -6,6 +6,7 @@
   "packageManager": "pnpm@11.3.0",
   "scripts": {
     "dev": "pnpm --dir scoreboard dev",
+    "dev:local": "pnpm --dir scoreboard dev:local",
     "build": "pnpm --dir scoreboard build",
     "preview": "pnpm --dir scoreboard preview",
     "bench": "node scripts/benchmark.ts",
