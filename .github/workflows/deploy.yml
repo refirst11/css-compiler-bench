@@ -40,6 +40,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v6
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --filter css-compiler-benchmark-scoreboard
@@ -48,7 +49,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TRIGGERING_RUN: ${{ github.event.workflow_run.id }}
+          LIVE_URL: ${{ steps.pages.outputs.base_url }}
         run: |
+          # A finished benchmark publishes its own result. Anything else -- a
+          # scoreboard change, a manual deploy, one made while a benchmark is
+          # still measuring -- keeps the result that is already live, so the
+          # page goes on showing the last result until a new one replaces it.
+          live="${LIVE_URL%/}/latest.json"
+          if [ -z "$TRIGGERING_RUN" ] && [ -n "$LIVE_URL" ] \
+            && curl -fsSL "${live}?t=$(date +%s)" -o scoreboard/public/latest.json \
+            && node -e "process.exit(require('./scoreboard/public/latest.json').generatedAt ? 0 : 1)"; then
+            echo "Keeping the result already live at ${live}."
+            echo "has-results=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          rm -f scoreboard/public/latest.json
+
+          # Nothing live yet (or it could not be read): fall back to the last
+          # successful run's artifact.
           run_id="$TRIGGERING_RUN"
           if [ -z "$run_id" ]; then
             run_id=$(gh run list --workflow benchmark.yml --status success --limit 1 \
