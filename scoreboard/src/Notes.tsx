@@ -1,6 +1,58 @@
+import { Fragment, type ReactNode } from "react";
 import type { BenchmarkData, Environment } from "./types";
 
-function Detail({ title, children }: { title: string; children: React.ReactNode }) {
+// What each lane's declared mechanism means, in the README's order. Which lanes
+// carry each one is read from the run, so a new lane appears here without an
+// edit.
+const MECHANISMS: { key: string; label: string; description: ReactNode }[] = [
+  {
+    key: "names-only",
+    label: "names only",
+    description: "Rewrites local class names to unique ones and compiles no styles.",
+  },
+  {
+    key: "authored-classes",
+    label: "authored classes",
+    description: "Scans for class names the author wrote by hand; never reads a style declaration.",
+  },
+  {
+    key: "scans-source",
+    label: "scans source",
+    description:
+      "Reads declarations out of source to generate the stylesheet, but leaves the call site alone: a shipped function picks the class at render.",
+  },
+  {
+    key: "evaluates-module",
+    label: "evaluates module",
+    description: (
+      <>
+        Executes <code>.css.ts</code> files as modules during the build.
+      </>
+    ),
+  },
+  {
+    key: "rewrites-ast",
+    label: "rewrites AST",
+    description: "Reads the AST and rewrites the call site into class names during the build.",
+  },
+  {
+    key: "runtime",
+    label: "runtime",
+    description: (
+      <>
+        Produces no stylesheet; each rule is written into a <code>&lt;style&gt;</code> node at
+        render.
+      </>
+    ),
+  },
+];
+
+export function mechanismLabel(mechanism?: string) {
+  if (!mechanism) return "—";
+  return MECHANISMS.find((item) => item.key === mechanism)?.label ?? mechanism;
+}
+
+function Detail({ title, children }: { title: string; children: ReactNode }) {
   return (
     <details className="note">
       <summary>{title}</summary>
@@ -11,7 +63,7 @@ function Detail({ title, children }: { title: string; children: React.ReactNode 
 
 // The page describes whichever machine produced the JSON it is showing, rather
 // than asserting a machine it cannot see.
-export function MachineNote({ environment }: { environment?: Environment }) {
+function MachineNote({ environment }: { environment?: Environment }) {
   const virtual = environment?.ci === true;
   const machine = environment
     ? [
@@ -36,8 +88,7 @@ export function MachineNote({ environment }: { environment?: Environment }) {
         <p>
           A GitHub-hosted runner is a virtual machine on shared infrastructure, with no guarantee
           about which physical CPU it lands on. Absolute seconds drift between runs, and every lane
-          drifts together when the host is busy. The same suite on an Apple M1 finishes in roughly
-          two thirds of this time with the lanes in the same order.
+          drifts together when the host is busy.
         </p>
       ) : (
         <p>
@@ -49,18 +100,17 @@ export function MachineNote({ environment }: { environment?: Environment }) {
       <p>
         So read the gaps, not the seconds: every cost here is reported against the control lane. A
         difference that survives both a laptop and a shared VM belongs to the library; one that
-        appears in only one of them belongs to the machine. <code>pnpm measure</code> reproduces
-        this table on your own hardware.
+        appears in only one of them belongs to the machine.
       </p>
     </div>
   );
 }
 
 export function Notes({ data }: { data: BenchmarkData | null }) {
-  const environment = data?.environment;
+  const measurements = data?.build?.measurements ?? [];
 
   return (
-    <section className="section notes">
+    <section className="section notes" id="notes">
       <div className="section-heading">
         <div>
           <p className="eyebrow">notes</p>
@@ -69,108 +119,14 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
         <p className="section-detail">What the measurements cover, and what they do not.</p>
       </div>
 
-      <MachineNote environment={environment} />
+      <MachineNote environment={data?.environment} />
 
       <div className="callout">
-        <strong>These are measurements, not verdicts.</strong> One fixture, one set of versions.
-        Your hardware, your bundler and the shape of your codebase can move these numbers — in
-        places by enough to reorder the table. The harness is public so the result can be re-run
-        rather than trusted.
+        <strong>One fixture, one set of versions, one machine.</strong> Your hardware, your bundler
+        and the shape of your codebase can move these numbers — in places by enough to reorder the
+        table. The harness is public so the result can be re-run rather than trusted:{" "}
+        <code>pnpm measure</code> reproduces every table here on your own machine.
       </div>
-
-      <Detail title="Where a lane resolves a variant">
-        <p>
-          Every lane renders the same 1,000 components across five variant axes. What separates them
-          is <em>when</em> a variant becomes a class name.
-        </p>
-        <dl className="model-list">
-          <dt>At build, merge included</dt>
-          <dd>
-            Plumeria and Devup UI inline one lookup table per axis, already reduced to the winning
-            classes. Rendering is a property read; nothing ships to resolve anything.
-          </dd>
-          <dt>At build, selected by attribute</dt>
-          <dd>
-            Zyzz puts every candidate class on every element as one baked string, writes the choice
-            into <code>data-*</code> attributes, and lets <code>:where([data-…])</code> rules pick
-            the winner. Nothing ships to resolve anything, and the markup carries the candidates
-            instead. A conflict keeps both classes and leaves it to stylesheet order.
-          </dd>
-          <dt>At build, merged at render</dt>
-          <dd>
-            StyleX keeps maps keyed by a hash of the CSS property and merges them with{" "}
-            <code>styleq</code> at render — the same merge, kept alive at the cost of a resolver in
-            the bundle.
-          </dd>
-          <dt>Not resolved</dt>
-          <dd>
-            CSS Modules, vanilla-extract, yak and Tailwind emit every candidate class and let
-            the cascade decide; none of them can detect that two of them set the same property. The{" "}
-            <code>tailwind-cn</code> lane buys that resolution back with a client-side library.
-          </dd>
-          <dt>Not at build</dt>
-          <dd>
-            Panda scans source to generate the stylesheet but never rewrites the call sites it
-            scanned — there is no bundler plugin to do it — so the style objects survive into the
-            bundle and <code>css()</code> turns them into class names on every render.
-            styled-components goes further and produces no stylesheet at all: the template literal
-            is evaluated at render, hashed into a class name, and the rule written into a{" "}
-            <code>&lt;style&gt;</code> node inserted beside the component. Both read 0 B of
-            Structure, and not because nothing ships — what ships is the resolver instead of the
-            names it resolves to.
-          </dd>
-        </dl>
-        <p>
-          No lane defers a value to the markup any more, so every combination a lane can produce is
-          in its stylesheet and the CSS column compares like with like. What the column cannot show
-          is the conflict case: the merging lanes leave one class per property on the element, the
-          unresolved ones leave both and let source order settle it.
-        </p>
-      </Detail>
-
-      <Detail title="What a runtime buys">
-        <p>
-          Every lane executes code during <code>next build</code>. The distinction that reaches
-          users is not whether something runs, but whether anything is left when it stops. A scanner
-          emits CSS and is gone; a resolver in the SSR chunk runs again on every ISR regeneration,
-          every dynamic request, and every client render.
-        </p>
-        <p>
-          That resolver is not always waste. StyleX's merges style objects the compiler never saw —
-          composed across module boundaries by callers no build ever observed together — and makes
-          the outcome independent of stylesheet order. A compiler can only bake the combinations it
-          can enumerate, and the Runtime column is the price of the ones it cannot.
-        </p>
-        <p>
-          Panda's is there for a different reason. It buys no late composition the others lack; it
-          is what a library needs when it declines to touch the call site at all, and the whole
-          property-to-abbreviation table travels with it. styled-components pays the most and gets
-          the most for it: a style can depend on anything a prop can hold, because nothing had to be
-          decided early enough to constrain it.
-        </p>
-        <p>
-          Read down the Runtime column and it is a price list for how late a class name is allowed
-          to be decided: vanilla-extract bakes the name and ships nothing, StyleX ships{" "}
-          <code>styleq</code> to merge, Panda ships a resolver, styled-components ships the whole
-          library. The CSS column tells the same story from the other side — styled-components
-          produces no stylesheet for it to measure.
-        </p>
-      </Detail>
-
-      <Detail title="How conflicts are decided">
-        <p>
-          With one declaration per class, rule order cannot decide which atom wins, so specificity
-          has to. Both atomic lanes stack <code>:not(#\#)</code> onto selectors — a no-op match that
-          adds an id's worth of specificity — so a longhand outranks the shorthand it descends from.
-          They differ in how many: StyleX assigns properties to fixed priority tiers, Plumeria walks
-          the shorthand graph and uses the actual depth.
-        </p>
-        <p>
-          Tailwind sidesteps the question with native cascade layers. It can afford to, because it
-          never merges: there is no contest to arbitrate when the final class list is written by
-          hand.
-        </p>
-      </Detail>
 
       <Detail title="How each number is measured">
         <ul className="method">
@@ -179,7 +135,8 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
             deleted before each build, as many rounds as lanes plus one (twice as many with an odd
             lane count), the first discarded. Lane order follows a Williams design: every lane holds
             every position and follows every other lane exactly once, so none is systematically
-            first on a cold machine or behind the same neighbour.
+            first on a cold machine or behind the same neighbour. The clock covers the lane's whole
+            build script, a <code>prebuild</code> step such as <code>panda codegen</code> included.
           </li>
           <li>
             <strong>Library cost.</strong> That average minus the control's — everything adopting
@@ -187,8 +144,23 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
             from each round's difference from the control, so drift between rounds cancels.
           </li>
           <li>
+            <strong>Sizes.</strong> Real file sizes, summed after each lane's final build.{" "}
+            <code>.next</code> and CSS leave out <code>.next/cache</code>, which is reported on its
+            own as Build cache: what Turbopack persisted while compiling the lane.
+          </li>
+          <li>
+            <strong>Fixture identity.</strong> Right after the cold builds, every lane's rendered
+            HTML is compared with the control's, ignoring <code>class</code>, <code>style</code> and{" "}
+            <code>data-*</code> attributes. A lane that renders a different DOM turns the run red.
+          </li>
+          <li>
             <strong>Scale.</strong> The same lane rebuilt with 10 / 100 / 1,000 distinct styled
             definitions, with the rendered instance count fixed.
+          </li>
+          <li>
+            <strong>Binding escape.</strong> One declaration written three ways — at the call site,
+            behind a module-scope <code>const</code>, behind an expression that has to be evaluated
+            — each built on its own and looked for in the emitted CSS.
           </li>
           <li>
             <strong>Structure.</strong> The class-name machinery in the SSR chunk — tables, baked
@@ -202,6 +174,95 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
         </ul>
       </Detail>
 
+      <Detail title="What the mechanism labels mean">
+        <p>
+          “Compile-time CSS” names several different mechanisms. Each lane declares its own, and the
+          binding probe checks how far it actually reaches.
+        </p>
+        <dl className="mechanism-list">
+          {MECHANISMS.map(({ key, label, description }) => {
+            const lanes = measurements
+              .filter((item) => item.mechanism === key)
+              .map((item) => item.label);
+            return (
+              <Fragment key={key}>
+                <dt>
+                  <span className="mechanism">{label}</span>
+                </dt>
+                <dd>
+                  {description}
+                  {lanes.length > 0 && <span className="lanes">{lanes.join(", ")}</span>}
+                </dd>
+              </Fragment>
+            );
+          })}
+        </dl>
+        <p>
+          CSS Modules and Tailwind are controls rather than contestants: neither reads a style
+          declaration and decides what class it becomes. styled-components marks the other end of
+          the same line.
+        </p>
+      </Detail>
+
+      <Detail title="Where a variant becomes a class name">
+        <p>
+          Every lane renders the same 1,000 components across five variant axes. What separates them
+          in the structure table is <em>when</em> a variant becomes a class name, and what has to
+          ship to make that happen.
+        </p>
+        <dl className="model-list">
+          <dt>At build, merge included</dt>
+          <dd>
+            Plumeria and Devup UI inline one lookup table per axis, already reduced to the winning
+            classes. Rendering is a property read; nothing ships to resolve anything.
+          </dd>
+          <dt>At build, selected by attribute</dt>
+          <dd>
+            Zyzz puts every candidate class on every element as one baked string, writes the choice
+            into <code>data-*</code> attributes, and lets <code>:where([data-…])</code> rules pick
+            the winner. Nothing ships to resolve anything; the markup carries the candidates
+            instead, and a conflict keeps both classes and leaves it to stylesheet order.
+          </dd>
+          <dt>At build, merged at render</dt>
+          <dd>
+            StyleX keeps maps keyed by a hash of the CSS property and merges them with{" "}
+            <code>styleq</code> at render. That resolver is not waste: it merges style objects
+            composed across module boundaries that no build ever saw together, and makes the outcome
+            independent of stylesheet order.
+          </dd>
+          <dt>Not resolved</dt>
+          <dd>
+            CSS Modules, vanilla-extract, yak and Tailwind emit every candidate class and let the
+            cascade decide; none of them can detect that two of them set the same property. The{" "}
+            <code>tailwind-cn</code> lane buys that resolution back with a client-side library.
+          </dd>
+          <dt>Not at build</dt>
+          <dd>
+            Panda scans source to generate the stylesheet but never rewrites the call sites it
+            scanned, so the style objects survive into the bundle and <code>css()</code> turns them
+            into class names on every render, with the whole property-to-abbreviation table along.
+            styled-components produces no stylesheet at all: the template literal is evaluated at
+            render, hashed into a class name, and the rule inserted into a{" "}
+            <code>&lt;style&gt;</code> node. It pays the most and gets the most: a style can depend
+            on anything a prop can hold.
+          </dd>
+        </dl>
+        <p>
+          Read down the Runtime column and it is a price list for how late a class name may be
+          decided: vanilla-extract bakes the name and ships nothing, StyleX ships{" "}
+          <code>styleq</code>, Panda ships a resolver, styled-components ships the whole library.
+          Those last two read 0 B of Structure not because nothing ships, but because what ships is
+          the resolver instead of the names it resolves to — and a resolver in the SSR chunk runs
+          again on every ISR regeneration, every dynamic request and every client render.
+        </p>
+        <p>
+          No lane defers a value to the markup, so every combination a lane can produce is in its
+          stylesheet and the CSS column compares like with like. What that column cannot show is the
+          conflict case: the merging lanes leave one class per property on the element, the
+          unresolved ones leave both and let source order settle it.
+        </p>
+      </Detail>
+
       <Detail title="What this does not measure">
         <p>
           Not what atomic CSS is for. Atomic declarations deduplicate, so the stylesheet stops
@@ -209,40 +270,12 @@ export function Notes({ data }: { data: BenchmarkData | null }) {
           CSS to a couple of hundred kilobytes. This fixture has two styled components; at that size
           the CSS column is close to a fixed overhead.
         </p>
+        <p>
+          Not <code>next dev</code> or incremental rebuilds. Every timing is a cold production
+          build, so the build cache is written but never read back.
+        </p>
         <p>Not rendering, hydration or interaction. And not developer experience.</p>
       </Detail>
-
-      {environment && (
-        <Detail title="This result's environment">
-          <dl className="env-list">
-            {[
-              ["Measured", data?.generatedAt ? new Date(data.generatedAt).toLocaleString() : "—"],
-              ["Machine", environment.ci ? (environment.runner ?? "CI runner") : "local"],
-              [
-                "CPU",
-                environment.cpu
-                  ? `${environment.cpu}${environment.cpuCount ? ` · ${environment.cpuCount} cores` : ""}`
-                  : "—",
-              ],
-              ["Memory", environment.memoryGb ? `${environment.memoryGb} GB` : "—"],
-              ["Node", environment.node ?? "—"],
-              ["Commit", environment.commit ? environment.commit.slice(0, 12) : "—"],
-              [
-                "Rounds",
-                data?.build
-                  ? `${data.build.iterations} per lane, ${data.build.warmupIterations} discarded`
-                  : "—",
-              ],
-              ["Lane order", "Williams design"],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </Detail>
-      )}
     </section>
   );
 }
