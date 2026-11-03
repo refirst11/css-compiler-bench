@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "dev:local": "vite --mode local",
     "build": "node scripts/og.ts && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
