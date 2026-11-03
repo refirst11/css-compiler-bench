@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { MachineNote, Notes } from "./Notes";
+import { Notes, mechanismLabel } from "./Notes";
 import { repositoryUrl, useBenchmark } from "./data";
 import type {
   BindingMeasurement,
@@ -92,34 +92,34 @@ function Failures({
   );
 }
 
+// The card speaks for the result on the page. A benchmark still measuring is a
+// line under it, so the page never reads as if its numbers were already gone.
 function RunStatus({
-  run,
   data,
+  shown,
+  active,
   stale,
 }: {
-  run: WorkflowRun | null;
   data: BenchmarkData | null;
+  shown: WorkflowRun | null;
+  active: WorkflowRun | null;
   stale: WorkflowRun | null;
 }) {
-  const state = !run
-    ? data
+  const state = shown
+    ? shown.conclusion === "success"
       ? "ready"
-      : "pending"
-    : run.status !== "completed"
-      ? "running"
-      : run.conclusion === "success"
-        ? "ready"
-        : "failed";
+      : "failed"
+    : data
+      ? "ready"
+      : "pending";
 
-  const headline = !run
-    ? data
+  const headline = shown
+    ? shown.conclusion === "success"
+      ? "CI green"
+      : `CI ${shown.conclusion}`
+    : data
       ? "Result loaded"
-      : "Waiting for a result"
-    : run.status !== "completed"
-      ? "Benchmark running"
-      : run.conclusion === "success"
-        ? "CI green"
-        : `CI ${run.conclusion}`;
+      : "Waiting for a result";
 
   return (
     <div className="status-card">
@@ -127,14 +127,22 @@ function RunStatus({
       <div>
         <strong>{headline}</strong>
         <small>
-          {run ? (
-            <a href={run.url} target="_blank" rel="noreferrer">
-              run #{run.id} · {relativeTime(run.createdAt)}
+          {shown ? (
+            <a href={shown.url} target="_blank" rel="noreferrer">
+              run #{shown.id} · {relativeTime(shown.createdAt)}
             </a>
           ) : (
             formatDate(data?.generatedAt)
           )}
         </small>
+        {active && (
+          <small className="running">
+            <a href={active.url} target="_blank" rel="noreferrer">
+              run #{active.id}
+            </a>{" "}
+            is measuring; this result stays until it finishes.
+          </small>
+        )}
         {stale && (
           <small className="stale">
             Showing an older measurement;{" "}
@@ -233,17 +241,17 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
           <tr>
             <th>Implementation</th>
             <th>Mechanism</th>
-            <th>Average</th>
-            <th>Library cost</th>
-            <th>SD</th>
-            <th>.next</th>
-            <th>CSS</th>
-            <th>Build cache</th>
+            <th className="number">Average</th>
+            <th className="number">Library cost</th>
+            <th className="number">SD</th>
+            <th className="number">.next</th>
+            <th className="number">CSS</th>
+            <th className="number">Build cache</th>
           </tr>
         </thead>
         <tbody>
           {measurements.map((item) => (
-            <tr key={item.project}>
+            <tr key={item.project} className={item.baseline ? "is-control" : undefined}>
               <td>
                 <span className="table-label">{item.label}</span>
                 <small>{item.project}</small>
@@ -287,14 +295,6 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
   );
 }
 
-function niceFloor(value: number) {
-  return Math.floor(value * 2) / 2;
-}
-
-function niceCeil(value: number) {
-  return Math.ceil(value * 2) / 2;
-}
-
 // Twelve lanes cannot be told apart by twelve line colours on one pair of axes:
 // the palette runs out at eight and the lines cross in a band a few tenths of a
 // second wide. One panel per lane on a shared scale compares the slopes without
@@ -307,19 +307,38 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
   ];
   const counts = [...data.counts].sort((a, b) => a - b);
   const seconds = data.measurements.map((item) => item.buildSeconds);
-  const low = niceFloor(Math.min(...seconds));
-  const high = niceCeil(Math.max(...seconds));
+  const slowest = Math.max(...seconds);
 
-  const width = 200;
-  const height = 104;
-  const padX = 18;
-  const padTop = 10;
-  const padBottom = 18;
+  // The scale starts at zero, so a line's height is its whole build time and a
+  // lane that starts high is seen to. Gridlines on round seconds, at most six
+  // gaps, up to the first one above the slowest build.
+  const tickStep = [1, 2, 5, 10].find((step) => Math.ceil(slowest / step) <= 6) ?? 10;
+  const low = 0;
+  const high = Math.max(Math.ceil(slowest / tickStep), 1) * tickStep;
+  const ticks: number[] = [];
+  for (let tick = low; tick <= high; tick += tickStep) ticks.push(tick);
+
+  const width = 260;
+  const height = 150;
+  const padLeft = 30;
+  const padRight = 10;
+  const padTop = 8;
+  // The count labels sit in their own row under the plot, clear of the
+  // seconds label on its bottom line.
+  const padBottom = 24;
+  // The first and last points sit inside the plot, not on its edge, so the
+  // count under each one does not run into the seconds beside it.
+  const inset = 10;
 
   const x = (count: number) => {
-    if (counts.length < 2) return width / 2;
+    if (counts.length < 2) return (padLeft + width - padRight) / 2;
     const span = Math.log10(counts[counts.length - 1]) - Math.log10(counts[0]);
-    return padX + ((Math.log10(count) - Math.log10(counts[0])) / span) * (width - padX * 2);
+    return (
+      padLeft +
+      inset +
+      ((Math.log10(count) - Math.log10(counts[0])) / span) *
+        (width - padLeft - padRight - 2 * inset)
+    );
   };
   const y = (value: number) =>
     height -
@@ -329,47 +348,40 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
   const series = (project: string) =>
     data.measurements.filter((item) => item.project === project).sort((a, b) => a.count - b.count);
 
-  const baselineProject = lanes[0]?.[0];
-  const baselinePoints = baselineProject
-    ? series(baselineProject)
-        .map((item) => `${x(item.count)},${y(item.buildSeconds)}`)
-        .join(" ")
-    : "";
-
   return (
     <div className="scale-grid">
       {lanes.map(([project, label]) => {
         const points = series(project);
+        const first = points[0];
         const last = points[points.length - 1];
         return (
           <figure className="scale-panel" key={project}>
-            <figcaption>
-              <span className="scale-panel-label">{label}</span>
-              {last ? <small>{formatSeconds(last.buildSeconds)}</small> : null}
-            </figcaption>
+            <figcaption className="scale-panel-label">{label}</figcaption>
             <svg
               viewBox={`0 0 ${width} ${height}`}
               role="img"
               aria-label={`${label}: build time across ${counts.join(", ")} distinct definitions`}
             >
-              {[low, (low + high) / 2, high].map((value) => (
-                <line
-                  key={value}
-                  x1={padX}
-                  x2={width - padX}
-                  y1={y(value)}
-                  y2={y(value)}
-                  className="grid-line"
-                />
+              {ticks.map((tick) => (
+                <g key={tick}>
+                  <line
+                    x1={padLeft}
+                    x2={width - padRight}
+                    y1={y(tick)}
+                    y2={y(tick)}
+                    className="grid-line"
+                  />
+                  <text
+                    x={padLeft - 6}
+                    y={y(tick)}
+                    textAnchor="end"
+                    dominantBaseline="central"
+                    className="axis-label"
+                  >
+                    {`${tick}s`}
+                  </text>
+                </g>
               ))}
-              {project !== baselineProject && baselinePoints ? (
-                <polyline
-                  points={baselinePoints}
-                  fill="none"
-                  className="scale-ghost"
-                  vectorEffect="non-scaling-stroke"
-                />
-              ) : null}
               <polyline
                 points={points.map((item) => `${x(item.count)},${y(item.buildSeconds)}`).join(" ")}
                 fill="none"
@@ -393,7 +405,7 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
                 <text
                   key={count}
                   x={x(count)}
-                  y={height - 4}
+                  y={height - 6}
                   textAnchor="middle"
                   className="axis-label"
                 >
@@ -401,30 +413,34 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
                 </text>
               ))}
             </svg>
+            {/* The two ends of the line, read off as a grid. */}
+            {first && last ? (
+              <table className="scale-values">
+                <thead>
+                  <tr>
+                    <td />
+                    <th scope="col">{first.count} defs</th>
+                    <th scope="col">{last.count} defs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">build time</th>
+                    <td>{first.buildSeconds.toFixed(2)} s</td>
+                    <td>{last.buildSeconds.toFixed(2)} s</td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : null}
           </figure>
         );
       })}
       <p className="scale-note">
-        Every panel shares one vertical scale, {low.toFixed(1)}s to {high.toFixed(1)}s — it does not
-        start at zero, so read the slope, not the height. The faint line repeated in each panel is
-        the control.
+        Every panel shares one vertical scale, from zero to {high}s. Every count is built once, so a
+        few tenths of a second either way is noise.
       </p>
     </div>
   );
-}
-
-const MECHANISM_LABELS: Record<string, string> = {
-  "names-only": "names only",
-  "authored-classes": "authored classes",
-  "scans-source": "scans source",
-  "rewrites-ast": "rewrites AST",
-  "evaluates-module": "evaluates module",
-  runtime: "runtime",
-};
-
-function mechanismLabel(mechanism?: string) {
-  if (!mechanism) return "—";
-  return MECHANISM_LABELS[mechanism] ?? mechanism;
 }
 
 const OUTCOME_LABELS: Record<string, string> = {
@@ -505,10 +521,10 @@ function StructureTable({
         <thead>
           <tr>
             <th>Implementation</th>
-            <th>SSR chunk</th>
-            <th>Structure</th>
-            <th>Runtime</th>
-            {client && <th>Client chunk</th>}
+            <th className="number">SSR chunk</th>
+            <th className="number">Structure</th>
+            <th className="number">Runtime</th>
+            {client && <th className="number">Client chunk</th>}
           </tr>
         </thead>
         <tbody>
@@ -533,7 +549,7 @@ function StructureTable({
 }
 
 function App() {
-  const { data, error, latestRun, staleSince } = useBenchmark();
+  const { data, error, shownRun, activeRun, staleSince } = useBenchmark();
 
   // Fastest first. The section draws speed as bar length, so leaving the rows in
   // lane order asked the reader to sort twelve bars by eye. The control keeps its
@@ -565,7 +581,7 @@ function App() {
             same job; the exact seconds stay beside the visual comparison.
           </p>
         </div>
-        <RunStatus run={latestRun} data={data} stale={staleSince} />
+        <RunStatus data={data} shown={shownRun} active={activeRun} stale={staleSince} />
       </header>
 
       {environment && (
@@ -601,7 +617,15 @@ function App() {
         </div>
       )}
 
-      <section className="section primary-section">
+      <nav className="toc" aria-label="Sections">
+        <a href="#build">01 Cold build</a>
+        <a href="#scale">02 Scale</a>
+        <a href="#binding">03 Binding</a>
+        <a href="#structure">04 Structure</a>
+        <a href="#notes">Notes</a>
+      </nav>
+
+      <section className="section" id="build">
         <SectionHeading
           eyebrow="01 / cold build"
           title="Speed, drawn to scale"
@@ -632,7 +656,7 @@ function App() {
         <Failures failures={data?.build?.failures} />
       </section>
 
-      <section className="section primary-section">
+      <section className="section" id="scale">
         <SectionHeading
           eyebrow="02 / scale"
           title="Distinct definitions"
@@ -650,7 +674,7 @@ function App() {
         <Failures failures={data?.scale?.failures} />
       </section>
 
-      <section className="section">
+      <section className="section" id="binding">
         <SectionHeading
           eyebrow="03 / binding escape"
           title="What the build can still see"
@@ -675,7 +699,7 @@ function App() {
         <Failures failures={data?.binding?.failures} unit="probe case(s)" tone="info" />
       </section>
 
-      <section className="section">
+      <section className="section" id="structure">
         <SectionHeading
           eyebrow="04 / shipped structure"
           title="What survives the build"
