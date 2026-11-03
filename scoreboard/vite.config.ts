@@ -90,8 +90,38 @@ function shareCard(): Plugin {
   };
 }
 
+// `pnpm dev` serves the result CI last published to Pages in place of whatever
+// scoreboard/public holds, so the page is worked on against a full run without
+// measuring locally. Fetched per request, never written to disk, so a local
+// measurement is never overwritten; `pnpm dev:local` shows that one instead.
+function ciResult(): Plugin {
+  return {
+    name: "ci-result",
+    apply: "serve",
+    configureServer(server) {
+      if (server.config.mode === "local") return;
+      const source = new URL("latest.json", SITE_URL).href;
+      server.config.logger.info(`  latest.json is served from ${source}`);
+
+      server.middlewares.use(async (req, res, next) => {
+        if (!req.url?.split("?")[0].endsWith("/latest.json")) return next();
+        try {
+          const response = await fetch(source, { cache: "no-store" });
+          if (!response.ok) throw new Error(`${source} responded ${response.status}`);
+          res.setHeader("Content-Type", "application/json");
+          res.setHeader("Cache-Control", "no-store");
+          res.end(await response.text());
+        } catch (error) {
+          server.config.logger.error(`  could not fetch ${source}: ${String(error)}`);
+          next(error);
+        }
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), shareCard()],
+  plugins: [react(), shareCard(), ciResult()],
   // Relative asset URLs, so the same build works at a user page, at a project
   // page under /<repo>/, and from a local file.
   base: "./",
