@@ -25,15 +25,17 @@ on:
     # Weekly, so a dependency bump that changes a number is caught without
     # anyone pushing.
     - cron: "17 3 * * 1"
+  # Only a change to what is measured starts an hour of builds: a lane, the
+  # harness that measures it, or the versions it resolves. The scoreboard, the
+  # README, root scripts and this file itself do not; the deploy republishes the
+  # live result for those, and a workflow change is run by hand when it matters.
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/benchmark.yml"
       - ".nvmrc"
       - "benchmark/**"
       - "scripts/**"
-      - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - "tsconfig.benchmark.json"
