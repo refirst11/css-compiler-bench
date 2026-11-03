@@ -182,12 +182,13 @@ pnpm bench:scale               # 10 / 100 / 1,000 distinct definitions
 pnpm bench:binding             # what each lane does with a value it must evaluate
 pnpm structure --client        # class-name structure, server and client
 
-pnpm dev           # the scoreboard, reading whatever you just measured
+pnpm dev           # the scoreboard, reading the result CI last published
+pnpm dev:local     # the scoreboard, reading whatever you just measured
 pnpm build         # production build of the scoreboard
 ```
 
 Every command merges its own section into `scoreboard/public/latest.json` — a build input,
-not repository content — so the scoreboard always renders the run you just did. While
+not repository content — so `pnpm dev:local` always renders the run you just did. While
 iterating, `BENCHMARK_ITERATIONS=3 pnpm bench` and `pnpm bench -- --lanes=plumeria,stylex`
 cut a run down (the control is always included)
 
