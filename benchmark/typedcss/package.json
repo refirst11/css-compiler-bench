@@ -1,0 +1,32 @@
+{
+  "name": "typedcss",
+  "version": "0.1.0",
+  "private": true,
+  "bench": {
+    "label": "typedcss",
+    "scaleKind": "typedcss",
+    "mechanism": "rewrites-ast"
+  },
+  "scripts": {
+    "predev": "rimraf .next",
+    "prebuild": "rimraf .next",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@typedcss/css": "22.0.3",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@typedcss/eslint-plugin": "22.0.3",
+    "@typedcss/next-plugin": "22.0.3",
+    "@types/node": "catalog:",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "rimraf": "^6.1.3",
+    "typescript": "^5"
+  }
+}
