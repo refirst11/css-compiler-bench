@@ -10,8 +10,8 @@ runtime approach the rest are an alternative to. Every setup ("lane") builds the
 components under the same conditions, so the numbers are actually comparable
 
 A lane is one configuration, not one library: StyleX appears twice, compiled through Babel
-and through SWC, and Tailwind appears with and without `cn`. Nine libraries currently
-occupy twelve lanes
+and through SWC, and Tailwind appears with and without `cn`. Ten libraries currently
+occupy thirteen lanes
 
 The question behind it: for a real component, what does each approach cost at `next build`,
 and what class-name machinery does it leave in the bundle once the build is over
@@ -33,6 +33,7 @@ rather than taken on trust.
 | StyleX (Babel) | `stylex` | reads the AST and rewrites the call site | build |
 | StyleX (SWC) | `stylexswc` | reads the AST and rewrites the call site | build |
 | Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
+| typedcss | `typedcss` | reads the AST and rewrites the call site | build |
 | yak | `yak` | reads the AST and rewrites the call site | build |
 | Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
 | Zyzz | `zyzz` | reads the AST and rewrites the call site | build |
@@ -120,7 +121,7 @@ scoreboard/         the Vite + React report
 
 - **Rounds.** Each lane is built once per round, `.next` deleted before every build. There
   are as many rounds as lanes plus one (twice the lane count when it is odd), and the first
-  is discarded — twelve measured builds per lane today. The discarded round is not for V8
+  is discarded — twenty-six measured builds per lane today. The discarded round is not for V8
   startup, since every build is its own process and pays that anyway, but for what only a
   first run pays: a cold OS page cache over `node_modules` and the toolchain, and a CPU not
   yet at its sustained clock
