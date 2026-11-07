@@ -32,16 +32,20 @@ function probeFiles(lane: Lane, probeCase: ProbeCase = "literal") {
   let element: string;
   const files: { path: string; source: string }[] = [];
 
-  if (kind === "plumeria" || kind === "stylex") {
+  if (kind === "plumeria" || kind === "typedcss" || kind === "stylex") {
     imports =
       kind === "plumeria"
         ? 'import * as css from "@plumeria/core";'
-        : 'import * as css from "@stylexjs/stylex";';
+        : kind === "typedcss"
+          ? 'import * as css from "@typedcss/css";'
+          : 'import * as css from "@stylexjs/stylex";';
     declaration = `const styles = css.create({ probe: { letterSpacing: ${expression} } });`;
     element =
       kind === "plumeria"
         ? "<div classStyle={styles.probe}>probe</div>"
-        : "<div {...css.props(styles.probe)}>probe</div>";
+        : kind === "typedcss"
+          ? "<div sx={styles.probe}>probe</div>"
+          : "<div {...css.props(styles.probe)}>probe</div>";
   } else if (kind === "zyzz") {
     imports = 'import { style } from "zyzz";';
     declaration = `namespace styles { export const probe = style({ letterSpacing: ${expression} }); }`;
