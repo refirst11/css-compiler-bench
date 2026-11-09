@@ -15,14 +15,14 @@
     "start": "next start"
   },
   "dependencies": {
-    "@typedcss/css": "22.0.3",
+    "@typedcss/css": "22.0.7",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@typedcss/eslint-plugin": "22.0.3",
-    "@typedcss/next-plugin": "22.0.3",
+    "@typedcss/eslint-plugin": "22.0.7",
+    "@typedcss/next-plugin": "22.0.7",
     "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
