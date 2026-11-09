@@ -31,7 +31,7 @@ function scaleSource(kind, count) {
       );
     } else if (kind === "plumeria") {
       definitions.push(
-        `const style${i} = css.create({ item: { display: "inline-block", padding: "1px" } });\nconst Scale${i} = () => <div classStyle={style${i}.item}>Scale fixture</div>;`,
+        `const style${i} = css.create({ item: { display: "inline-block", padding: "1px" } });\nconst Scale${i} = () => <div sx={style${i}.item}>Scale fixture</div>;`,
       );
     } else if (kind === "typedcss") {
       definitions.push(
