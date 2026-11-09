@@ -299,7 +299,13 @@ function BuildTable({ measurements }: { measurements: BuildMeasurement[] }) {
 // the palette runs out at eight and the lines cross in a band a few tenths of a
 // second wide. One panel per lane on a shared scale compares the slopes without
 // asking the reader to hold a legend in their head.
-function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
+function ScaleChart({
+  data,
+  control,
+}: {
+  data: NonNullable<BenchmarkData["scale"]>;
+  control: string;
+}) {
   const lanes = [
     ...new Map(
       data.measurements.map((item) => [item.project, item.label ?? item.project]),
@@ -354,6 +360,16 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
         const points = series(project);
         const first = points[0];
         const last = points[points.length - 1];
+        // The same count built by the control lane, so each end reads as a
+        // cost over plain CSS Modules.
+        const controlAt = (count: number) =>
+          data.measurements.find((item) => item.project === control && item.count === count);
+        const overControl = (item: (typeof points)[number]) => {
+          const base = controlAt(item.count);
+          if (!base) return "—";
+          const delta = item.buildSeconds - base.buildSeconds;
+          return `${delta >= 0 ? "+" : "−"}${Math.abs(delta).toFixed(2)} s`;
+        };
         return (
           <figure className="scale-panel" key={project}>
             <figcaption className="scale-panel-label">{label}</figcaption>
@@ -429,6 +445,13 @@ function ScaleChart({ data }: { data: NonNullable<BenchmarkData["scale"]> }) {
                     <td>{first.buildSeconds.toFixed(2)} s</td>
                     <td>{last.buildSeconds.toFixed(2)} s</td>
                   </tr>
+                  {project !== control ? (
+                    <tr>
+                      <th scope="row">vs CSS Modules</th>
+                      <td>{overControl(first)}</td>
+                      <td>{overControl(last)}</td>
+                    </tr>
+                  ) : null}
                 </tbody>
               </table>
             ) : null}
@@ -667,7 +690,7 @@ function App() {
           }
         />
         {data?.scale?.measurements?.length ? (
-          <ScaleChart data={data.scale} />
+          <ScaleChart data={data.scale} control={data.build?.baseline ?? "baseline"} />
         ) : (
           <EmptyState>Scale data appears after the sweep completes.</EmptyState>
         )}
