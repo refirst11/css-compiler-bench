@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "bench": {
-    "label": "typedcss",
+    "label": "TypedCSS",
     "scaleKind": "typedcss",
     "mechanism": "rewrites-ast"
   },
