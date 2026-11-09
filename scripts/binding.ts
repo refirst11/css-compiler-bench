@@ -42,7 +42,7 @@ function probeFiles(lane: Lane, probeCase: ProbeCase = "literal") {
     declaration = `const styles = css.create({ probe: { letterSpacing: ${expression} } });`;
     element =
       kind === "plumeria"
-        ? "<div classStyle={styles.probe}>probe</div>"
+        ? "<div sx={styles.probe}>probe</div>"
         : kind === "typedcss"
           ? "<div sx={styles.probe}>probe</div>"
           : "<div {...css.props(styles.probe)}>probe</div>";
