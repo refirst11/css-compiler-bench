@@ -106,7 +106,7 @@ interface TestProps {
 const Test = ({ color, size, padding, borderRadius, background }: TestProps) => {
   return (
     <div
-      classStyle={[
+      sx={[
         styles.base,
         colorStyles[color],
         sizeStyles[size],
