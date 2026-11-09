@@ -398,6 +398,19 @@ function ScaleChart({
                   </text>
                 </g>
               ))}
+              {/* The control's line, faint and underneath, as a reference. */}
+              {project !== control ? (
+                <polyline
+                  points={series(control)
+                    .map((item) => `${x(item.count)},${y(item.buildSeconds)}`)
+                    .join(" ")}
+                  fill="none"
+                  className="scale-line-control"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ) : null}
               <polyline
                 points={points.map((item) => `${x(item.count)},${y(item.buildSeconds)}`).join(" ")}
                 fill="none"
