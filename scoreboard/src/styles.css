@@ -691,6 +691,12 @@ h2 {
   stroke-width: 2;
 }
 
+.scale-line-control {
+  stroke: var(--ink);
+  stroke-opacity: 0.18;
+  stroke-width: 2;
+}
+
 .scale-dot {
   fill: var(--accent);
   stroke: var(--card);
