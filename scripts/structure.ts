@@ -338,8 +338,32 @@ function styledComponentsRuntime(src: string): RuntimePart[] | null {
   return [{ label: "styled-components (stylis, sheet, factory)", bytes: userCode - start }];
 }
 
+// TypedCSS inlines its `sx` resolver at the call site as `{...function(...){}}`,
+// so it is carved out by anchor like styleq. `"$$w"` is the string the resolver
+// compares keys against to skip its weight table; it is a literal, so it
+// survives minification. The resolver closes over two module-level helpers -- a
+// WeakMap cache root and a tuple comparator -- which are counted with it.
+function typedcssRuntime(src: string): RuntimePart[] | null {
+  const marker = src.indexOf('"$$w"===');
+  if (marker === -1) return null;
+
+  const spread = src.lastIndexOf("{...function(", marker);
+  const start = spread === -1 ? src.lastIndexOf("function(", marker) : spread + 4;
+  if (start === -1) return null;
+  const end = scanBlock(src, src.indexOf("{", start));
+
+  const cache = src.match(/(?:let|var|const) [\w$]+=\{next:new WeakMap,value:void 0\}[;,]?/);
+  const compare = src.match(
+    /function [\w$]+\(([\w$]+),([\w$]+)\)\{return \1\[0\]-\2\[0\]\|\|\1\[1\]-\2\[1\]\|\|\1\[2\]-\2\[2\]\}/,
+  );
+  const helpers = (cache?.[0].length ?? 0) + (compare?.[0].length ?? 0);
+
+  return [{ label: "sx resolver (inlined)", bytes: end - start + helpers }];
+}
+
 const runtimeParts = (body: string): RuntimePart[] => [
   ...(styleqRuntime(body) ?? []),
+  ...(typedcssRuntime(body) ?? []),
   ...(pandaRuntime(body) ?? []),
   ...(styledComponentsRuntime(body) ?? []),
 ];
