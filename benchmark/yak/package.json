@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "next": "catalog:",
-    "@yak/react": "^10.0.0",
+    "@yak/react": "^10.1.0",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
