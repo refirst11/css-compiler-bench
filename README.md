@@ -23,21 +23,21 @@ benchmark is for. A lane declares its mechanism in its `package.json`; `pnpm ben
 then measures how far that mechanism actually reaches, so the classification is checked
 rather than taken on trust.
 
-| Lane | Folder | Mechanism | Where the class is decided |
-|---|---|---|---|
-| CSS Modules | `baseline` | rewrites local class names to unique ones; compiles no styles | build, names only |
-| Tailwind | `tailwind` | scans for class names the author wrote by hand; never reads a declaration | authored |
-| Tailwind + `cn` | `tailwind-cn` | the same, through `cn` | authored |
-| Panda CSS | `panda` | scans declarations out of source to generate the stylesheet | render, by a shipped function |
-| vanilla-extract | `vanilla-extract` | executes `.css.ts` as a module | build |
-| StyleX (Babel) | `stylex` | reads the AST and rewrites the call site | build |
-| StyleX (SWC) | `stylexswc` | reads the AST and rewrites the call site | build |
-| Plumeria | `plumeria` | reads the AST and rewrites the call site | build |
-| typedcss | `typedcss` | reads the AST and rewrites the call site | build |
-| yak | `yak` | reads the AST and rewrites the call site | build |
-| Devup UI | `devup-ui` | reads the AST and rewrites the call site | build |
-| Zyzz | `zyzz` | reads the AST and rewrites the call site | build |
-| styled-components | `styled-components` | nothing; no stylesheet is produced | render, into a `<style>` node |
+| Lane              | Folder              | Mechanism                                                                 | Where the class is decided    |
+| ----------------- | ------------------- | ------------------------------------------------------------------------- | ----------------------------- |
+| CSS Modules       | `baseline`          | rewrites local class names to unique ones; compiles no styles             | build, names only             |
+| Tailwind          | `tailwind`          | scans for class names the author wrote by hand; never reads a declaration | authored                      |
+| Tailwind + `cn`   | `tailwind-cn`       | the same, through `cn`                                                    | authored                      |
+| Panda CSS         | `panda`             | scans declarations out of source to generate the stylesheet               | render, by a shipped function |
+| vanilla-extract   | `vanilla-extract`   | executes `.css.ts` as a module                                            | build                         |
+| StyleX (Babel)    | `stylex`            | reads the AST and rewrites the call site                                  | build                         |
+| StyleX (SWC)      | `stylexswc`         | reads the AST and rewrites the call site                                  | build                         |
+| Plumeria          | `plumeria`          | reads the AST and rewrites the call site                                  | build                         |
+| TypedCSS          | `typedcss`          | reads the AST and rewrites the call site                                  | build                         |
+| yak               | `yak`               | reads the AST and rewrites the call site                                  | build                         |
+| Devup UI          | `devup-ui`          | reads the AST and rewrites the call site                                  | build                         |
+| Zyzz              | `zyzz`              | reads the AST and rewrites the call site                                  | build                         |
+| styled-components | `styled-components` | nothing; no stylesheet is produced                                        | render, into a `<style>` node |
 
 Reading a declaration at all is the line between a compiler and a scanner, and it is why
 Tailwind and Panda sit in different rows despite both scanning source: Tailwind only
@@ -50,21 +50,23 @@ The probe writes the same declaration three ways — the value at the call site,
 behind a module-scope `const`, and the value behind an expression that has to be evaluated —
 and looks for each in the emitted CSS.
 
-| Lane | At the call site | Behind a const | Behind an expression |
-|---|---|---|---|
-| vanilla-extract | resolved | resolved | resolved |
-| StyleX (Babel / SWC) | resolved | resolved | resolved |
-| Panda CSS | resolved | resolved | resolved |
-| Plumeria | resolved | resolved | — |
-| Tailwind (both) | resolved | resolved | left to the runtime |
-| Devup UI | resolved | left to the runtime | left to the runtime |
-| yak | resolved | resolved | — |
-| Zyzz | resolved | resolved | — |
-| styled-components | written at render | written at render | written at render |
+| Lane                 | At the call site  | Behind a const      | Behind an expression |
+| -------------------- | ----------------- | ------------------- | -------------------- |
+| vanilla-extract      | resolved          | resolved            | resolved             |
+| StyleX (Babel / SWC) | resolved          | resolved            | resolved             |
+| Panda CSS            | resolved          | resolved            | resolved             |
+| Plumeria             | resolved          | resolved            | —                    |
+| TypedCSS             | resolved          | resolved            | —                    |
+| Tailwind (both)      | resolved          | resolved            | left to the runtime  |
+| Devup UI             | resolved          | left to the runtime | left to the runtime  |
+| yak                  | resolved          | resolved            | —                    |
+| Zyzz                 | resolved          | resolved            | —                    |
+| styled-components    | written at render | written at render   | written at render    |
 
 Each form is built separately, so a failure in one does not erase the other results.
-Plumeria, yak and Zyzz all resolve the literal and the module-scope constant. Their expression
-probes fail to build; the dash means no emitted-CSS result, not a silently dropped value.
+Plumeria, TypedCSS, yak and Zyzz all resolve the literal and the module-scope constant. Their
+expression probes fail to build; the dash means no emitted-CSS result, not a silently dropped
+value.
 
 Among the lanes with a complete result, **StyleX and Panda resolve the expression too**,
 which puts their reach alongside vanilla-extract even though they never execute the module
@@ -102,16 +104,16 @@ scoreboard/         the Vite + React report
 
 ## What is measured
 
-| Measurement | Unit | What it answers |
-|---|---|---|
-| **Cold build** | seconds ↓ | what one clean `next build` costs this lane |
-| **Library cost** | ms | that build minus the control — everything adopting the library entails; median and 95% interval from each round's difference from the control |
-| **Scale** | seconds at 10 / 100 / 1,000 | whether cost tracks the number of *distinct definitions*, with rendered instances held fixed |
-| **`.next` and CSS** | bytes | build output size, with `.next/cache` excluded |
-| **Build cache** | bytes | what Turbopack persisted into `.next/cache` compiling this lane |
-| **Shipped structure** | bytes | the class-name machinery left in the SSR chunk |
-| **Client chunk** | bytes | the same, rebuilt with the fixture marked `"use client"` |
-| **Binding escape** | verdict | whether the lane compiles a value it has to evaluate to know |
+| Measurement           | Unit                        | What it answers                                                                                                                               |
+| --------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cold build**        | seconds ↓                   | what one clean `next build` costs this lane                                                                                                   |
+| **Library cost**      | ms                          | that build minus the control — everything adopting the library entails; median and 95% interval from each round's difference from the control |
+| **Scale**             | seconds at 10 / 100 / 1,000 | whether cost tracks the number of _distinct definitions_, with rendered instances held fixed                                                  |
+| **`.next` and CSS**   | bytes                       | build output size, with `.next/cache` excluded                                                                                                |
+| **Build cache**       | bytes                       | what Turbopack persisted into `.next/cache` compiling this lane                                                                               |
+| **Shipped structure** | bytes                       | the class-name machinery left in the SSR chunk                                                                                                |
+| **Client chunk**      | bytes                       | the same, rebuilt with the fixture marked `"use client"`                                                                                      |
+| **Binding escape**    | verdict                     | whether the lane compiles a value it has to evaluate to know                                                                                  |
 
 > [!IMPORTANT]
 > **A difference smaller than the standard deviation is noise.** Every average is reported
