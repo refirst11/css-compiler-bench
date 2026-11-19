@@ -33,7 +33,6 @@ rather than taken on trust.
 | StyleX (Babel)    | `stylex`            | reads the AST and rewrites the call site                                  | build                         |
 | StyleX (SWC)      | `stylexswc`         | reads the AST and rewrites the call site                                  | build                         |
 | Plumeria          | `plumeria`          | reads the AST and rewrites the call site                                  | build                         |
-| TypedCSS          | `typedcss`          | reads the AST and rewrites the call site                                  | build                         |
 | yak               | `yak`               | reads the AST and rewrites the call site                                  | build                         |
 | Devup UI          | `devup-ui`          | reads the AST and rewrites the call site                                  | build                         |
 | Zyzz              | `zyzz`              | reads the AST and rewrites the call site                                  | build                         |
@@ -56,7 +55,6 @@ and looks for each in the emitted CSS.
 | StyleX (Babel / SWC) | resolved          | resolved            | resolved             |
 | Panda CSS            | resolved          | resolved            | resolved             |
 | Plumeria             | resolved          | resolved            | —                    |
-| TypedCSS             | resolved          | resolved            | —                    |
 | Tailwind (both)      | resolved          | resolved            | left to the runtime  |
 | Devup UI             | resolved          | left to the runtime | left to the runtime  |
 | yak                  | resolved          | resolved            | —                    |
@@ -64,8 +62,8 @@ and looks for each in the emitted CSS.
 | styled-components    | written at render | written at render   | written at render    |
 
 Each form is built separately, so a failure in one does not erase the other results.
-Plumeria, TypedCSS, yak and Zyzz all resolve the literal and the module-scope constant. Their
-expression probes fail to build; the dash means no emitted-CSS result, not a silently dropped
+Plumeria, yak and Zyzz all resolve the literal and the module-scope constant. Their expression
+probes fail to build; the dash means no emitted-CSS result, not a silently dropped
 value.
 
 Among the lanes with a complete result, **StyleX and Panda resolve the expression too**,
