@@ -6,6 +6,7 @@ import type {
   BenchmarkData,
   BuildMeasurement,
   LaneFailure,
+  SsrMeasurement,
   StructureMeasurement,
   WorkflowRun,
 } from "./types";
@@ -584,6 +585,60 @@ function StructureTable({
   );
 }
 
+// Fastest first, like the build table. A difference is struck through unless
+// every round fell on the same side of the control and its median clears the
+// control's own round-to-round spread.
+function SsrTable({ measurements }: { measurements: SsrMeasurement[] }) {
+  const rows = [...measurements].sort((a, b) => a.medianMs - b.medianMs);
+  return (
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Implementation</th>
+            <th>Mechanism</th>
+            <th className="number">Median</th>
+            <th className="number">p90</th>
+            <th className="number">Over control</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((item) => (
+            <tr key={item.project} className={item.baseline ? "is-control" : undefined}>
+              <td>
+                <span className="table-label">{item.label}</span>
+                <small>{item.project}</small>
+              </td>
+              <td>
+                <span className="mechanism">{mechanismLabel(item.mechanism)}</span>
+              </td>
+              <td className="number">{item.medianMs.toFixed(2)} ms</td>
+              <td className="number">{item.p90Ms.toFixed(2)} ms</td>
+              <td className="number">
+                {item.overControl === null ? (
+                  "control"
+                ) : (
+                  <>
+                    <span className={item.overControl.significant ? "" : "indistinct"}>
+                      {item.overControl.medianDeltaMs >= 0 ? "+" : "−"}
+                      {Math.abs(item.overControl.medianDeltaMs).toFixed(2)} ms
+                    </span>
+                    <small>
+                      {item.overControl.significant
+                        ? `rounds ${item.overControl.minDeltaMs.toFixed(1)} – ${item.overControl.maxDeltaMs.toFixed(1)} ms`
+                        : "within noise"}
+                    </small>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function App() {
   const { data, error, shownRun, activeRun, staleSince } = useBenchmark();
 
@@ -658,6 +713,7 @@ function App() {
         <a href="#scale">02 Scale</a>
         <a href="#binding">03 Binding</a>
         <a href="#structure">04 Structure</a>
+        <a href="#ssr">05 Server render</a>
         <a href="#notes">Notes</a>
       </nav>
 
@@ -754,6 +810,33 @@ function App() {
           <EmptyState>Structure data appears after the structure measurement completes.</EmptyState>
         )}
         <Failures failures={data?.structure?.failures} />
+      </section>
+
+      <section className="section" id="ssr">
+        <SectionHeading
+          eyebrow="05 / server render"
+          title="What a request costs"
+          detail={
+            data?.ssr
+              ? `Server render of the 1,000-instance page · ${data.ssr.rounds} rounds × ${data.ssr.requests} requests after ${data.ssr.warmupRequests} warm-up · rotating order`
+              : "Server render time of the 1,000-instance page, against the control."
+          }
+        />
+        {data?.ssr?.measurements?.length ? (
+          <>
+            <SsrTable measurements={data.ssr.measurements} />
+            <p className="annotation">
+              Each round renders every lane once more and is compared with the control's render in
+              the same round. A difference struck through changed sign between rounds or stayed
+              inside the control's own round-to-round spread
+              {data.ssr.noiseFloorMs === null ? "" : ` (${data.ssr.noiseFloorMs.toFixed(2)} ms)`}:
+              treat it as zero. The time includes the local HTTP round trip every lane shares.
+            </p>
+          </>
+        ) : (
+          <EmptyState>Server render data appears after the SSR measurement completes.</EmptyState>
+        )}
+        <Failures failures={data?.ssr?.failures} />
       </section>
 
       <Notes data={data} />
