@@ -118,6 +118,12 @@ jobs:
         shell: bash
         run: set -o pipefail && pnpm structure --client 2>&1 | tee structure.log
 
+      - name: Server render
+        id: ssr
+        continue-on-error: true
+        shell: bash
+        run: set -o pipefail && pnpm bench:ssr 2>&1 | tee ssr.log
+
       - name: Check for a publishable result
         id: results
         if: always()
@@ -147,11 +153,12 @@ jobs:
             echo "| Scale sweep | ${{ steps.scale.outcome }} |"
             echo "| Binding escape | ${{ steps.binding.outcome }} |"
             echo "| Structure | ${{ steps.structure.outcome }} |"
+            echo "| Server render | ${{ steps.ssr.outcome }} |"
             echo
             echo "> Shared CI runners are noisy. Treat these numbers as a check that the"
             echo "> relative trend reproduces on another OS and CPU, not as absolute timings."
             echo
-            for log in benchmark fixture scale binding structure; do
+            for log in benchmark fixture scale binding structure ssr; do
               echo "## ${log}"
               echo
               echo '```text'
@@ -189,7 +196,7 @@ jobs:
         shell: bash
         run: |
           failed=0
-          for outcome in "${{ steps.bench.outcome }}" "${{ steps.fixture.outcome }}" "${{ steps.scale.outcome }}" "${{ steps.structure.outcome }}"; do
+          for outcome in "${{ steps.bench.outcome }}" "${{ steps.fixture.outcome }}" "${{ steps.scale.outcome }}" "${{ steps.structure.outcome }}" "${{ steps.ssr.outcome }}"; do
             [ "$outcome" = "success" ] || failed=1
           done
           if [ "$failed" = "1" ]; then
