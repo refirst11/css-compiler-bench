@@ -182,6 +182,7 @@ pnpm bench                     # rounds = lanes + 1, first discarded
 pnpm bench:scale               # 10 / 100 / 1,000 distinct definitions
 pnpm bench:binding             # what each lane does with a value it must evaluate
 pnpm structure --client        # class-name structure, server and client
+pnpm bench:ssr                 # server render time of the 1,000 instances
 
 pnpm dev           # the scoreboard, reading the result CI last published
 pnpm dev:local     # the scoreboard, reading whatever you just measured
