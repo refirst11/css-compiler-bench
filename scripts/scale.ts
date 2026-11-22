@@ -12,6 +12,13 @@ const laneList = selectedLanes();
 const defaultCounts = [10, 100, 1000];
 const BUILD_TIMEOUT_MS = numberFromEnv("BENCHMARK_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
 
+// Every definition gets its own padding, so a count of N emits N distinct
+// rules; with one shared value an atomic compiler folds them into two and the
+// sweep only sees the parse. --same keeps that shared value for a local look.
+const same = process.argv.includes("--same");
+const pad = (i) => (same ? "1px" : `${i + 1}px`);
+const twPad = (i) => (same ? "p-px" : `p-[${i + 1}px]`);
+
 function countsFromArgs() {
   const option = process.argv.find((arg) => arg.startsWith("--counts="));
   const raw = option ? option.slice("--counts=".length) : process.env.BENCHMARK_SCALE_COUNTS;
@@ -31,15 +38,15 @@ function scaleSource(kind, count) {
       );
     } else if (kind === "plumeria") {
       definitions.push(
-        `const style${i} = css.create({ item: { display: "inline-block", padding: "1px" } });\nconst Scale${i} = () => <div sx={style${i}.item}>Scale fixture</div>;`,
+        `const style${i} = css.create({ item: { display: "inline-block", padding: "${pad(i)}" } });\nconst Scale${i} = () => <div sx={style${i}.item}>Scale fixture</div>;`,
       );
     } else if (kind === "stylex") {
       definitions.push(
-        `const style${i} = stylex.create({ item: { display: "inline-block", padding: "1px" } });\nconst Scale${i} = () => <div {...stylex.props(style${i}.item)}>Scale fixture</div>;`,
+        `const style${i} = stylex.create({ item: { display: "inline-block", padding: "${pad(i)}" } });\nconst Scale${i} = () => <div {...stylex.props(style${i}.item)}>Scale fixture</div>;`,
       );
     } else if (kind === "devup") {
       definitions.push(
-        `const Scale${i} = () => <Box display="inline-block" padding="1px">Scale fixture</Box>;`,
+        `const Scale${i} = () => <Box display="inline-block" padding="${pad(i)}">Scale fixture</Box>;`,
       );
     } else if (kind === "vanilla-extract") {
       definitions.push(
@@ -47,21 +54,25 @@ function scaleSource(kind, count) {
       );
     } else if (kind === "panda") {
       definitions.push(
-        `const style${i} = css({ display: "inline-block", padding: "1px" });\nconst Scale${i} = () => <div className={style${i}}>Scale fixture</div>;`,
+        `const style${i} = css({ display: "inline-block", padding: "${pad(i)}" });\nconst Scale${i} = () => <div className={style${i}}>Scale fixture</div>;`,
       );
     } else if (kind === "styled-components") {
-      definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
+      definitions.push(
+        `const Scale${i} = styled.div\`display: inline-block; padding: ${pad(i)};\`;`,
+      );
     } else if (kind === "yak") {
-      definitions.push(`const Scale${i} = styled.div\`display: inline-block; padding: 1px;\`;`);
+      definitions.push(
+        `const Scale${i} = styled.div\`display: inline-block; padding: ${pad(i)};\`;`,
+      );
     } else if (kind === "zyzz") {
       definitions.push(`const Scale${i} = () => <div {...styles.item${i}()}>Scale fixture</div>;`);
     } else if (kind === "cn") {
       definitions.push(
-        `const Scale${i} = () => <div className={cn("inline-block p-px")}>Scale fixture</div>;`,
+        `const Scale${i} = () => <div className={cn("inline-block ${twPad(i)}")}>Scale fixture</div>;`,
       );
     } else {
       definitions.push(
-        `const Scale${i} = () => <div className="inline-block p-px">Scale fixture</div>;`,
+        `const Scale${i} = () => <div className="inline-block ${twPad(i)}">Scale fixture</div>;`,
       );
     }
   }
@@ -73,7 +84,7 @@ function scaleSource(kind, count) {
     plumeria: 'import * as css from "@plumeria/core";',
     stylex: 'import * as stylex from "@stylexjs/stylex";',
     devup: 'import { Box } from "@devup-ui/react";',
-    "yak": 'import { styled } from "@yak/react";',
+    yak: 'import { styled } from "@yak/react";',
     "styled-components": 'import styled from "styled-components";',
     zyzz: 'import { style } from "zyzz";',
     cn: 'import { cn } from "cn";',
@@ -95,7 +106,7 @@ function scaleSource(kind, count) {
 function zyzzNamespace(count) {
   const members = Array.from(
     { length: count },
-    (_, i) => `  export const item${i} = style({ display: "inline-block", padding: "1px" });`,
+    (_, i) => `  export const item${i} = style({ display: "inline-block", padding: "${pad(i)}" });`,
   ).join("\n");
   return `\nnamespace styles {\n${members}\n}\n`;
 }
@@ -103,7 +114,7 @@ function zyzzNamespace(count) {
 function scaleCss(count) {
   return Array.from(
     { length: count },
-    (_, i) => `.item${i} { display: inline-block; padding: 1px; }`,
+    (_, i) => `.item${i} { display: inline-block; padding: ${pad(i)}; }`,
   ).join("\n");
 }
 
@@ -113,7 +124,7 @@ function scaleCss(count) {
 function scaleVanillaExtract(count) {
   const definitions = Array.from(
     { length: count },
-    (_, i) => `export const item${i} = style({ display: "inline-block", padding: "1px" });`,
+    (_, i) => `export const item${i} = style({ display: "inline-block", padding: "${pad(i)}" });`,
   ).join("\n");
   return `import { style } from "@vanilla-extract/css";\n\n${definitions}\n`;
 }
