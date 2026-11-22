@@ -66,6 +66,22 @@ export type BindingMeasurement = {
   computedInJs: boolean | null;
 };
 
+export type SsrMeasurement = {
+  project: string;
+  label: string;
+  baseline: boolean;
+  mechanism?: string;
+  medianMs: number;
+  p90Ms: number;
+  roundMediansMs: number[];
+  overControl: {
+    medianDeltaMs: number;
+    minDeltaMs: number;
+    maxDeltaMs: number;
+    significant: boolean;
+  } | null;
+};
+
 export type Environment = {
   node?: string;
   platform?: string;
@@ -112,6 +128,15 @@ export type BenchmarkData = {
     status: string;
     client: boolean;
     measurements: StructureMeasurement[];
+    failures?: LaneFailure[];
+  };
+  ssr?: {
+    status: string;
+    rounds: number;
+    requests: number;
+    warmupRequests: number;
+    noiseFloorMs: number | null;
+    measurements: SsrMeasurement[];
     failures?: LaneFailure[];
   };
 };
