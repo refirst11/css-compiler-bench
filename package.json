@@ -13,8 +13,9 @@
     "fixture": "node scripts/fixture.ts",
     "bench:scale": "node scripts/scale.ts",
     "bench:binding": "node scripts/binding.ts",
+    "bench:ssr": "node scripts/ssr.ts",
     "structure": "node scripts/structure.ts",
-    "measure": "pnpm bench && pnpm fixture && pnpm bench:scale && pnpm bench:binding && pnpm structure --client",
+    "measure": "pnpm bench && pnpm fixture && pnpm bench:scale && pnpm bench:binding && pnpm structure --client && pnpm bench:ssr",
     "typecheck": "tsc --noEmit -p tsconfig.benchmark.json && pnpm --dir scoreboard run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
