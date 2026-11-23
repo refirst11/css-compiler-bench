@@ -64,6 +64,10 @@ function scaleSource(kind, count) {
       definitions.push(
         `const Scale${i} = styled.div\`display: inline-block; padding: ${pad(i)};\`;`,
       );
+    } else if (kind === "linaria") {
+      definitions.push(
+        `const style${i} = css\`display: inline-block; padding: ${pad(i)};\`;\nconst Scale${i} = () => <div className={style${i}}>Scale fixture</div>;`,
+      );
     } else if (kind === "zyzz") {
       definitions.push(`const Scale${i} = () => <div {...styles.item${i}()}>Scale fixture</div>;`);
     } else if (kind === "cn") {
@@ -86,6 +90,7 @@ function scaleSource(kind, count) {
     devup: 'import { Box } from "@devup-ui/react";',
     yak: 'import { styled } from "@yak/react";',
     "styled-components": 'import styled from "styled-components";',
+    linaria: 'import { css } from "@linaria/core";',
     zyzz: 'import { style } from "zyzz";',
     cn: 'import { cn } from "cn";',
     tailwind: "",
