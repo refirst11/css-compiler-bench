@@ -30,6 +30,7 @@ rather than taken on trust.
 | Tailwind + `cn`   | `tailwind-cn`       | the same, through `cn`                                                    | authored                      |
 | Panda CSS         | `panda`             | scans declarations out of source to generate the stylesheet               | render, by a shipped function |
 | vanilla-extract   | `vanilla-extract`   | executes `.css.ts` as a module                                            | build                         |
+| Linaria           | `linaria`           | executes the module with wyw-in-js                                        | build                         |
 | StyleX (Babel)    | `stylex`            | reads the AST and rewrites the call site                                  | build                         |
 | StyleX (SWC)      | `stylexswc`         | reads the AST and rewrites the call site                                  | build                         |
 | Plumeria          | `plumeria`          | reads the AST and rewrites the call site                                  | build                         |
@@ -52,6 +53,7 @@ and looks for each in the emitted CSS.
 | Lane                 | At the call site  | Behind a const      | Behind an expression |
 | -------------------- | ----------------- | ------------------- | -------------------- |
 | vanilla-extract      | resolved          | resolved            | resolved             |
+| Linaria              | resolved          | resolved            | resolved             |
 | StyleX (Babel / SWC) | resolved          | resolved            | resolved             |
 | Panda CSS            | resolved          | resolved            | resolved             |
 | Plumeria             | resolved          | resolved            | —                    |
