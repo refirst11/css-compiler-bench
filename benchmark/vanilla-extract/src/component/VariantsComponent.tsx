@@ -1,10 +1,10 @@
-import { base, container, red } from "./VanillaExtractComponent.css";
+import { base, container, red } from "./VariantsComponent.css";
 
-type VanillaExtractComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const VanillaExtractComponent = ({ isRed }: VanillaExtractComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div className={[base, isRed && red].filter(Boolean).join(" ")}>Hello from Benchmark!</div>
@@ -17,4 +17,4 @@ const VanillaExtractComponent = ({ isRed }: VanillaExtractComponentProps) => {
   );
 };
 
-export default VanillaExtractComponent;
+export default VariantsComponent;
