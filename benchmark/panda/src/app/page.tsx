@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import PandaComponent from "../component/PandaComponent";
+import VariantsComponent from "../component/VariantsComponent";
 import ScaleFixture from "../component/ScaleFixture";
 import Test from "../component/Test";
 
@@ -23,8 +23,8 @@ export default function Home() {
             <Test key={i} {...item} />
           ))}
         </div>
-        <PandaComponent isRed={true} />
-        <PandaComponent isRed={false} />
+        <VariantsComponent isRed={true} />
+        <VariantsComponent isRed={false} />
         {scaleCount > 0 ? <ScaleFixture /> : null}
       </main>
     </div>
