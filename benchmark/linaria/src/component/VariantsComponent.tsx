@@ -27,11 +27,11 @@ const container = css`
   }
 `;
 
-type LinariaComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const LinariaComponent = ({ isRed }: LinariaComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div className={[base, isRed && red].filter(Boolean).join(" ")}>Hello from Benchmark!</div>
@@ -44,4 +44,4 @@ const LinariaComponent = ({ isRed }: LinariaComponentProps) => {
   );
 };
 
-export default LinariaComponent;
+export default VariantsComponent;
