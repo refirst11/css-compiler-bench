@@ -27,11 +27,11 @@ const styles2 = css.create({
   },
 });
 
-type PlumeriaComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const PlumeriaComponent = ({ isRed }: PlumeriaComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div sx={[styles.base, isRed && styles.red]}>Hello from Benchmark!</div>
@@ -44,4 +44,4 @@ const PlumeriaComponent = ({ isRed }: PlumeriaComponentProps) => {
   );
 };
 
-export default PlumeriaComponent;
+export default VariantsComponent;
