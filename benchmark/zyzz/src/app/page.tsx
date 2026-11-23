@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import ZyzzComponent from "../component/ZyzzComponent";
+import VariantsComponent from "../component/VariantsComponent";
 import ScaleFixture from "../component/ScaleFixture";
 import Test from "../component/Test";
 
@@ -23,8 +23,8 @@ export default function Home() {
             <Test key={i} {...item} />
           ))}
         </div>
-        <ZyzzComponent isRed={true} />
-        <ZyzzComponent isRed={false} />
+        <VariantsComponent isRed={true} />
+        <VariantsComponent isRed={false} />
         {scaleCount > 0 ? <ScaleFixture /> : null}
       </main>
     </div>
