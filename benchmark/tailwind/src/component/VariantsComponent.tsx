@@ -1,8 +1,8 @@
-type TailwindComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const TailwindComponent = ({ isRed }: TailwindComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div
@@ -24,4 +24,4 @@ const TailwindComponent = ({ isRed }: TailwindComponentProps) => {
   );
 };
 
-export default TailwindComponent;
+export default VariantsComponent;
