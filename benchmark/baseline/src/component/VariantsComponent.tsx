@@ -1,10 +1,10 @@
-import styles from "./BaselineComponent.module.css";
+import styles from "./VariantsComponent.module.css";
 
-type BaselineComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const BaselineComponent = ({ isRed }: BaselineComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div className={[styles.base, isRed && styles.red].filter(Boolean).join(" ")}>
@@ -19,4 +19,4 @@ const BaselineComponent = ({ isRed }: BaselineComponentProps) => {
   );
 };
 
-export default BaselineComponent;
+export default VariantsComponent;
