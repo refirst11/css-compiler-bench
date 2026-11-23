@@ -28,11 +28,11 @@ const Container = styled.div`
   }
 `;
 
-type StyledComponentsComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const StyledComponentsComponent = ({ isRed }: StyledComponentsComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <Base $isRed={isRed}>Hello from Benchmark!</Base>
@@ -45,4 +45,4 @@ const StyledComponentsComponent = ({ isRed }: StyledComponentsComponentProps) =>
   );
 };
 
-export default StyledComponentsComponent;
+export default VariantsComponent;
