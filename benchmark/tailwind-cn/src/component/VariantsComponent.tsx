@@ -1,10 +1,10 @@
 import { cn } from "cn";
 
-type TailwindCnComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const TailwindCnComponent = ({ isRed }: TailwindCnComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div
@@ -24,4 +24,4 @@ const TailwindCnComponent = ({ isRed }: TailwindCnComponentProps) => {
   );
 };
 
-export default TailwindCnComponent;
+export default VariantsComponent;
