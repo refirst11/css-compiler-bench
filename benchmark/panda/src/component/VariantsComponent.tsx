@@ -21,11 +21,11 @@ const container = css({
   "@media screen and (min-width: 800px)": { marginBottom: "0.75rem" },
 });
 
-type PandaComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const PandaComponent = ({ isRed }: PandaComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div className={[base, isRed && red].filter(Boolean).join(" ")}>Hello from Benchmark!</div>
@@ -38,4 +38,4 @@ const PandaComponent = ({ isRed }: PandaComponentProps) => {
   );
 };
 
-export default PandaComponent;
+export default VariantsComponent;
