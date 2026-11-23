@@ -1,10 +1,10 @@
 import { cx, style } from "zyzz";
 
-type ZyzzComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const ZyzzComponent = ({ isRed }: ZyzzComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <div {...cx(styles.base(), isRed && styles.red())}>Hello from Benchmark!</div>
@@ -17,7 +17,7 @@ const ZyzzComponent = ({ isRed }: ZyzzComponentProps) => {
   );
 };
 
-export default ZyzzComponent;
+export default VariantsComponent;
 
 namespace styles {
   export const base = style({
