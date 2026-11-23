@@ -1,6 +1,6 @@
 import styles from "./page.module.css";
 import ScaleFixture from "../component/ScaleFixture";
-import StyledComponentsComponent from "../component/StyledComponentsComponent";
+import VariantsComponent from "../component/VariantsComponent";
 import Test from "../component/Test";
 
 const scaleCount = Number(process.env.BENCHMARK_SCALE_COUNT ?? 0);
@@ -23,8 +23,8 @@ export default function Home() {
             <Test key={i} {...item} />
           ))}
         </div>
-        <StyledComponentsComponent isRed={true} />
-        <StyledComponentsComponent isRed={false} />
+        <VariantsComponent isRed={true} />
+        <VariantsComponent isRed={false} />
         {scaleCount > 0 ? <ScaleFixture /> : null}
       </main>
     </div>
