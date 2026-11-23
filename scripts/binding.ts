@@ -60,6 +60,11 @@ function probeFiles(lane: Lane, probeCase: ProbeCase = "literal") {
     const interpolation = probeCase === "literal" ? sentinel : "${VALUE}";
     declaration = "const Probe = styled.div`letter-spacing: " + interpolation + ";`;";
     element = "<Probe>probe</Probe>";
+  } else if (kind === "linaria") {
+    imports = 'import { css } from "@linaria/core";';
+    const interpolation = probeCase === "literal" ? sentinel : "${VALUE}";
+    declaration = "const probe = css`letter-spacing: " + interpolation + ";`;";
+    element = "<div className={probe}>probe</div>";
   } else if (kind === "vanilla-extract") {
     imports = 'import { probe } from "./Scale.css";';
     element = "<div className={probe}>probe</div>";
