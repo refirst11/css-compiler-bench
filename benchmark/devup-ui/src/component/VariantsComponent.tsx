@@ -1,10 +1,10 @@
 import { Box } from "@devup-ui/react";
 
-type DevupComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const DevupComponent = ({ isRed }: DevupComponentProps) => {
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => {
   return (
     <>
       <Box
@@ -45,4 +45,4 @@ const DevupComponent = ({ isRed }: DevupComponentProps) => {
   );
 };
 
-export default DevupComponent;
+export default VariantsComponent;
