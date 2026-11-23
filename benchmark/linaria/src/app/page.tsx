@@ -1,7 +1,7 @@
 import styles from "./page.module.css";
 import ScaleFixture from "../component/ScaleFixture";
 import Test from "../component/Test";
-import LinariaComponent from "../component/LinariaComponent";
+import VariantsComponent from "../component/VariantsComponent";
 
 const scaleCount = Number(process.env.BENCHMARK_SCALE_COUNT ?? 0);
 
@@ -23,8 +23,8 @@ export default function Home() {
             <Test key={i} {...item} />
           ))}
         </div>
-        <LinariaComponent isRed={true} />
-        <LinariaComponent isRed={false} />
+        <VariantsComponent isRed={true} />
+        <VariantsComponent isRed={false} />
         {scaleCount > 0 ? <ScaleFixture /> : null}
       </main>
     </div>
