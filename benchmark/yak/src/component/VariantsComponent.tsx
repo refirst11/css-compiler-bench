@@ -30,11 +30,11 @@ const StyledContainer = styled.div`
   }
 `;
 
-type YakComponentProps = {
+type VariantsComponentProps = {
   isRed?: boolean;
 };
 
-const YakComponent = ({ isRed }: YakComponentProps) => (
+const VariantsComponent = ({ isRed }: VariantsComponentProps) => (
   <>
     <StyledBox $isRed={isRed}>Hello from Benchmark!</StyledBox>
     <div>
@@ -45,4 +45,4 @@ const YakComponent = ({ isRed }: YakComponentProps) => (
   </>
 );
 
-export default YakComponent;
+export default VariantsComponent;
