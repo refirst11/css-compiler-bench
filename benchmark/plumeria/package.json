@@ -22,9 +22,9 @@
   "devDependencies": {
     "@emnapi/core": "1.11.3",
     "@emnapi/runtime": "1.11.3",
-    "@plumeria/core": "^22.3.3",
-    "@plumeria/eslint-plugin": "^22.3.3",
-    "@plumeria/next-plugin": "^22.3.3",
+    "@plumeria/core": "^22.4.1",
+    "@plumeria/eslint-plugin": "^22.4.1",
+    "@plumeria/next-plugin": "^22.4.1",
     "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
