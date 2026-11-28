@@ -182,14 +182,14 @@ importers:
         specifier: 1.11.3
         version: 1.11.3
       '@plumeria/core':
-        specifier: ^22.3.3
-        version: 22.3.3
+        specifier: ^22.4.1
+        version: 22.4.1
       '@plumeria/eslint-plugin':
-        specifier: ^22.3.3
-        version: 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+        specifier: ^22.4.1
+        version: 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
       '@plumeria/next-plugin':
-        specifier: ^22.3.3
-        version: 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+        specifier: ^22.4.1
+        version: 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.6
@@ -2073,98 +2073,98 @@ packages:
     resolution: {integrity: sha512-ucDQwuOrSKhXDuTFMB/VZsrH4zK1DtOvrkCMuzNL9brJiUS8+5IcGR4uP2/jNXm05/iI6zaBbWjwGhbRDsFicQ==}
     engines: {node: '>=20'}
 
-  '@plumeria/compiler-android-arm64@22.3.3':
-    resolution: {integrity: sha512-CWizGgm8Ebq1arkbcHreRiK10rw0WAvxGV83XF+vt2obreXOmRmGcp2XUKhVW3cwxIB6D4jObB3iIT1KWfo+eA==}
+  '@plumeria/compiler-android-arm64@22.4.1':
+    resolution: {integrity: sha512-87QQeCQGS/x/CFOlujSpjHYsEj7Z7PgxAD05FoyVdja/nj6FE5a1pDs7JjrMqeybNJZLYbFWpxBCtbKBW8fRHA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
 
-  '@plumeria/compiler-darwin-arm64@22.3.3':
-    resolution: {integrity: sha512-rKQxpJXfXM4kfACTKIeCj8bsHqEnQGCf/uHybaRCcDds4ofHqquANzHcOM2Qk/JKw/TE1Fu/rq5WnQjl3DaLmA==}
+  '@plumeria/compiler-darwin-arm64@22.4.1':
+    resolution: {integrity: sha512-7VakEksbkZ1/De2LIMd66H+FtFlUUxoCJn1u1LP9rG5NWME0wD3b17GE76Bbcaye5yeHX7RdWhwYrIHQ2MQ+RA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@plumeria/compiler-darwin-x64@22.3.3':
-    resolution: {integrity: sha512-trSchDVBxhRB2rmT7E1HRLoev3jrzWfNNj/qJccWO47QIxzYDhtwne38gDaF3coynpD6CICuSP7KqotUWf6FOw==}
+  '@plumeria/compiler-darwin-x64@22.4.1':
+    resolution: {integrity: sha512-ZgUjEnmnOZF0R4tga5lUCkKCntklg2lJALWWUigodYee4O1IqAC3s/z4/+VFwvRFmypRLetAWAuHwzSIED9TwQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@plumeria/compiler-freebsd-x64@22.3.3':
-    resolution: {integrity: sha512-RQ6Ef5MrNEgcJ5kxyoSm55T+sJ1WIVflAZeaUuiW73Z3x/oPPOAxq3Gq4ss/t7sqSbbcmCLTK5UiTH5wy0ayhA==}
+  '@plumeria/compiler-freebsd-x64@22.4.1':
+    resolution: {integrity: sha512-RFl8QIt9vxf7nwifjDxoBalDixdSL22gpAdfcgQeGWurqomom6c6o10d4kMJVZMXJIjWVTeTfIg38cGItndtXg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [freebsd]
 
-  '@plumeria/compiler-linux-arm-gnueabihf@22.3.3':
-    resolution: {integrity: sha512-xBOWjGeZHwHgrhWSjAJcxV+7cgQkvsYZ8M+kA17EkGF3FM1wUu0pZs+EBTnIpGWTlEmFsctcoYB8oaHsKilCaw==}
+  '@plumeria/compiler-linux-arm-gnueabihf@22.4.1':
+    resolution: {integrity: sha512-iKzuyr70ifZIvwfJ8QBJ6s+7Eebdl/Q9iQVCwomFcMgMLvP1wiKymuVdXgNy3DxgqDXa5f0twUFHhMQc4c4y+g==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
     libc: [glibc]
 
-  '@plumeria/compiler-linux-arm64-gnu@22.3.3':
-    resolution: {integrity: sha512-A1hqf3ZQ9td/QOQayJuMjtNsERZcG8j1SGp/uvt59ghYRgwWxu6xcbvYPFCCRlSeRtp/M5V8mI+vkG8qYvJ/Mw==}
+  '@plumeria/compiler-linux-arm64-gnu@22.4.1':
+    resolution: {integrity: sha512-rvQwt/IAYDypd525SrhR62Yt2ZmAyh4eKoM8saM9RZheoWXWYqNTNzDZfusTzrW0p0hpKenqxEj8ovx9DmQEPg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@plumeria/compiler-linux-arm64-musl@22.3.3':
-    resolution: {integrity: sha512-J2kdkKDsS0u2kyvROkoMAvt6liOYG8tU3bGpzwOfgLRHhFXZFYUOk59OZ67wolmy1PybZzQhRsktpVkuC07btg==}
+  '@plumeria/compiler-linux-arm64-musl@22.4.1':
+    resolution: {integrity: sha512-3C6js1dVaM+fBEf1pcp1w+HgYPnSg7YFClwnoPyRWDb0L8uyvX79wEkdA0jMS0b1DvrmjuXFhnRQWm3Ew9cuzw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@plumeria/compiler-linux-x64-gnu@22.3.3':
-    resolution: {integrity: sha512-UaSXBk3z8q3mXa4BBM4b0mUtNnD3W9iiuUVp4TcPl2Lsa3pIsPud4bLO2MxKn7/3Y+Ng1mFe4F4zjfX5cyFpYw==}
+  '@plumeria/compiler-linux-x64-gnu@22.4.1':
+    resolution: {integrity: sha512-ifWUwguHCi+nS9STIF5sdg1voUTqftvQ61/boeF4Ft+lM2nHlDiKN3wxzcYfQQoJDPC9/TbyivIsGg8NsTWMVQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@plumeria/compiler-linux-x64-musl@22.3.3':
-    resolution: {integrity: sha512-XV0LbXxs5UEgCwc3TL4vh8ykKCwWD7jnDSHa0dIwz5HF6k69NMonCa/XCKG2Mp5NT1IXwqO+n6/UCbr4ZvcJsQ==}
+  '@plumeria/compiler-linux-x64-musl@22.4.1':
+    resolution: {integrity: sha512-QMoisE079G+VvOzLznQCe3heN3WJRVsjz1Ms0GFg2kiFjt3Q3uxgDfxyJ8D/6HlEEYBGY0TOku3ms66rccS71A==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@plumeria/compiler-wasm32-wasi@22.3.3':
-    resolution: {integrity: sha512-gC4+ZbtajYx5tEZZhmewYTyWzrn3rluhMVHg7qZ3njyJJ9XsDhBOJfSNECacS1/EbMaCrOkvKAwFReAWeGN5WA==}
+  '@plumeria/compiler-wasm32-wasi@22.4.1':
+    resolution: {integrity: sha512-SXk843ud2Xpk83wyIAd1tbcpbUKzf+aCOdFnvV4vjE9e9BPsx3vwC3YolPeKjI0yc2ZbKZEgkVfkThoExukPQg==}
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
 
-  '@plumeria/compiler-win32-arm64-msvc@22.3.3':
-    resolution: {integrity: sha512-JO6MC/oycrIGknhPeyUV5SVHk02GjjBHkMNkw/chHYudhrSAEi+jD3/2ra+JvjEC8Nzqu0i7KxQXE+TN7zzU/A==}
+  '@plumeria/compiler-win32-arm64-msvc@22.4.1':
+    resolution: {integrity: sha512-xOpCwbSJlqVcULdvF1H/i2GPJE41S+mO1j5XBNdYaYUKzQJNozBxW9KUCMASOs2OQCx+u+LnHsa1a0KWzlxdYw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@plumeria/compiler-win32-x64-msvc@22.3.3':
-    resolution: {integrity: sha512-5JsTs/vJRrWlZjI150tqDroWl3ba91kD41Y+TTOBACmv3sJ/zuJ3kj5Ev0pccn4R2CodVwi6sDH8plk7A30KsA==}
+  '@plumeria/compiler-win32-x64-msvc@22.4.1':
+    resolution: {integrity: sha512-7p9AFCCKD360z5lfFOISUcmeWcR8bXUqOzpiNd7eoyiRDHZ5iDK/Sbk51OcPcBsNVIBV5D53VaObjL1GwAfhcw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@plumeria/compiler@22.3.3':
-    resolution: {integrity: sha512-4+jL78/KIBlipICBxKDNWRFH0IKPTZdtjHxUm/3OPu4UUgjDe83IP3C/tF9xBrspnx96kP159PKWF/qbMVbAoQ==}
+  '@plumeria/compiler@22.4.1':
+    resolution: {integrity: sha512-sQKjcgj+CDTBf8itoezQvMi6q23paH9rto26KZFQyBmtosUoXb2l0wF5PS2Dz6GISH6SMtD5FUZ/dpcooAxvog==}
     engines: {node: '>=20'}
 
-  '@plumeria/core@22.3.3':
-    resolution: {integrity: sha512-T1yHOMQHNZwCj0vTvgSUk1ksIpXG4ThelXws7e6HcpIuv6J0miv6FUFUZd5ENBmvQoiTfdcAoFEDbtza8emEEg==}
+  '@plumeria/core@22.4.1':
+    resolution: {integrity: sha512-VFF8WozhUfFV52bIcwd7rVuVz85qkQ0CXmwSFgeGG1xVJ+NpEKO5nrXD/GXZF5Cvp3uvbwBYnk2SDS9HTC9xiw==}
 
-  '@plumeria/eslint-plugin@22.3.3':
-    resolution: {integrity: sha512-faA3XEe/9nqzb0SnSExtPvIGbhpY/cnCqHzFQE8Zg/FQaNM2uvqJnCK6/6I88pEpx7HRUzcdkL0YkJu4NYXenQ==}
+  '@plumeria/eslint-plugin@22.4.1':
+    resolution: {integrity: sha512-t8vqOxh9VDLUaseBx4kUmbz+xruOkEIfU1I7SDqaARyYtiZLWXQGf5qppB+ZmCFczaCC47xs/JrgdIBoDqQanQ==}
     hasBin: true
 
-  '@plumeria/next-plugin@22.3.3':
-    resolution: {integrity: sha512-QRgr000qkz/fViTOz3wC/3bxeRu7E6JVTKcky03WIJE9eKXX/mj7iuA2betCIL7KxK/M7RloveM1R1iH1QNbqA==}
+  '@plumeria/next-plugin@22.4.1':
+    resolution: {integrity: sha512-i4kllL3h8zYCR/vnXbBC/lpOM150v7T2RAIxNLxaCP8e/q5Ft5Q8ZnN9sSKnuS9oe0N5vCfpQ6os24L893fTfg==}
 
-  '@plumeria/turbopack-loader@22.3.3':
-    resolution: {integrity: sha512-KyZPoMz9nqd63/v9hcVZl8sfPQPHBS51ZUZS7jDciGD7gSVuyzW8zIyK8ZkQABIvSwcoE3/+OgyDy04DHgAjaw==}
+  '@plumeria/turbopack-loader@22.4.1':
+    resolution: {integrity: sha512-Zecn4hZ9zVlYKfwLPuz883QPycIPLq7buD+SPZohgiXs4ticqW7/zD54Obl94xpkqQ+m+ieGgRZcrYbF1uhN4w==}
 
   '@resvg/resvg-js-android-arm-eabi@2.6.2':
     resolution: {integrity: sha512-FrJibrAk6v29eabIPgcTUMPXiEz8ssrAk7TXxsiZzww9UTQ1Z5KAbFJs+Z0Ez+VZTYgnE5IQJqBcoSiMebtPHA==}
@@ -3198,6 +3198,9 @@ packages:
 
   cssdefs@1.0.2:
     resolution: {integrity: sha512-dNGsGic7h4q5KuKg1QBXskEJCIFA7Ghf6XxnF5WqA+Ieg7Fe3yFb8TVlPMJQt9yB9blSBsBjvBqau1hcQF3JuA==}
+
+  cssdefs@1.1.0:
+    resolution: {integrity: sha512-dMNlYu8KgbV8ZKMcwRrsSUQFkgEoMPlsI1i+dOLDFWc88VIynIkRk5meJW4Npvv7KVxcbQDYIGEgR28vhztLLg==}
 
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -5857,34 +5860,34 @@ snapshots:
 
   '@pandacss/types@1.12.1': {}
 
-  '@plumeria/compiler-android-arm64@22.3.3':
+  '@plumeria/compiler-android-arm64@22.4.1':
     optional: true
 
-  '@plumeria/compiler-darwin-arm64@22.3.3':
+  '@plumeria/compiler-darwin-arm64@22.4.1':
     optional: true
 
-  '@plumeria/compiler-darwin-x64@22.3.3':
+  '@plumeria/compiler-darwin-x64@22.4.1':
     optional: true
 
-  '@plumeria/compiler-freebsd-x64@22.3.3':
+  '@plumeria/compiler-freebsd-x64@22.4.1':
     optional: true
 
-  '@plumeria/compiler-linux-arm-gnueabihf@22.3.3':
+  '@plumeria/compiler-linux-arm-gnueabihf@22.4.1':
     optional: true
 
-  '@plumeria/compiler-linux-arm64-gnu@22.3.3':
+  '@plumeria/compiler-linux-arm64-gnu@22.4.1':
     optional: true
 
-  '@plumeria/compiler-linux-arm64-musl@22.3.3':
+  '@plumeria/compiler-linux-arm64-musl@22.4.1':
     optional: true
 
-  '@plumeria/compiler-linux-x64-gnu@22.3.3':
+  '@plumeria/compiler-linux-x64-gnu@22.4.1':
     optional: true
 
-  '@plumeria/compiler-linux-x64-musl@22.3.3':
+  '@plumeria/compiler-linux-x64-musl@22.4.1':
     optional: true
 
-  '@plumeria/compiler-wasm32-wasi@22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
+  '@plumeria/compiler-wasm32-wasi@22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     dependencies:
       '@napi-rs/wasm-runtime': 1.2.4(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
     transitivePeerDependencies:
@@ -5892,37 +5895,37 @@ snapshots:
       - '@emnapi/runtime'
     optional: true
 
-  '@plumeria/compiler-win32-arm64-msvc@22.3.3':
+  '@plumeria/compiler-win32-arm64-msvc@22.4.1':
     optional: true
 
-  '@plumeria/compiler-win32-x64-msvc@22.3.3':
+  '@plumeria/compiler-win32-x64-msvc@22.4.1':
     optional: true
 
-  '@plumeria/compiler@22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
+  '@plumeria/compiler@22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     optionalDependencies:
-      '@plumeria/compiler-android-arm64': 22.3.3
-      '@plumeria/compiler-darwin-arm64': 22.3.3
-      '@plumeria/compiler-darwin-x64': 22.3.3
-      '@plumeria/compiler-freebsd-x64': 22.3.3
-      '@plumeria/compiler-linux-arm-gnueabihf': 22.3.3
-      '@plumeria/compiler-linux-arm64-gnu': 22.3.3
-      '@plumeria/compiler-linux-arm64-musl': 22.3.3
-      '@plumeria/compiler-linux-x64-gnu': 22.3.3
-      '@plumeria/compiler-linux-x64-musl': 22.3.3
-      '@plumeria/compiler-wasm32-wasi': 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
-      '@plumeria/compiler-win32-arm64-msvc': 22.3.3
-      '@plumeria/compiler-win32-x64-msvc': 22.3.3
+      '@plumeria/compiler-android-arm64': 22.4.1
+      '@plumeria/compiler-darwin-arm64': 22.4.1
+      '@plumeria/compiler-darwin-x64': 22.4.1
+      '@plumeria/compiler-freebsd-x64': 22.4.1
+      '@plumeria/compiler-linux-arm-gnueabihf': 22.4.1
+      '@plumeria/compiler-linux-arm64-gnu': 22.4.1
+      '@plumeria/compiler-linux-arm64-musl': 22.4.1
+      '@plumeria/compiler-linux-x64-gnu': 22.4.1
+      '@plumeria/compiler-linux-x64-musl': 22.4.1
+      '@plumeria/compiler-wasm32-wasi': 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+      '@plumeria/compiler-win32-arm64-msvc': 22.4.1
+      '@plumeria/compiler-win32-x64-msvc': 22.4.1
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
 
-  '@plumeria/core@22.3.3':
+  '@plumeria/core@22.4.1':
     dependencies:
-      cssdefs: 1.0.2
+      cssdefs: 1.1.0
 
-  '@plumeria/eslint-plugin@22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
+  '@plumeria/eslint-plugin@22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     dependencies:
-      '@plumeria/compiler': 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+      '@plumeria/compiler': 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
       oxlint: 1.87.0
       zss-engine: 3.2.0
     transitivePeerDependencies:
@@ -5931,19 +5934,19 @@ snapshots:
       - oxlint-tsgolint
       - vite-plus
 
-  '@plumeria/next-plugin@22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
+  '@plumeria/next-plugin@22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     dependencies:
-      '@plumeria/eslint-plugin': 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
-      '@plumeria/turbopack-loader': 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+      '@plumeria/eslint-plugin': 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+      '@plumeria/turbopack-loader': 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
       - oxlint-tsgolint
       - vite-plus
 
-  '@plumeria/turbopack-loader@22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
+  '@plumeria/turbopack-loader@22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     dependencies:
-      '@plumeria/compiler': 22.3.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+      '@plumeria/compiler': 22.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
       zss-engine: 3.2.0
     transitivePeerDependencies:
       - '@emnapi/core'
@@ -6982,6 +6985,8 @@ snapshots:
   css-what@6.2.2: {}
 
   cssdefs@1.0.2: {}
+
+  cssdefs@1.1.0: {}
 
   cssesc@3.0.0: {}
 
